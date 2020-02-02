@@ -1,0 +1,48 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Authors>Stef Heyenrath</Authors>
+    <Description>Convert RAML file to Open API Specification</Description>
+    <PackageTags>raml;openapi;OAS;converter</PackageTags>
+
+    <TargetFrameworks>net461;netstandard2.0</TargetFrameworks>
+
+    <PackageReleaseNotes>See ReleaseNotes.md</PackageReleaseNotes>
+    <!--<PackageIconUrl>https://raw.githubusercontent.com/WireMock-Net/WireMock.Net/master/WireMock.Net-Logo.png</PackageIconUrl>-->
+    <PackageProjectUrl>https://github.com/StefH/RamlToOpenApiConverter</PackageProjectUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/StefH/RamlToOpenApiConverter</RepositoryUrl>
+    <!--<ApplicationIcon>../../WireMock.Net-Logo.ico</ApplicationIcon>-->
+    <!--<RootNamespace>WireMock</RootNamespace>-->
+    <!--<DebugType>full</DebugType>
+    <IncludeSource>True</IncludeSource>
+    <IncludeSymbols>True</IncludeSymbols>-->
+    <ProjectGuid>{D3804228-91F4-1111-9595-39584E5A01AD}</ProjectGuid>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <!--<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>-->
+    <!--<SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>WireMock.Net.snk</AssemblyOriginatorKeyFile>
+    -->
+    <!--<DelaySign>true</DelaySign>-->
+    <!--
+    <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>-->
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.OpenApi.Readers" Version="1.1.4" />
+    <PackageReference Include="Newtonsoft.Json" Version="11.0.1" />
+    <!--<PackageReference Include="SharpYaml" Version="1.6.5" />-->
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net461' ">
+    <PackageReference Include="System.ValueTuple" Version="4.3.0" />
+  </ItemGroup>
+
+</Project>
