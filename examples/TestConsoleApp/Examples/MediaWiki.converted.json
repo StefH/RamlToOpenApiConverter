@@ -1,0 +1,284 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "MediaWiki",
+    "description": "The MediaWiki action API is a web service that provides convenient access to wiki features, data, and meta-data over HTTP, via a URL usually at api.php",
+    "version": "v1"
+  },
+  "servers": [
+    {
+      "url": "https://en.wikipedia.org/w/api.php"
+    }
+  ],
+  "paths": {
+    "/helloworld": {
+      "get": {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "id": {
+                      "type": "number",
+                      "nullable": true
+                    }
+                  }
+                },
+                "example": {
+                  "message": "Hello world"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Returned if there is no re-indexing task found"
+          }
+        }
+      }
+    },
+    "/": {
+      "put": {
+        "description": "Update the scheme to include the passed mapping. The body is a representation of the workflow mapping. Values not passed are assumed to indicate no change for that field. The passed representation can have its updateDraftIfNeeded flag set to true to indicate that the draft should be created/updated when the actual scheme cannot be edited.",
+        "requestBody": {
+          "content": {
+            "application/json": { }
+          }
+        },
+        "responses": {
+          "401": { }
+        }
+      },
+      "get": {
+        "description": "Title normalization | Missing and invalid titles | Resolving redirects | Exporting pages | Getting a list of page IDs",
+        "parameters": [
+          {
+            "name": "action",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "titles",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "format",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "redirects",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "generator",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "export",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "indexpageids",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/Normalization"
+                    },
+                    {
+                      "$ref": "#/components/schemas/QueryResult"
+                    },
+                    {
+                      "$ref": "#/components/schemas/RedirectsQuery"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ExportQuery"
+                    },
+                    {
+                      "$ref": "#/components/schemas/PagesLists"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Normalization"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "NormalizedItem": {
+        "type": "object",
+        "properties": {
+          "from": {
+            "type": "string",
+            "nullable": true
+          },
+          "to": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "Pages": {
+        "type": "object"
+      },
+      "Normalization": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "object",
+            "properties": {
+              "normalized": {
+                "type": "NormalizedItem[]",
+                "nullable": true
+              },
+              "pages": {
+                "type": "object",
+                "nullable": true
+              }
+            }
+          }
+        }
+      },
+      "QueryResult": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "object",
+            "properties": {
+              "pages": {
+                "type": "object",
+                "nullable": true
+              }
+            }
+          }
+        }
+      },
+      "Destination": {
+        "type": "object",
+        "properties": {
+          "from": {
+            "type": "string",
+            "nullable": true
+          },
+          "to": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "RedirectsQuery": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "object",
+            "properties": {
+              "redirects": {
+                "type": "object",
+                "nullable": true
+              },
+              "pages": {
+                "type": "object",
+                "nullable": true
+              }
+            }
+          }
+        }
+      },
+      "Page": {
+        "type": "object",
+        "properties": {
+          "ns?": {
+            "type": "number",
+            "nullable": true
+          },
+          "title?": {
+            "type": "string",
+            "nullable": true
+          },
+          "pageid?": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "ExportQuery": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "object",
+            "properties": {
+              "pages": {
+                "type": "Page[]",
+                "nullable": true
+              },
+              "export": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      },
+      "PagesLists": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "object",
+            "properties": {
+              "pageids": {
+                "type": "string[]",
+                "nullable": true
+              },
+              "pages": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
