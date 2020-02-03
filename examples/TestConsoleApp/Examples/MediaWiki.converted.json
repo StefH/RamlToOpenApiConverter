@@ -18,14 +18,13 @@
             "content": {
               "application/json": {
                 "schema": {
+                  "type": "object",
                   "properties": {
                     "message": {
-                      "type": "string",
-                      "nullable": true
+                      "type": "string"
                     },
                     "id": {
-                      "type": "number",
-                      "nullable": true
+                      "type": "number"
                     }
                   }
                 },
@@ -42,17 +41,6 @@
       }
     },
     "/": {
-      "put": {
-        "description": "Update the scheme to include the passed mapping. The body is a representation of the workflow mapping. Values not passed are assumed to indicate no change for that field. The passed representation can have its updateDraftIfNeeded flag set to true to indicate that the draft should be created/updated when the actual scheme cannot be edited.",
-        "requestBody": {
-          "content": {
-            "application/json": { }
-          }
-        },
-        "responses": {
-          "401": { }
-        }
-      },
       "get": {
         "description": "Title normalization | Missing and invalid titles | Resolving redirects | Exporting pages | Getting a list of page IDs",
         "parameters": [
@@ -153,12 +141,10 @@
         "type": "object",
         "properties": {
           "from": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "to": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           }
         }
       },
@@ -172,12 +158,10 @@
             "type": "object",
             "properties": {
               "normalized": {
-                "type": "NormalizedItem[]",
-                "nullable": true
+                "type": "NormalizedItem[]"
               },
               "pages": {
-                "type": "object",
-                "nullable": true
+                "type": "object"
               }
             }
           }
@@ -190,8 +174,7 @@
             "type": "object",
             "properties": {
               "pages": {
-                "type": "object",
-                "nullable": true
+                "type": "object"
               }
             }
           }
@@ -201,12 +184,10 @@
         "type": "object",
         "properties": {
           "from": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "to": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           }
         }
       },
@@ -217,12 +198,10 @@
             "type": "object",
             "properties": {
               "redirects": {
-                "type": "object",
-                "nullable": true
+                "type": "object"
               },
               "pages": {
-                "type": "object",
-                "nullable": true
+                "type": "object"
               }
             }
           }
@@ -232,16 +211,13 @@
         "type": "object",
         "properties": {
           "ns?": {
-            "type": "number",
-            "nullable": true
+            "type": "number"
           },
           "title?": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "pageid?": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           }
         }
       },
@@ -252,8 +228,7 @@
             "type": "object",
             "properties": {
               "pages": {
-                "type": "Page[]",
-                "nullable": true
+                "type": "Page[]"
               },
               "export": {
                 "type": "object"
@@ -269,8 +244,7 @@
             "type": "object",
             "properties": {
               "pageids": {
-                "type": "string[]",
-                "nullable": true
+                "type": "string[]"
               },
               "pages": {
                 "type": "object"

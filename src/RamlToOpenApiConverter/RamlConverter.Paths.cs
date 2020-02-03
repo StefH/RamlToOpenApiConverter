@@ -8,21 +8,12 @@ using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Extensions;
 using Microsoft.OpenApi.Models;
 using Microsoft.OpenApi.Readers;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
-using Raml.Parser.Expressions;
 using RamlToOpenApiConverter.Extensions;
 
 namespace RamlToOpenApiConverter
 {
     public partial class RamlConverter
     {
-        private readonly JsonSerializerSettings _jsonSerializerSettings = new JsonSerializerSettings
-        {
-            Formatting = Formatting.Indented,
-            ContractResolver = new CamelCasePropertyNamesContractResolver()
-        };
-
         private OpenApiPaths MapPaths(IDictionary<object, object> o)
         {
             var paths = new OpenApiPaths();
@@ -151,26 +142,35 @@ namespace RamlToOpenApiConverter
         {
             var openApiResponses = new OpenApiResponses();
 
-            foreach (int key in values.Keys.OfType<int>())
+            if (values == null)
+            {
+                return openApiResponses;
+            }
+
+            // SharpYampl uses int but YamlDotNet uses string
+            foreach (string key in values.Keys.OfType<string>())
             {
                 var response = values.GetAsDictionary(key);
-                var body = response?.GetAsDictionary("body");
-                string description = response?.Get("description");
-                if (body != null)
+                if (response != null)
                 {
-                    var openApiResponse = new OpenApiResponse
+                    var body = response.GetAsDictionary("body");
+                    string description = response.Get("description");
+                    if (body != null)
                     {
-                        Description = description,
-                        Content = MapContents(body)
-                    };
-                    openApiResponses.Add(key.ToString(), openApiResponse);
-                }
-                else
-                {
-                    openApiResponses.Add(key.ToString(), new OpenApiResponse
+                        var openApiResponse = new OpenApiResponse
+                        {
+                            Description = description,
+                            Content = MapContents(body)
+                        };
+                        openApiResponses.Add(key, openApiResponse);
+                    }
+                    else
                     {
-                        Description = description
-                    });
+                        openApiResponses.Add(key, new OpenApiResponse
+                        {
+                            Description = description
+                        });
+                    }
                 }
             }
 
@@ -205,13 +205,25 @@ namespace RamlToOpenApiConverter
             {
                 if (values.ContainsKey(key))
                 {
-                    var items = values.GetAsDictionary(key); // Body and Example
-                    string type = items?.Get("type");
+                    var items = values.GetAsDictionary(key); // Body and Example and Type and Schema
                     string exampleAsJson = items?.Get("example");
+
+                    string type = items?.Get("type");
+                    string schemaValue = items?.Get("schema");
+
+                    OpenApiSchema schema = null;
+                    if (!string.IsNullOrEmpty(type))
+                    {
+                        schema = MapMediaTypeSchema(type);
+                    }
+                    else if (!string.IsNullOrEmpty(schemaValue))
+                    {
+                        schema = MapMediaTypeSchema(schemaValue);
+                    }
 
                     var openApiMediaType = new OpenApiMediaType
                     {
-                        Schema = !string.IsNullOrEmpty(type) ? MapMediaTypeSchema(type) : null,
+                        Schema = schema,
                         Example = !string.IsNullOrEmpty(exampleAsJson) ? MapExample(exampleAsJson) : null,
                     };
 
@@ -230,15 +242,17 @@ namespace RamlToOpenApiConverter
             return reader.ReadFragment<IOpenApiAny>(stringAsStream, OpenApiSpecVersion.OpenApi3_0, out var _);
         }
 
-        private OpenApiSchema MapMediaTypeSchema(string typeAsString)
+        private OpenApiSchema MapMediaTypeSchema(string value)
         {
-            if (typeAsString.StartsWith("{"))
+            if (value.StartsWith("{"))
             {
-                var objectType = JsonConvert.DeserializeObject<ObjectType>(typeAsString, _jsonSerializerSettings);
-                return MapSchema(objectType);
+                var objectType = _deserializer.Deserialize<IDictionary<object, object>>(value);
+                var properties = objectType.GetAsDictionary("properties");
+                var required = objectType.GetAsCollection("required");
+                return MapSchema(properties, required);
             }
 
-            var referenceSchemas = typeAsString
+            var referenceSchemas = value
                 .Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries)
                 .Select(o => CreateDummyOpenApiReferenceSchema(o.Trim()))
                 .ToList();
@@ -260,29 +274,6 @@ namespace RamlToOpenApiConverter
             {
                 Type = "object",
                 Reference = new OpenApiReference { Id = referenceId, Type = ReferenceType.Schema }
-            };
-        }
-
-        private OpenApiSchema MapSchema(ObjectType o)
-        {
-            return new OpenApiSchema
-            {
-                Properties = MapProperties(o.Properties)
-            };
-        }
-
-        private IDictionary<string, OpenApiSchema> MapProperties(IDictionary<string, RamlType> properties)
-        {
-            return properties.ToDictionary(property => property.Key, property => MapProperty(property.Value));
-        }
-
-        private OpenApiSchema MapProperty(RamlType property)
-        {
-            return new OpenApiSchema
-            {
-                Type = property.Type,
-                Nullable = !property.Required,
-                Description = property.Description
             };
         }
 

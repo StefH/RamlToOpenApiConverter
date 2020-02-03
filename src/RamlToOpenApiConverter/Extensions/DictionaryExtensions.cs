@@ -30,6 +30,16 @@ namespace RamlToOpenApiConverter.Extensions
             return null;
         }
 
+        public static ICollection<object> GetAsCollection(this IDictionary<object, object> d, object key)
+        {
+            if (d.TryGetValue(key, out object value))
+            {
+                return value as ICollection<object>;
+            }
+
+            return null;
+        }
+
         private static T ChangeTypeEx<T>(object obj)
         {
             Type type = typeof(T);

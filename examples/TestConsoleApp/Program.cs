@@ -1,4 +1,6 @@
-﻿using Microsoft.OpenApi;
+﻿using System;
+using System.IO;
+using Microsoft.OpenApi;
 using RamlToOpenApiConverter;
 
 namespace TestConsoleApp
@@ -6,9 +8,17 @@ namespace TestConsoleApp
     // https://mulesoft.github.io/oas-raml-converter/
     class Program
     {
+        private const string DestFolder = "..\\..\\..\\Examples\\";
+
         static void Main(string[] args)
         {
-            new RamlConverter().ConvertToFile("Examples\\MediaWiki.raml", "..\\..\\..\\Examples\\MediaWiki.converted.json", OpenApiSpecVersion.OpenApi3_0, OpenApiFormat.Json);
+            new RamlConverter().ConvertToFile("Examples\\HelloWorld.raml", Path.Combine(DestFolder, "HelloWorld.converted.json"));
+
+            new RamlConverter().ConvertToFile("Examples\\MediaWiki.raml", Path.Combine(DestFolder, "MediaWiki.converted.json"));
+
+            new RamlConverter().ConvertToFile("Examples\\IncludePerson\\api.raml", Path.Combine(DestFolder, "IncludePerson\\api.converted.json"));
+
+            Console.WriteLine("DONE");
         }
     }
 }

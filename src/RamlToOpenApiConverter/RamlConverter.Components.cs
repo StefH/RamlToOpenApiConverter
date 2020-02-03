@@ -19,12 +19,29 @@ namespace RamlToOpenApiConverter
             {
                 foreach (var key in types.Keys.OfType<string>())
                 {
-                    var values = types.GetAsDictionary(key);
-                    bool isObject = values?.Get("type") == "object";
+                    IDictionary<object, object> items = null;
 
-                    if (isObject)
+                    switch (types[key])
                     {
-                        components.Schemas.Add(key, MapSchema(values.GetAsDictionary("properties")));
+                        case IDictionary<object, object> values:
+                            bool isObject = values.Get("type") == "object";
+
+                            if (isObject)
+                            {
+                                items = values;
+                            }
+                            break;
+
+                        case string jsonOrYaml:
+                            items = _deserializer.Deserialize<IDictionary<object, object>>(jsonOrYaml);
+                            break;
+                    }
+
+                    if (items != null)
+                    {
+                        var required = items.GetAsCollection("required");
+                        var properties = items.GetAsDictionary("properties");
+                        components.Schemas.Add(key, MapSchema(properties, required));
                     }
                 }
             }
@@ -32,18 +49,19 @@ namespace RamlToOpenApiConverter
             return components;
         }
 
-        private OpenApiSchema MapSchema(IDictionary<object, object> properties)
+        private OpenApiSchema MapSchema(IDictionary<object, object> properties, ICollection<object> required)
         {
             return new OpenApiSchema
             {
                 Type = "object",
-                Properties = MapProperties(properties)
+                Required = required != null ? new HashSet<string>(required.OfType<string>()) : null,
+                Properties = MapProperties(properties, required)
             };
         }
 
         private OpenApiSchema MapProperty(IDictionary<object, object> values)
         {
-            bool required = values.Get<bool?>("required") == true;
+            // bool required = values.Get<bool?>("required") == true;
             string type = values.Get("type");
             string format = values.Get("format");
 
@@ -57,7 +75,7 @@ namespace RamlToOpenApiConverter
             {
                 Type = type,
                 Format = format,
-                Nullable = !required,
+                // Nullable = !required,
                 Description = values.Get("description"),
                 Minimum = values.Get<decimal?>("minimum"),
                 Maximum = values.Get<decimal?>("maximum"),
@@ -66,7 +84,7 @@ namespace RamlToOpenApiConverter
             };
         }
 
-        private IDictionary<string, OpenApiSchema> MapProperties(IDictionary<object, object> properties)
+        private IDictionary<string, OpenApiSchema> MapProperties(IDictionary<object, object> properties, ICollection<object> required)
         {
             var openApiProperties = new Dictionary<string, OpenApiSchema>();
             foreach (var key in properties.Keys.OfType<string>())
@@ -94,9 +112,11 @@ namespace RamlToOpenApiConverter
                 if (propertyType == "object")
                 {
                     // Object
-                    schema = MapSchema(values.GetAsDictionary("properties"));
+                    var props = values.GetAsDictionary("properties");
+                    var req = values.GetAsCollection("required");
+                    schema = MapSchema(props, req);
                 }
-                else if (_types.ContainsKey(propertyType))
+                else if (propertyType != null && _types.ContainsKey(propertyType))
                 {
                     // Simple Type
                     var simpleType = _types.GetAsDictionary(propertyType);
@@ -107,66 +127,6 @@ namespace RamlToOpenApiConverter
                     // Normal property
                     schema = MapProperty(values);
                 }
-
-
-                //switch (properties[key])
-                //{
-                //    case string primitive:
-                //        schema = new OpenApiSchema
-                //        {
-                //            Type = primitive
-                //        };
-                //        break;
-
-                //    case IDictionary<object, object> complex:
-                //        string propertyType = complex.Get("type");
-                //        bool isObject = propertyType == "object";
-                //        if (isObject)
-                //        {
-                //            schema = MapSchema(complex.GetAsDictionary("properties"));
-                //        }
-                //        else if (_types.ContainsKey(propertyType))
-                //        {
-                //            var simpleType = _types.GetAsDictionary(propertyType);
-
-                //            string type = simpleType.Get("type");
-                //            string format = simpleType.Get("format");
-
-                //            if (type == "datetime")
-                //            {
-                //                type = "string";
-                //                format = "date-time";
-                //            }
-
-                //            schema = new OpenApiSchema
-                //            {
-                //                Description = simpleType.Get("description"),
-                //                Format = format,
-                //                Minimum = simpleType.Get<decimal?>("minimum"),
-                //                Maximum = simpleType.Get<decimal?>("maximum"),
-                //                MaxLength = simpleType.Get<int?>("maxLength"),
-                //                MinLength = simpleType.Get<int?>("minLength"),
-                //                Type = type
-                //            };
-                //        }
-                //        else
-                //        {
-                //            // TODO ?
-                //            schema = new OpenApiSchema
-                //            {
-                //                Reference = new OpenApiReference
-                //                {
-                //                    Type = ReferenceType.Schema,
-                //                    ExternalResource = "definitions",
-                //                    Id = key
-                //                }
-                //            };
-                //        }
-                //        break;
-
-                //    default:
-                //        throw new NotSupportedException();
-                //}
 
                 openApiProperties.Add(key, schema);
             }

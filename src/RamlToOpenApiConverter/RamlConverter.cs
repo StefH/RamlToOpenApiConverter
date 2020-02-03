@@ -1,17 +1,21 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Microsoft.OpenApi;
 using Microsoft.OpenApi.Extensions;
 using Microsoft.OpenApi.Models;
 using RamlToOpenApiConverter.Extensions;
-using SharpYaml.Serialization;
+using RamlToOpenApiConverter.Yaml;
+using YamlDotNet.Serialization;
 
 namespace RamlToOpenApiConverter
 {
     public partial class RamlConverter
     {
+        private readonly IDictionary<object, object> _types = new Dictionary<object, object>();
+
+        private IDeserializer _deserializer;
         private OpenApiDocument _doc;
-        private IDictionary<object, object> _types;
 
         /// <summary>
         /// Converts the input RAML file to an Open API Specification output file using the provided options.
@@ -22,9 +26,9 @@ namespace RamlToOpenApiConverter
         /// <param name="format">Open API document format.</param>
         public void ConvertToFile(string inputPath, string outputPath, OpenApiSpecVersion specVersion = OpenApiSpecVersion.OpenApi3_0, OpenApiFormat format = OpenApiFormat.Json)
         {
-            var document = ConvertToOpenApiDocument(File.OpenRead(inputPath));
+            var document = ConvertToOpenApiDocument(inputPath);
 
-            string contents = _doc.Serialize(specVersion, format);
+            string contents = document.Serialize(specVersion, format);
 
             File.WriteAllText(outputPath, contents);
         }
@@ -32,15 +36,41 @@ namespace RamlToOpenApiConverter
         /// <summary>
         /// Converts the input RAML stream to an Open API Specification document.
         /// </summary>
-        /// <param name="stream">The stream to the RAML.</param>
-        public OpenApiDocument ConvertToOpenApiDocument(Stream stream)
+        /// <param name="inputPath">The path to the RAML file.</param>
+        public OpenApiDocument ConvertToOpenApiDocument(string inputPath)
         {
-            var serializer = new Serializer();
+            var builder = new DeserializerBuilder();
 
-            var result = serializer.Deserialize<IDictionary<object, object>>(stream);
+            var includeNodeDeserializer = new YamlIncludeNodeDeserializer(new YamlIncludeNodeDeserializerOptions
+            {
+                DirectoryName = Path.GetDirectoryName(inputPath),
+                Deserializer = builder.Build()
+            });
 
-            // Step 1 - Get all types
-            _types = result.GetAsDictionary("types");
+            _deserializer = builder
+                .WithTagMapping(Constants.IncludeTag, typeof(IncludeRef))
+                .WithNodeDeserializer(includeNodeDeserializer, s => s.OnTop())
+                .Build();
+
+            var result = _deserializer.Deserialize<Dictionary<object, object>>(File.ReadAllText(inputPath));
+
+            // Step 1 - Get all types and schemas
+            var types = result.GetAsDictionary("types");
+            if (types != null)
+            {
+                foreach (var type in types.Where(x => !_types.ContainsKey(x.Key)))
+                {
+                    _types.Add(type.Key, type.Value);
+                }
+            }
+            var schemas = result.GetAsDictionary("schemas");
+            if (schemas != null)
+            {
+                foreach (var schema in schemas.Where(x => !_types.ContainsKey(x.Key)))
+                {
+                    _types.Add(schema.Key, schema.Value);
+                }
+            }
 
             // Step 2 - Get Info, Servers and Components
             _doc = new OpenApiDocument
