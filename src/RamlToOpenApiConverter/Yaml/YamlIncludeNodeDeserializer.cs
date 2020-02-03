@@ -4,27 +4,22 @@ using System.IO;
 using YamlDotNet.Core;
 using YamlDotNet.Core.Events;
 using YamlDotNet.Serialization;
-using YamlDotNet.Serialization.Utilities;
 
 namespace RamlToOpenApiConverter.Yaml
 {
-    public class YamlIncludeNodeDeserializer3 : IValueDeserializer
+    public class YamlIncludeNodeDeserializer : INodeDeserializer
     {
         private readonly YamlIncludeNodeDeserializerOptions _options;
 
-        public YamlIncludeNodeDeserializer3(YamlIncludeNodeDeserializerOptions options)
+        public YamlIncludeNodeDeserializer(YamlIncludeNodeDeserializerOptions options)
         {
             _options = options;
         }
 
-        public object DeserializeValue(IParser parser, Type expectedType, SerializerState state, IValueDeserializer nestedObjectDeserializer)
+        bool INodeDeserializer.Deserialize(IParser parser, Type expectedType, Func<IParser, Type, object> nestedObjectDeserializer, out object value)
         {
-            throw new NotImplementedException();
-        }
-
-        bool Deserialize(IParser parser, Type expectedType, Func<IParser, Type, object> nestedObjectDeserializer, out object value)
-        {
-            if (parser.TryConsume(out Scalar scalar) && scalar.Tag == "!include")
+            var scalar = parser.Peek<Scalar>();
+            if (scalar != null)
             {
                 string fileName = scalar.Value;
                 string includePath = Path.Combine(_options.DirectoryName, scalar.Value);
@@ -38,9 +33,7 @@ namespace RamlToOpenApiConverter.Yaml
                 return true;
             }
 
-            //var scalar = parser.Peek<Scalar>();
-
-            //if (scalar != null && scalar.Tag == "!include")
+            //if (parser.TryConsume(out Scalar scalar) && scalar.Tag == "!include")
             //{
             //    string fileName = scalar.Value;
             //    string includePath = Path.Combine(_options.DirectoryName, scalar.Value);
@@ -48,35 +41,19 @@ namespace RamlToOpenApiConverter.Yaml
 
             //    value = _options.Deserializer.Deserialize(includeText, expectedType);
 
-            //    _options.InlineTypeCallback.Add(Path.GetFileNameWithoutExtension(fileName), value as IDictionary<object, object>);
+            //    // TODO : how to get the TAG name here ??
+            //    string tagname = "???";
 
-            //    parser.MoveNext();
+            //    _options.InlineTypeCallback.Add(tagname, value as IDictionary<object, object>);
+
+            //    //parser.MoveNext();
             //    return true;
-            //}
-
-            //value = null;
-            //return false;
-
-            //if (!parser.TryConsume<MappingStart>(out var mapping))
-            //{
-            //    value = null;
-            //    return false;
-            //}
-
-            //while (!parser.TryConsume<MappingEnd>(out var _))
-            //{
-            //    if (!parser.TryConsume<Scalar>(out Scalar scalar))
-            //    {
-            //        parser.SkipThisAndNestedEvents();
-            //    }
-
-
             //}
 
             value = null;
             return true;
         }
-
-        
     }
 }
+
+// Path.GetFileNameWithoutExtension(fileName)

@@ -9,7 +9,7 @@ using Newtonsoft.Json;
 using RamlToOpenApiConverter.Extensions;
 using RamlToOpenApiConverter.Yaml;
 using SharpYaml.Serialization;
-using YamlDotNet.Serialization;
+//using YamlDotNet.Serialization;
 
 // using SharpYaml.Serialization;
 
@@ -49,32 +49,32 @@ namespace RamlToOpenApiConverter
                 
             };
             settingz.RegisterTagMapping("!include", typeof(IncludeRef));
-            settingz.RegisterSerializer(typeof(IncludeRef), new SharpYamlObj());
+            settingz.RegisterSerializer(typeof(IncludeRef), new SharpYamlObj(Path.GetDirectoryName(inputPath), new InlineTypeCallback(_types)));
 
             var serializer = new  SharpYaml.Serialization.Serializer(settingz);
 
             
 
-            var resultSharpYaml = serializer.Deserialize<IDictionary<object, object>>(File.ReadAllText(inputPath), out var Ctx);
+             var result = serializer.Deserialize<IDictionary<object, object>>(File.ReadAllText(inputPath), out var Ctx);
 
             //var deserializer = new YamlDotNet.Serialization.Deserializer();
 
 
-            var builder = new DeserializerBuilder();
+            //var builder = new DeserializerBuilder();
             
-            var includeNodeDeserializer = new YamlIncludeNodeDeserializer(new YamlIncludeNodeDeserializerOptions
-            {
-                DirectoryName = Path.GetDirectoryName(inputPath),
-                Deserializer = builder.Build(),
-                InlineTypeCallback = new InlineTypeCallback(_types)
-            });
+            //var includeNodeDeserializer = new YamlIncludeNodeDeserializer(new YamlIncludeNodeDeserializerOptions
+            //{
+            //    DirectoryName = Path.GetDirectoryName(inputPath),
+            //    Deserializer = builder.Build(),
+            //    InlineTypeCallback = new InlineTypeCallback(_types)
+            //});
 
-            var deserializer = builder
-                .WithTagMapping("!include", typeof(IDictionary<object, object>))
-                .WithNodeDeserializer(includeNodeDeserializer, s => s.OnTop())
-                .Build();
+            //var deserializer = builder
+            //    .WithTagMapping("!include", typeof(IDictionary<object, object>))
+            //    .WithNodeDeserializer(includeNodeDeserializer, s => s.OnTop())
+            //    .Build();
 
-            var result = deserializer.Deserialize<Dictionary<object, object>>(File.ReadAllText(inputPath));
+            //var result = deserializer.Deserialize<Dictionary<object, object>>(File.ReadAllText(inputPath));
 
             // Step 1 - Get all types
             var types = result.GetAsDictionary("types");

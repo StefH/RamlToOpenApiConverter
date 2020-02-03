@@ -1,4 +1,6 @@
-﻿using SharpYaml;
+﻿using System.Collections.Generic;
+using System.IO;
+using SharpYaml;
 using SharpYaml.Events;
 using SharpYaml.Serialization;
 using SharpYaml.Serialization.Serializers;
@@ -8,7 +10,15 @@ namespace RamlToOpenApiConverter.Yaml
 {
     public class SharpYamlObj : ObjectSerializer
     {
+        private readonly string _directoryName;
+        private readonly InlineTypeCallback _inlineTypeCallback;
         private object p;
+
+        public SharpYamlObj(string directoryName, InlineTypeCallback inlineTypeCallback)
+        {
+            _directoryName = directoryName;
+            _inlineTypeCallback = inlineTypeCallback;
+        }
 
         public override object ReadYaml(ref ObjectContext objectContext)
         {
@@ -31,7 +41,15 @@ namespace RamlToOpenApiConverter.Yaml
             if (peek != null && peek.Tag == "!include")
             {
 
-                return "hello";
+                string fileName = peek.Value;
+                string includePath = Path.Combine(_directoryName, peek.Value);
+                var includeText = File.ReadAllText(includePath);
+
+                var value = objectContext.SerializerContext.ReadYaml(includeText, typeof(IDictionary<object, object>));
+
+                _inlineTypeCallback.Add(Path.GetFileNameWithoutExtension(fileName), value as IDictionary<object, object>);
+
+                return value;
             }
 
             //var scalar = objectContext.Reader.Expect<Scalar>();
