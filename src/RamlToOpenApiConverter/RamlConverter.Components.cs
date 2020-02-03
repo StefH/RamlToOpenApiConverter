@@ -28,23 +28,20 @@ namespace RamlToOpenApiConverter
 
                             if (isObject)
                             {
-                                items = values; //components.Schemas.Add(key, MapSchema(values.GetAsDictionary("properties")));
+                                items = values;
                             }
-
                             break;
 
                         case string jsonOrYaml:
                             items = _deserializer.Deserialize<IDictionary<object, object>>(jsonOrYaml);
-                            //components.Schemas.Add(key, MapSchema(values.GetAsDictionary("properties")));
-
-                            int d = 8;
                             break;
                     }
 
                     if (items != null)
                     {
                         var required = items.GetAsCollection("required");
-                        components.Schemas.Add(key, MapSchema(items.GetAsDictionary("properties"), required));
+                        var properties = items.GetAsDictionary("properties");
+                        components.Schemas.Add(key, MapSchema(properties, required));
                     }
                 }
             }
@@ -57,13 +54,14 @@ namespace RamlToOpenApiConverter
             return new OpenApiSchema
             {
                 Type = "object",
+                Required = required != null ? new HashSet<string>(required.OfType<string>()) : null,
                 Properties = MapProperties(properties, required)
             };
         }
 
         private OpenApiSchema MapProperty(IDictionary<object, object> values)
         {
-            bool required = values.Get<bool?>("required") == true;
+            // bool required = values.Get<bool?>("required") == true;
             string type = values.Get("type");
             string format = values.Get("format");
 
@@ -77,7 +75,7 @@ namespace RamlToOpenApiConverter
             {
                 Type = type,
                 Format = format,
-                Nullable = !required,
+                // Nullable = !required,
                 Description = values.Get("description"),
                 Minimum = values.Get<decimal?>("minimum"),
                 Maximum = values.Get<decimal?>("maximum"),

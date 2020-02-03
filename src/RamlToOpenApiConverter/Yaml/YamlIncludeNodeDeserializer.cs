@@ -17,7 +17,7 @@ namespace RamlToOpenApiConverter.Yaml
 
         bool INodeDeserializer.Deserialize(IParser parser, Type expectedType, Func<IParser, Type, object> nestedObjectDeserializer, out object value)
         {
-            if (parser.Accept(out Scalar scalar) && scalar.Tag == "!include")
+            if (parser.Accept(out Scalar scalar) && scalar.Tag == Constants.IncludeTag)
             {
                 string fileName = scalar.Value;
                 string includePath = Path.Combine(_options.DirectoryName, fileName);
@@ -26,9 +26,6 @@ namespace RamlToOpenApiConverter.Yaml
                 {
                     var includeRef = (IncludeRef)_options.Deserializer.Deserialize(new Parser(includedFile), expectedType);
                     includeRef.FileName = fileName;
-
-                    //_options.includeRefs.Add(includeRef);
-
 
                     parser.MoveNext();
 

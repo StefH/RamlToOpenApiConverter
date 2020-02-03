@@ -37,15 +37,11 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "title": {
-                    "type": "Body Declaration Schema",
-                    "nullable": true
+                  "firstName": {
+                    "type": "string"
                   },
-                  "type": {
-                    "type": "object"
-                  },
-                  "properties": {
-                    "nullable": true
+                  "lastName": {
+                    "type": "string"
                   }
                 }
               }
@@ -59,40 +55,45 @@
   "components": {
     "schemas": {
       "PersonInline": {
+        "required": [
+          "firstName",
+          "lastName"
+        ],
         "type": "object",
         "properties": {
           "firstName": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "lastName": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "age": {
             "minimum": 0,
             "type": "integer",
-            "description": "Age in years",
-            "nullable": true
+            "description": "Age in years"
           }
         }
       },
       "PersonInclude": {
+        "required": [
+          "firstName",
+          "lastName"
+        ],
         "type": "object",
         "properties": {
           "firstName": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "lastName": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "age": {
             "minimum": 0,
             "type": "integer",
-            "description": "Age in years",
-            "nullable": true
+            "description": "Age in years"
+          },
+          "test": {
+            "type": "string"
           }
         }
       }
