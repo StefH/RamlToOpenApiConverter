@@ -42,17 +42,6 @@
       }
     },
     "/": {
-      "put": {
-        "description": "Update the scheme to include the passed mapping. The body is a representation of the workflow mapping. Values not passed are assumed to indicate no change for that field. The passed representation can have its updateDraftIfNeeded flag set to true to indicate that the draft should be created/updated when the actual scheme cannot be edited.",
-        "requestBody": {
-          "content": {
-            "application/json": { }
-          }
-        },
-        "responses": {
-          "401": { }
-        }
-      },
       "get": {
         "description": "Title normalization | Missing and invalid titles | Resolving redirects | Exporting pages | Getting a list of page IDs",
         "parameters": [

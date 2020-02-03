@@ -1,7 +1,7 @@
 # RamlToOpenApiConverter
 Converts a RAML to Open API Specification
 
-[![NuGet: Howler.Blazor](https://buildstats.info/nuget/RamlToOpenApiConverter)](https://www.nuget.org/packages/RamlToOpenApiConverter)
+[![NuGet: RamlToOpenApiConverter](https://buildstats.info/nuget/RamlToOpenApiConverter)](https://www.nuget.org/packages/RamlToOpenApiConverter)
 
 ## Usage
 
@@ -19,10 +19,12 @@ new RamlConverter()
 ```
 
 ### Limits
+- Enums not supported
 - Currently only 'inline' RAML is supported
 
 ## Details
 This project uses the following tools:
 - SharpYaml --> to read the RAML (as YAML)
+- YamlDotNet --> to read the RAML (as YAML)
 - Microsoft.OpenApi --> to process the Open API Model and convert the model to the output file
 
