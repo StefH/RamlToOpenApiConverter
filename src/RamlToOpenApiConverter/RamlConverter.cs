@@ -9,6 +9,8 @@ using Newtonsoft.Json;
 using RamlToOpenApiConverter.Extensions;
 using RamlToOpenApiConverter.Yaml;
 using SharpYaml.Serialization;
+using YamlDotNet.Serialization;
+
 //using YamlDotNet.Serialization;
 
 // using SharpYaml.Serialization;
@@ -44,37 +46,33 @@ namespace RamlToOpenApiConverter
         /// <param name="inputPath">The path to the RAML file.</param>
         public OpenApiDocument ConvertToOpenApiDocument(string inputPath)
         {
-            var settingz = new SerializerSettings
+            //var settingz = new SerializerSettings();
+            //settingz.RegisterTagMapping("!include", typeof(IncludeRef));
+            //settingz.RegisterSerializer(typeof(IncludeRef), new SharpYamlIncludeRefSerializer(Path.GetDirectoryName(inputPath), new IncludeRefCallback(_types)));
+
+            //var serializer = new SharpYaml.Serialization.Serializer(settingz);
+
+
+            //var result = serializer.Deserialize<IDictionary<object, object>>(File.ReadAllText(inputPath), out var __c);
+
+
+
+
+            var builder = new DeserializerBuilder();
+
+            var includeNodeDeserializer = new YamlIncludeNodeDeserializer(new YamlIncludeNodeDeserializerOptions
             {
-                
-            };
-            settingz.RegisterTagMapping("!include", typeof(IncludeRef));
-            settingz.RegisterSerializer(typeof(IncludeRef), new SharpYamlObj(Path.GetDirectoryName(inputPath), new InlineTypeCallback(_types)));
+                DirectoryName = Path.GetDirectoryName(inputPath),
+                Deserializer = builder.Build(),
+                IncludeRefCallback = new IncludeRefCallback(_types)
+            });
 
-            var serializer = new  SharpYaml.Serialization.Serializer(settingz);
+            var deserializer = builder
+                .WithTagMapping("!include", typeof(IncludeRef))
+                .WithNodeDeserializer(includeNodeDeserializer, s => s.OnTop())
+                .Build();
 
-            
-
-             var result = serializer.Deserialize<IDictionary<object, object>>(File.ReadAllText(inputPath), out var Ctx);
-
-            //var deserializer = new YamlDotNet.Serialization.Deserializer();
-
-
-            //var builder = new DeserializerBuilder();
-            
-            //var includeNodeDeserializer = new YamlIncludeNodeDeserializer(new YamlIncludeNodeDeserializerOptions
-            //{
-            //    DirectoryName = Path.GetDirectoryName(inputPath),
-            //    Deserializer = builder.Build(),
-            //    InlineTypeCallback = new InlineTypeCallback(_types)
-            //});
-
-            //var deserializer = builder
-            //    .WithTagMapping("!include", typeof(IDictionary<object, object>))
-            //    .WithNodeDeserializer(includeNodeDeserializer, s => s.OnTop())
-            //    .Build();
-
-            //var result = deserializer.Deserialize<Dictionary<object, object>>(File.ReadAllText(inputPath));
+            var result = deserializer.Deserialize<Dictionary<object, object>>(File.ReadAllText(inputPath));
 
             // Step 1 - Get all types
             var types = result.GetAsDictionary("types");
