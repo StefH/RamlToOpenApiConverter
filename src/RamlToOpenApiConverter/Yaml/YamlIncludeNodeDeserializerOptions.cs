@@ -9,6 +9,8 @@ namespace RamlToOpenApiConverter.Yaml
 
         public string DirectoryName { get; set; }
 
-        public IncludeRefCallback IncludeRefCallback { get; set; }
+        //public IncludeRefCallback IncludeRefCallback { get; set; }
+
+        public IList<IncludeRef> includeRefs { get; set; }
     }
 }

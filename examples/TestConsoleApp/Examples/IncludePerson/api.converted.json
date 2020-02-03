@@ -14,7 +14,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PersonInline"
+                  "$ref": "#/components/schemas/PersonInclude"
                 }
               }
             }
@@ -23,7 +23,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PersonInclude"
+                  "$ref": "#/components/schemas/PersonInline"
                 }
               }
             }
@@ -35,13 +35,16 @@
           "content": {
             "application/json": {
               "schema": {
+                "type": "object",
                 "properties": {
-                  "firstName": {
-                    "type": "string",
+                  "title": {
+                    "type": "Body Declaration Schema",
                     "nullable": true
                   },
-                  "lastName": {
-                    "type": "string",
+                  "type": {
+                    "type": "object"
+                  },
+                  "properties": {
                     "nullable": true
                   }
                 }
@@ -53,5 +56,46 @@
       }
     }
   },
-  "components": { }
+  "components": {
+    "schemas": {
+      "PersonInline": {
+        "type": "object",
+        "properties": {
+          "firstName": {
+            "type": "string",
+            "nullable": true
+          },
+          "lastName": {
+            "type": "string",
+            "nullable": true
+          },
+          "age": {
+            "minimum": 0,
+            "type": "integer",
+            "description": "Age in years",
+            "nullable": true
+          }
+        }
+      },
+      "PersonInclude": {
+        "type": "object",
+        "properties": {
+          "firstName": {
+            "type": "string",
+            "nullable": true
+          },
+          "lastName": {
+            "type": "string",
+            "nullable": true
+          },
+          "age": {
+            "minimum": 0,
+            "type": "integer",
+            "description": "Age in years",
+            "nullable": true
+          }
+        }
+      }
+    }
+  }
 }

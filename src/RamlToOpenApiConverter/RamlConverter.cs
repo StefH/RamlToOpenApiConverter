@@ -5,7 +5,7 @@ using System.Linq;
 using Microsoft.OpenApi;
 using Microsoft.OpenApi.Extensions;
 using Microsoft.OpenApi.Models;
-using Newtonsoft.Json;
+//using Newtonsoft.Json;
 using RamlToOpenApiConverter.Extensions;
 using RamlToOpenApiConverter.Yaml;
 using SharpYaml.Serialization;
@@ -20,7 +20,9 @@ namespace RamlToOpenApiConverter
     public partial class RamlConverter
     {
         private readonly IDictionary<object, object> _types = new Dictionary<object, object>();
+        //private readonly IList<IncludeRef> _includeRefs = new List<IncludeRef>();
 
+        private IDeserializer _deserializer;
         private OpenApiDocument _doc;
 
         /// <summary>
@@ -63,16 +65,15 @@ namespace RamlToOpenApiConverter
             var includeNodeDeserializer = new YamlIncludeNodeDeserializer(new YamlIncludeNodeDeserializerOptions
             {
                 DirectoryName = Path.GetDirectoryName(inputPath),
-                Deserializer = builder.Build(),
-                IncludeRefCallback = new IncludeRefCallback(_types)
+                Deserializer = builder.Build()
             });
 
-            var deserializer = builder
+            _deserializer = builder
                 .WithTagMapping("!include", typeof(IncludeRef))
                 .WithNodeDeserializer(includeNodeDeserializer, s => s.OnTop())
                 .Build();
 
-            var result = deserializer.Deserialize<Dictionary<object, object>>(File.ReadAllText(inputPath));
+            var result = _deserializer.Deserialize<Dictionary<object, object>>(File.ReadAllText(inputPath));
 
             // Step 1 - Get all types
             var types = result.GetAsDictionary("types");
@@ -81,6 +82,15 @@ namespace RamlToOpenApiConverter
                 foreach (var type in types.Where(x => !_types.ContainsKey(x.Key)))
                 {
                     _types.Add(type.Key, type.Value);
+                }
+            }
+
+            var schemas = result.GetAsDictionary("schemas");
+            if (schemas != null)
+            {
+                foreach (var schema in schemas.Where(x => !_types.ContainsKey(x.Key)))
+                {
+                    _types.Add(schema.Key, schema.Value);
                 }
             }
 

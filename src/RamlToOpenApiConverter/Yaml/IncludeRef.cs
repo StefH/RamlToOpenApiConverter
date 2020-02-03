@@ -2,7 +2,7 @@
 
 namespace RamlToOpenApiConverter.Yaml
 {
-    public class IncludeRef : Dictionary<string, object>
+    public class IncludeRef : Dictionary<object, object>
     {
         public string FileName { get; set; }
     }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using YamlDotNet.Core;
 using YamlDotNet.Core.Events;
@@ -16,8 +15,6 @@ namespace RamlToOpenApiConverter.Yaml
             _options = options;
         }
 
-
-
         bool INodeDeserializer.Deserialize(IParser parser, Type expectedType, Func<IParser, Type, object> nestedObjectDeserializer, out object value)
         {
             if (parser.Accept(out Scalar scalar) && scalar.Tag == "!include")
@@ -25,15 +22,17 @@ namespace RamlToOpenApiConverter.Yaml
                 string fileName = scalar.Value;
                 string includePath = Path.Combine(_options.DirectoryName, fileName);
 
-                
                 using (var includedFile = File.OpenText(includePath))
                 {
-                    var includeRef = (IncludeRef) _options.Deserializer.Deserialize(new Parser(includedFile), expectedType);
+                    var includeRef = (IncludeRef)_options.Deserializer.Deserialize(new Parser(includedFile), expectedType);
                     includeRef.FileName = fileName;
 
-                    value = includeRef;
+                    //_options.includeRefs.Add(includeRef);
+
 
                     parser.MoveNext();
+
+                    value = includeRef;
                     return true;
                 }
             }
@@ -43,5 +42,3 @@ namespace RamlToOpenApiConverter.Yaml
         }
     }
 }
-
-// Path.GetFileNameWithoutExtension(fileName)

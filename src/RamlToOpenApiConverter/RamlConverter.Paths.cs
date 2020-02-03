@@ -8,8 +8,8 @@ using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Extensions;
 using Microsoft.OpenApi.Models;
 using Microsoft.OpenApi.Readers;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
+//using Newtonsoft.Json;
+//using Newtonsoft.Json.Serialization;
 using Raml.Parser.Expressions;
 using RamlToOpenApiConverter.Extensions;
 
@@ -17,11 +17,11 @@ namespace RamlToOpenApiConverter
 {
     public partial class RamlConverter
     {
-        private readonly JsonSerializerSettings _jsonSerializerSettings = new JsonSerializerSettings
-        {
-            Formatting = Formatting.Indented,
-            ContractResolver = new CamelCasePropertyNamesContractResolver()
-        };
+        //private readonly JsonSerializerSettings _jsonSerializerSettings = new JsonSerializerSettings
+        //{
+        //    Formatting = Formatting.Indented,
+        //    ContractResolver = new CamelCasePropertyNamesContractResolver()
+        //};
 
         private OpenApiPaths MapPaths(IDictionary<object, object> o)
         {
@@ -257,8 +257,11 @@ namespace RamlToOpenApiConverter
         {
             if (value.StartsWith("{"))
             {
-                var objectType = JsonConvert.DeserializeObject<ObjectType>(value, _jsonSerializerSettings);
-                return MapSchema(objectType);
+                //var objectType = JsonConvert.DeserializeObject<ObjectType>(value, _jsonSerializerSettings);
+                //return MapSchema(objectType);
+
+                var objectType = _deserializer.Deserialize<IDictionary<object, object>>(value);
+                return MapSchema(objectType, null);
             }
 
             var referenceSchemas = value

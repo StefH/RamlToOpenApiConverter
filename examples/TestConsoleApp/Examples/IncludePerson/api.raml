@@ -1,7 +1,7 @@
 #%RAML 1.0
 title: Using XML and JSON Schema
 
-schemas: # can also be used with 'types'
+types:
   PersonInline: |
     {
       "title": "Person Schema",
@@ -29,12 +29,12 @@ schemas: # can also be used with 'types'
       200:
         body:
           application/json:
-            schema: PersonInline
+            schema: PersonInclude
 
       201:
         body:
           application/json:
-            schema: PersonInclude
+            schema: PersonInline
 
   post:
     body:
