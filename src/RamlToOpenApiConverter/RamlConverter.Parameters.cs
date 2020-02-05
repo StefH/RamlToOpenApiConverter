@@ -32,6 +32,7 @@ namespace RamlToOpenApiConverter
             {
                 var parameterDetails = parameters.GetAsDictionary(key) ?? new Dictionary<object, object>();
                 bool required = parameterDetails.Get<bool?>("required") ?? false;
+                var map = MapSchemaTypeAndFormat(parameterDetails.Get("type"), parameterDetails.Get("format"));
 
                 var schema = new OpenApiSchema();
                 foreach (string item in parameterDetails.Keys.OfType<string>())
@@ -47,15 +48,16 @@ namespace RamlToOpenApiConverter
                             break;
 
                         default:
-                            schema.Type = "string";
+                            schema.Type = map.Type;
+                            schema.Format = map.Format;
                             break;
                     }
                 }
 
-                // TODO only string?
                 openApiParameters.Add(new OpenApiParameter
                 {
                     In = parameterLocation,
+                    Description = parameterDetails.Get("description"),
                     Name = key,
                     Required = required,
                     Schema = schema
@@ -63,6 +65,32 @@ namespace RamlToOpenApiConverter
             }
 
             return openApiParameters;
+        }
+
+        private (string Type, string Format) MapSchemaTypeAndFormat(string schemaType, string schemaFormat)
+        {
+            switch (schemaType)
+            {
+                case "number":
+                    switch (schemaFormat)
+                    {
+                        case "long":
+                        case "int64":
+                            return ("integer", "int64");
+
+                        case "float":
+                            return ("number", "float");
+
+                        case "double":
+                            return ("number", "double");
+
+                        default:
+                            return ("integer", "int");
+                    }
+
+                default:
+                    return (schemaType, schemaFormat);
+            }
         }
     }
 }

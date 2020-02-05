@@ -9,6 +9,17 @@
   "paths": {
     "/person": {
       "get": {
+        "parameters": [
+          {
+            "name": "start",
+            "in": "query",
+            "description": "The timstamp in milliseconds indicating the beginning of the collection of timeseries data",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "content": {
@@ -70,7 +81,8 @@
           "age": {
             "minimum": 0,
             "type": "integer",
-            "description": "Age in years"
+            "description": "Age in years",
+            "format": "int64"
           }
         }
       },
