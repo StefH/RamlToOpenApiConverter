@@ -7,7 +7,12 @@ namespace RamlToOpenApiConverter.Extensions
     {
         public static string Get(this IDictionary<object, object> d, object key)
         {
-            return Get<string>(d, key);
+            if (!d.ContainsKey(key))
+            {
+                return null;
+            }
+
+            return d[key] as string;
         }
 
         public static T Get<T>(this IDictionary<object, object> d, object key)

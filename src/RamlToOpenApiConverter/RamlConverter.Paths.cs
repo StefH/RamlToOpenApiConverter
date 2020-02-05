@@ -98,46 +98,6 @@ namespace RamlToOpenApiConverter
             };
         }
 
-        private IList<OpenApiParameter> MapParameters(IDictionary<object, object> values)
-        {
-            var parameters = new List<OpenApiParameter>();
-
-            parameters.AddRange(MapParameters(values.GetAsDictionary("queryParameters"), ParameterLocation.Query));
-            parameters.AddRange(MapParameters(values.GetAsDictionary("uriParameters"), ParameterLocation.Path));
-            parameters.AddRange(MapParameters(values.GetAsDictionary("headers"), ParameterLocation.Header));
-
-            return parameters;
-        }
-
-        private IList<OpenApiParameter> MapParameters(IDictionary<object, object> parameters, ParameterLocation parameterLocation)
-        {
-            var openApiParameters = new List<OpenApiParameter>();
-
-            if (parameters == null)
-            {
-                return openApiParameters;
-            }
-
-            foreach (string key in parameters.Keys.OfType<string>())
-            {
-                var parameterDetails = parameters.GetAsDictionary(key);
-
-                // TODO only string?
-                openApiParameters.Add(new OpenApiParameter
-                {
-                    In = parameterLocation,
-                    Name = key,
-                    Required = parameterDetails?.Get<bool>("required") ?? false,
-                    Schema = new OpenApiSchema
-                    {
-                        Type = "string"
-                    }
-                });
-            }
-
-            return openApiParameters;
-        }
-
         private OpenApiResponses MapResponses(IDictionary<object, object> values)
         {
             var openApiResponses = new OpenApiResponses();

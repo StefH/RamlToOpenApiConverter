@@ -3,6 +3,10 @@ title: Hello world # required title
 
 /helloworld: # optional resource
   get: # HTTP method declaration
+    queryParameters:
+      titles:
+        required: true
+        enum: [A|B|C]
     responses: # declare a response
       200: # HTTP status code
         body: # declare content of response
