@@ -32,7 +32,7 @@ namespace RamlToOpenApiConverter
             {
                 var parameterDetails = parameters.GetAsDictionary(key) ?? new Dictionary<object, object>();
                 bool required = parameterDetails.Get<bool?>("required") ?? false;
-                var map = MapSchemaTypeAndFormat(parameterDetails.Get("type"), parameterDetails.Get("format"));
+                var map = MapSchemaTypeAndFormat(parameterDetails.Get("type"), parameterDetails.Get("format"), required);
 
                 var schema = new OpenApiSchema();
                 foreach (string item in parameterDetails.Keys.OfType<string>())
@@ -59,7 +59,7 @@ namespace RamlToOpenApiConverter
                     In = parameterLocation,
                     Description = parameterDetails.Get("description"),
                     Name = key,
-                    Required = required,
+                    Required = map.Required,
                     Schema = schema
                 });
             }
@@ -67,28 +67,28 @@ namespace RamlToOpenApiConverter
             return openApiParameters;
         }
 
-        private (string Type, string Format) MapSchemaTypeAndFormat(string schemaType, string schemaFormat)
+        private (string Type, string Format, bool Required) MapSchemaTypeAndFormat(string schemaType, string schemaFormat, bool required)
         {
             switch (schemaType)
             {
                 case "datetime":
-                    return ("string", "date-time");
+                    return ("string", "date-time", required);
 
                 case "number":
                     switch (schemaFormat)
                     {
                         case "long":
                         case "int64":
-                            return ("integer", "int64");
+                            return ("integer", "int64", required);
 
                         case "float":
-                            return ("number", "float");
+                            return ("number", "float", required);
 
                         case "double":
-                            return ("number", "double");
+                            return ("number", "double", required);
 
                         default:
-                            return ("integer", "int");
+                            return ("integer", "int", required);
                     }
 
                 default:
@@ -96,10 +96,13 @@ namespace RamlToOpenApiConverter
                     if (schemaType != null && _types.ContainsKey(schemaType))
                     {
                         var parameterDetails = _types.GetAsDictionary(schemaType);
-                        return MapSchemaTypeAndFormat(parameterDetails.Get("type"), parameterDetails.Get("format"));
+                        return MapSchemaTypeAndFormat(
+                            parameterDetails.Get("type"), 
+                            parameterDetails.Get("format"), 
+                            parameterDetails.Get<bool?>("required") ?? false);
                     }
 
-                    return (schemaType ?? "string", schemaFormat);
+                    return (schemaType ?? "string", schemaFormat, required);
             }
         }
     }
