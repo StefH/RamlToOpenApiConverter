@@ -38,7 +38,8 @@
                       "type": "string"
                     },
                     "id": {
-                      "type": "number"
+                      "type": "integer",
+                      "format": "int"
                     }
                   }
                 },

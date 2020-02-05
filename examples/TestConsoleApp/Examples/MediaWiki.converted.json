@@ -24,7 +24,8 @@
                       "type": "string"
                     },
                     "id": {
-                      "type": "number"
+                      "type": "integer",
+                      "format": "int"
                     }
                   }
                 },
@@ -219,7 +220,8 @@
         "type": "object",
         "properties": {
           "ns?": {
-            "type": "number"
+            "type": "integer",
+            "format": "int"
           },
           "title?": {
             "type": "string"

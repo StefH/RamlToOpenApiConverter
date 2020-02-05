@@ -71,6 +71,9 @@ namespace RamlToOpenApiConverter
         {
             switch (schemaType)
             {
+                case "datetime":
+                    return ("string", "date-time");
+
                 case "number":
                     switch (schemaFormat)
                     {
@@ -89,7 +92,14 @@ namespace RamlToOpenApiConverter
                     }
 
                 default:
-                    return (schemaType, schemaFormat);
+                    // Check if the SchemaType is defined as simple or complex type in the _types list
+                    if (schemaType != null && _types.ContainsKey(schemaType))
+                    {
+                        var parameterDetails = _types.GetAsDictionary(schemaType);
+                        return MapSchemaTypeAndFormat(parameterDetails.Get("type"), parameterDetails.Get("format"));
+                    }
+
+                    return (schemaType ?? "string", schemaFormat);
             }
         }
     }
