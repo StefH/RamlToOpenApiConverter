@@ -9,6 +9,21 @@
   "paths": {
     "/helloworld": {
       "get": {
+        "parameters": [
+          {
+            "name": "titles",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "enum": [
+                "A",
+                "B",
+                "C"
+              ],
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "content": {
@@ -23,7 +38,8 @@
                       "type": "string"
                     },
                     "id": {
-                      "type": "number"
+                      "type": "integer",
+                      "format": "int"
                     }
                   }
                 },

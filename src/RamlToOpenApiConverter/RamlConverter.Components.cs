@@ -61,21 +61,14 @@ namespace RamlToOpenApiConverter
 
         private OpenApiSchema MapProperty(IDictionary<object, object> values)
         {
-            // bool required = values.Get<bool?>("required") == true;
-            string type = values.Get("type");
-            string format = values.Get("format");
-
-            if (type == "datetime")
-            {
-                type = "string";
-                format = "date-time";
-            }
+            bool required = values.Get<bool?>("required") ?? false;
+            var map = MapSchemaTypeAndFormat(values.Get("type"), values.Get("format"), required);
 
             return new OpenApiSchema
             {
-                Type = type,
-                Format = format,
-                // Nullable = !required,
+                Type = map.Type,
+                Format = map.Format,
+                Nullable = !required,
                 Description = values.Get("description"),
                 Minimum = values.Get<decimal?>("minimum"),
                 Maximum = values.Get<decimal?>("maximum"),

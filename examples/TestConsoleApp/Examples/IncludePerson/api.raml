@@ -16,6 +16,7 @@ types:
         "age": {
           "description": "Age in years",
           "type": "integer",
+          "format": int64,
           "minimum": 0
         }
       },
@@ -25,6 +26,14 @@ types:
 
 /person:
   get:
+    queryParameters:
+      start:
+        displayName: Start Time
+        type: integer
+        format: int64
+        description: The timstamp in milliseconds indicating the beginning of the collection of timeseries data
+        example: 1380601800000
+        required: false
     responses:
       200:
         body:

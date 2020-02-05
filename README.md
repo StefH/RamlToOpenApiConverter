@@ -19,12 +19,11 @@ new RamlConverter()
 ```
 
 ### Limits
-- Enums not supported
-- Currently only 'inline' RAML is supported
+- ...
 
 ## Details
 This project uses the following tools:
 - SharpYaml --> to read the RAML (as YAML)
-- YamlDotNet --> to read the RAML (as YAML)
+- YamlDotNet --> to read the RAML (as YAML or JSON)
 - Microsoft.OpenApi --> to process the Open API Model and convert the model to the output file
 
