@@ -34,24 +34,28 @@ namespace RamlToOpenApiConverter
                 bool required = parameterDetails.Get<bool?>("required") ?? false;
                 var map = MapSchemaTypeAndFormat(parameterDetails.Get("type"), parameterDetails.Get("format"), required);
 
-                var schema = new OpenApiSchema();
-                foreach (string item in parameterDetails.Keys.OfType<string>())
+                OpenApiSchema schema = null;
+
+                string isEnum = parameterDetails.Keys.OfType<string>().FirstOrDefault(k => k == "enum");
+                if (isEnum != null)
                 {
-                    switch (item)
+                    var enumAsCollection = parameterDetails.GetAsCollection(isEnum).OfType<string>();
+                    var enumValues = enumAsCollection.SelectMany(e => e.Split('|'))
+                        .Select(x => new OpenApiString(x.Trim()));
+
+                    schema = new OpenApiSchema
                     {
-                        case "enum":
-                            schema.Type = "string";
-
-                            var enumAsCollection = parameterDetails.GetAsCollection(item).OfType<string>();
-                            var enumValues = enumAsCollection.SelectMany(e => e.Split('|')).Select(x => new OpenApiString(x.Trim()));
-                            schema.Enum = enumValues.OfType<IOpenApiAny>().ToList();
-                            break;
-
-                        default:
-                            schema.Type = map.Type;
-                            schema.Format = map.Format;
-                            break;
-                    }
+                        Type = "string",
+                        Enum = enumValues.OfType<IOpenApiAny>().ToList()
+                    };
+                }
+                else
+                {
+                    schema = new OpenApiSchema
+                    {
+                        Type = map.Type,
+                        Format = map.Format
+                    };
                 }
 
                 openApiParameters.Add(new OpenApiParameter
@@ -97,8 +101,8 @@ namespace RamlToOpenApiConverter
                     {
                         var parameterDetails = _types.GetAsDictionary(schemaType);
                         return MapSchemaTypeAndFormat(
-                            parameterDetails.Get("type"), 
-                            parameterDetails.Get("format"), 
+                            parameterDetails.Get("type"),
+                            parameterDetails.Get("format"),
                             parameterDetails.Get<bool?>("required") ?? false);
                     }
 
