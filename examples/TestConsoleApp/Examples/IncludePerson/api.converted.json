@@ -81,7 +81,6 @@
           "age": {
             "minimum": 0,
             "type": "integer",
-            "description": "Age in years",
             "format": "int64"
           }
         }
@@ -101,8 +100,7 @@
           },
           "age": {
             "minimum": 0,
-            "type": "integer",
-            "description": "Age in years"
+            "type": "integer"
           },
           "test": {
             "type": "string"

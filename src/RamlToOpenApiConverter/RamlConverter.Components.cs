@@ -59,23 +59,6 @@ namespace RamlToOpenApiConverter
             };
         }
 
-        private OpenApiSchema MapProperty(IDictionary<object, object> values)
-        {
-            bool required = values.Get<bool?>("required") ?? false;
-            var map = MapSchemaTypeAndFormat(values.Get("type"), values.Get("format"), required);
-
-            return new OpenApiSchema
-            {
-                Type = map.Type,
-                Format = map.Format,
-                Description = values.Get("description"),
-                Minimum = values.Get<decimal?>("minimum"),
-                Maximum = values.Get<decimal?>("maximum"),
-                MaxLength = values.Get<int?>("maxLength"),
-                MinLength = values.Get<int?>("minLength")
-            };
-        }
-
         private IDictionary<string, OpenApiSchema> MapProperties(IDictionary<object, object> properties, ICollection<object> required)
         {
             var openApiProperties = new Dictionary<string, OpenApiSchema>();
@@ -87,9 +70,11 @@ namespace RamlToOpenApiConverter
                 switch (properties[key])
                 {
                     case string stringValue:
-                        values = new Dictionary<object, object>();
-                        values.Add("type", stringValue);
-                        values.Add("properties", new Dictionary<object, object>());
+                        values = new Dictionary<object, object>
+                        {
+                            { "type", stringValue },
+                            { "properties", new Dictionary<object, object>() }
+                        };
                         break;
 
                     case IDictionary<object, object> complex:
@@ -112,12 +97,12 @@ namespace RamlToOpenApiConverter
                 {
                     // Simple Type
                     var simpleType = _types.GetAsDictionary(propertyType);
-                    schema = MapProperty(simpleType);
+                    schema = MapParameterOrPropertyDetailsToSchema(simpleType);
                 }
                 else
                 {
                     // Normal property
-                    schema = MapProperty(values);
+                    schema = MapParameterOrPropertyDetailsToSchema(values);
                 }
 
                 openApiProperties.Add(key, schema);

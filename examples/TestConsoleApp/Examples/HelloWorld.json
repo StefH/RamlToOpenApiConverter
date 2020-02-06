@@ -29,9 +29,26 @@
             "name": "titles",
             "in": "query",
             "required": true,
+            "description": "The Titles !",
             "schema": {
               "enum": [
                 "A|B|C"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "canBeNullOrNumber",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "oneOf": [
+                {
+                  "type": "nil"
+                },
+                {
+                  "type": "number"
+                }
               ],
               "type": "string"
             }

@@ -13,6 +13,7 @@
           {
             "name": "titles",
             "in": "query",
+            "description": "The Titles !",
             "required": true,
             "schema": {
               "enum": [
@@ -27,7 +28,9 @@
             "name": "canBeNullOrNumber",
             "in": "query",
             "schema": {
-              "type": "object"
+              "type": "integer",
+              "format": "int",
+              "nullable": true
             }
           }
         ],
