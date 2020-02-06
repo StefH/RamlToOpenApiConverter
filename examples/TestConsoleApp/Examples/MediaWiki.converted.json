@@ -82,7 +82,9 @@
           {
             "name": "redirects",
             "in": "query",
-            "schema": { }
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "generator",
@@ -97,12 +99,16 @@
           {
             "name": "export",
             "in": "query",
-            "schema": { }
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "indexpageids",
             "in": "query",
-            "schema": { }
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {

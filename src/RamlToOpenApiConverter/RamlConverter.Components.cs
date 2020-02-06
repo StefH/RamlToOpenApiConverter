@@ -68,7 +68,6 @@ namespace RamlToOpenApiConverter
             {
                 Type = map.Type,
                 Format = map.Format,
-                Nullable = !required,
                 Description = values.Get("description"),
                 Minimum = values.Get<decimal?>("minimum"),
                 Maximum = values.Get<decimal?>("maximum"),

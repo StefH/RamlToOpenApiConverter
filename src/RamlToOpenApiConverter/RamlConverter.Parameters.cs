@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
@@ -40,7 +41,7 @@ namespace RamlToOpenApiConverter
                 if (isEnum != null)
                 {
                     var enumAsCollection = parameterDetails.GetAsCollection(isEnum).OfType<string>();
-                    var enumValues = enumAsCollection.SelectMany(e => e.Split('|'))
+                    var enumValues = enumAsCollection.SelectMany(e => e.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries))
                         .Select(x => new OpenApiString(x.Trim()));
 
                     schema = new OpenApiSchema
@@ -71,33 +72,43 @@ namespace RamlToOpenApiConverter
             return openApiParameters;
         }
 
-        private (string Type, string Format, bool Required) MapSchemaTypeAndFormat(string schemaType, string schemaFormat, bool required)
+        private (string Type, string Format, bool Required, bool Nullable) MapSchemaTypeAndFormat(string schemaTypeFromRaml, string schemaFormat, bool required)
         {
+            var schemaTypes = (schemaTypeFromRaml ?? "string").Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
+
+            var allSchemaTypes = schemaTypes.Where(s => s != "nil").Distinct().ToList();
+            bool isUnion = allSchemaTypes.Count > 1;
+
+            string schemaType = isUnion ? "object" : allSchemaTypes.FirstOrDefault() ?? "string";
+
+            // https://github.com/raml-org/raml-spec/blob/master/versions/raml-10/raml-10.md#nil-type
+            bool isNil = schemaTypes.Contains("nil");
+
             switch (schemaType)
             {
                 case "datetime":
-                    return ("string", "date-time", required);
+                    return ("string", "date-time", required, isNil);
 
                 case "number":
                     switch (schemaFormat)
                     {
                         case "long":
                         case "int64":
-                            return ("integer", "int64", required);
+                            return ("integer", "int64", required, isNil);
 
                         case "float":
-                            return ("number", "float", required);
+                            return ("number", "float", required, isNil);
 
                         case "double":
-                            return ("number", "double", required);
+                            return ("number", "double", required, isNil);
 
                         default:
-                            return ("integer", "int", required);
+                            return ("integer", "int", required, isNil);
                     }
 
                 default:
                     // Check if the SchemaType is defined as simple or complex type in the _types list
-                    if (schemaType != null && _types.ContainsKey(schemaType))
+                    if (_types.ContainsKey(schemaType))
                     {
                         var parameterDetails = _types.GetAsDictionary(schemaType);
                         return MapSchemaTypeAndFormat(
@@ -106,7 +117,7 @@ namespace RamlToOpenApiConverter
                             parameterDetails.Get<bool?>("required") ?? false);
                     }
 
-                    return (schemaType ?? "string", schemaFormat, required);
+                    return (schemaType, schemaFormat, required, isNil);
             }
         }
     }
