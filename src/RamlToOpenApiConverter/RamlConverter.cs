@@ -18,6 +18,19 @@ namespace RamlToOpenApiConverter
         private OpenApiDocument _doc;
 
         /// <summary>
+        /// Converts the input RAML file to an Open API Specification output string using the provided options.
+        /// </summary>
+        /// <param name="inputPath">The path to the RAML file.</param>
+        /// <param name="specVersion">The Open API specification version.</param>
+        /// <param name="format">Open API document format.</param>
+        public string Convert(string inputPath, OpenApiSpecVersion specVersion = OpenApiSpecVersion.OpenApi3_0, OpenApiFormat format = OpenApiFormat.Json)
+        {
+            var document = ConvertToOpenApiDocument(inputPath);
+
+            return document.Serialize(specVersion, format);
+        }
+
+        /// <summary>
         /// Converts the input RAML file to an Open API Specification output file using the provided options.
         /// </summary>
         /// <param name="inputPath">The path to the RAML file.</param>
@@ -26,9 +39,7 @@ namespace RamlToOpenApiConverter
         /// <param name="format">Open API document format.</param>
         public void ConvertToFile(string inputPath, string outputPath, OpenApiSpecVersion specVersion = OpenApiSpecVersion.OpenApi3_0, OpenApiFormat format = OpenApiFormat.Json)
         {
-            var document = ConvertToOpenApiDocument(inputPath);
-
-            string contents = document.Serialize(specVersion, format);
+            string contents = Convert(inputPath, specVersion, format);
 
             File.WriteAllText(outputPath, contents);
         }

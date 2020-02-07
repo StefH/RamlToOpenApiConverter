@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 using RamlToOpenApiConverter.Extensions;
 
@@ -19,29 +20,38 @@ namespace RamlToOpenApiConverter
             {
                 foreach (var key in types.Keys.OfType<string>())
                 {
-                    IDictionary<object, object> items = null;
-
                     switch (types[key])
                     {
                         case IDictionary<object, object> values:
-                            bool isObject = values.Get("type") == "object";
-
-                            if (isObject)
+                            if (values.Get("type") == "object")
                             {
-                                items = values;
+                                var required = values.GetAsCollection("required");
+                                var properties = values.GetAsDictionary("properties");
+                                components.Schemas.Add(key, MapSchema(properties, required));
+                            }
+
+                            if (values.ContainsKey("enum"))
+                            {
+                                var enumAsCollection = values.GetAsCollection("enum").OfType<string>();
+                                var enumValues = enumAsCollection
+                                    .SelectMany(e => e.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries))
+                                    .Select(x => new OpenApiString(x.Trim()));
+
+                                var schema = new OpenApiSchema
+                                {
+                                    Type = "string",
+                                    Enum = enumValues.OfType<IOpenApiAny>().ToList()
+                                };
+                                components.Schemas.Add(key, schema);
                             }
                             break;
 
                         case string jsonOrYaml:
-                            items = _deserializer.Deserialize<IDictionary<object, object>>(jsonOrYaml);
+                            var items = _deserializer.Deserialize<IDictionary<object, object>>(jsonOrYaml);
+                            var requiredX = items.GetAsCollection("required");
+                            var propertiesX = items.GetAsDictionary("properties");
+                            components.Schemas.Add(key, MapSchema(propertiesX, requiredX));
                             break;
-                    }
-
-                    if (items != null)
-                    {
-                        var required = items.GetAsCollection("required");
-                        var properties = items.GetAsDictionary("properties");
-                        components.Schemas.Add(key, MapSchema(properties, required));
                     }
                 }
             }

@@ -73,19 +73,6 @@ namespace RamlToOpenApiConverter
                 MinLength = details.Get<int?>("minLength")
             };
 
-            string isEnum = details.Keys.OfType<string>().FirstOrDefault(k => k == "enum");
-            if (isEnum != null)
-            {
-                var enumAsCollection = details.GetAsCollection(isEnum).OfType<string>();
-                var enumValues = enumAsCollection
-                    .SelectMany(e => e.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries))
-                    .Select(x => new OpenApiString(x.Trim()));
-
-                schema.Type = "string";
-                schema.Enum = enumValues.OfType<IOpenApiAny>().ToList();
-                return schema;
-            }
-
             switch (schemaType)
             {
                 case "datetime":
@@ -121,15 +108,34 @@ namespace RamlToOpenApiConverter
                     return schema;
 
                 default:
-                    // Check if the SchemaType is defined as simple or complex type in the _types list
+                    // Check if the SchemaType is defined as enum, simple or complex type in the _types list
                     if (_types.ContainsKey(schemaType))
                     {
-                        var childDetails = _types.GetAsDictionary(schemaType);
-                        return MapParameterOrPropertyDetailsToSchema(childDetails);
+                        return CreateDummyOpenApiReferenceSchema(schemaType);
+                        //var childDetails = _types.GetAsDictionary(schemaType);
+                        //return MapParameterOrPropertyDetailsToSchema(childDetails);
                     }
+
+                    //string isEnum = details.Keys.OfType<string>().FirstOrDefault(k => k == "enum");
+                    //if (isEnum != null)
+                    //{
+                    //    var enumAsCollection = details.GetAsCollection(isEnum).OfType<string>();
+                    //    var enumValues = enumAsCollection
+                    //        .SelectMany(e => e.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries))
+                    //        .Select(x => new OpenApiString(x.Trim()));
+
+                    //    schema.Type = "string";
+                    //    schema.Enum = enumValues.OfType<IOpenApiAny>().ToList();
+                    //}
+                    //else
+                    //{
+                    //    schema.Type = schemaType;
+                    //    schema.Format = schemaFormatFromRaml;
+                    //}
 
                     schema.Type = schemaType;
                     schema.Format = schemaFormatFromRaml;
+
                     break;
             }
 
