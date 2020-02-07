@@ -14,14 +14,16 @@ namespace RamlToOpenApiConverterTest.TypesAndSchemas
             _sut = new RamlConverter();
         }
 
-        [Fact]
-        public void CanConvertTypes_Inline()
+        [Theory]
+        [InlineData("TypesObjectInline")]
+        [InlineData("TypesObjectInclude")]
+        public void CanConvertTypes_InlineAndInclude(string path)
         {
             // Arrange
-            string expected = File.ReadAllText(Path.Combine("TypesAndSchemas", "TypesObjectInline.json"));
+            string expected = File.ReadAllText(Path.Combine("TypesAndSchemas", $"{path}.json"));
 
             // Act
-            string result = _sut.Convert(Path.Combine("TypesAndSchemas", "TypesObjectInline.raml"));
+            string result = _sut.Convert(Path.Combine("TypesAndSchemas", $"{path}.raml"));
 
             // Assert
             result.Should().Be(expected);

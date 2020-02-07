@@ -1,5 +1,5 @@
-{
-  "title": "Person Schema",
+﻿{
+  "title": "Person Schema JSON",
   "type": "object",
   "properties": {
     "firstName": {
@@ -17,5 +17,5 @@
       "type": "string"
     }
   },
-  "required": ["firstName", "lastName"]
+  "required": [ "firstName", "lastName" ]
 }
