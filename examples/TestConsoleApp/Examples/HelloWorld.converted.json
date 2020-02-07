@@ -13,6 +13,11 @@
             "description": "The Titles !",
             "required": true,
             "schema": {
+              "enum": [
+                "A",
+                "B",
+                "C"
+              ],
               "type": "string"
             }
           },
@@ -54,6 +59,5 @@
         }
       }
     }
-  },
-  "components": { }
+  }
 }
