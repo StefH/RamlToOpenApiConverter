@@ -1,0 +1,23 @@
+﻿{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "ParameterRequired"
+  },
+  "paths": {
+    "/helloworld": {
+      "get": {
+        "parameters": [
+          {
+            "name": "stringIsRequired",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": { }
+      }
+    }
+  }
+}

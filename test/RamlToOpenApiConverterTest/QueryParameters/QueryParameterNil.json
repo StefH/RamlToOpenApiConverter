@@ -1,0 +1,24 @@
+﻿{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "ParameterNil"
+  },
+  "paths": {
+    "/helloworld": {
+      "get": {
+        "parameters": [
+          {
+            "name": "canBeNullOrNumber",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int",
+              "nullable": true
+            }
+          }
+        ],
+        "responses": { }
+      }
+    }
+  }
+}

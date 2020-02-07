@@ -3,9 +3,6 @@
   "info": {
     "title": "Hello world"
   },
-  "servers": [
-    { }
-  ],
   "paths": {
     "/helloworld": {
       "get": {
@@ -16,11 +13,6 @@
             "description": "The Titles !",
             "required": true,
             "schema": {
-              "enum": [
-                "A",
-                "B",
-                "C"
-              ],
               "type": "string"
             }
           },

@@ -56,7 +56,7 @@ namespace RamlToOpenApiConverter
                 }
             }
 
-            return components;
+            return components.Schemas.Count > 0 ? components: null;
         }
 
         private OpenApiSchema MapSchema(IDictionary<object, object> properties, ICollection<object> required)

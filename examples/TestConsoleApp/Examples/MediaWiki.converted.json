@@ -50,9 +50,6 @@
             "in": "query",
             "required": true,
             "schema": {
-              "enum": [
-                "query"
-              ],
               "type": "string"
             }
           },
@@ -61,11 +58,6 @@
             "in": "query",
             "required": true,
             "schema": {
-              "enum": [
-                "A",
-                "B",
-                "C"
-              ],
               "type": "string"
             }
           },
@@ -73,9 +65,6 @@
             "name": "format",
             "in": "query",
             "schema": {
-              "enum": [
-                "jsonfm"
-              ],
               "type": "string"
             }
           },
@@ -90,9 +79,6 @@
             "name": "generator",
             "in": "query",
             "schema": {
-              "enum": [
-                "templates"
-              ],
               "type": "string"
             }
           },

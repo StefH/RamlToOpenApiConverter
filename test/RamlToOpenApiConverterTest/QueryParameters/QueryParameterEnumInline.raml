@@ -1,0 +1,9 @@
+﻿#%RAML 1.0
+title: ParameterEnumInline
+
+/helloworld:
+  get:
+    queryParameters:
+      titles:
+        enum: [A|B|C]
+        description: The Titles !
