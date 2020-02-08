@@ -1,0 +1,21 @@
+#%RAML 1.0
+title: PersonInline
+
+types:
+ NormalizedItem:
+    type: object
+    properties:
+      from: string
+      to: string
+
+/person:
+  get:
+    queryParameters:
+      start:
+        type: integer
+        format: int64
+    responses:
+      201:
+        body:
+          application/json:
+            schema: NormalizedItem

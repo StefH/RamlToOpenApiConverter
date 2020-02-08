@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
@@ -31,35 +32,16 @@ namespace RamlToOpenApiConverter
             foreach (string key in parameters.Keys.OfType<string>())
             {
                 var parameterDetails = parameters.GetAsDictionary(key) ?? new Dictionary<object, object>();
+                var schema = MapParameterOrPropertyDetailsToSchema(parameterDetails);
+
                 bool required = parameterDetails.Get<bool?>("required") ?? false;
-                var map = MapSchemaTypeAndFormat(parameterDetails.Get("type"), parameterDetails.Get("format"), required);
-
-                var schema = new OpenApiSchema();
-                foreach (string item in parameterDetails.Keys.OfType<string>())
-                {
-                    switch (item)
-                    {
-                        case "enum":
-                            schema.Type = "string";
-
-                            var enumAsCollection = parameterDetails.GetAsCollection(item).OfType<string>();
-                            var enumValues = enumAsCollection.SelectMany(e => e.Split('|')).Select(x => new OpenApiString(x.Trim()));
-                            schema.Enum = enumValues.OfType<IOpenApiAny>().ToList();
-                            break;
-
-                        default:
-                            schema.Type = map.Type;
-                            schema.Format = map.Format;
-                            break;
-                    }
-                }
 
                 openApiParameters.Add(new OpenApiParameter
                 {
                     In = parameterLocation,
+                    Required = required,
                     Description = parameterDetails.Get("description"),
                     Name = key,
-                    Required = map.Required,
                     Schema = schema
                 });
             }
@@ -67,43 +49,97 @@ namespace RamlToOpenApiConverter
             return openApiParameters;
         }
 
-        private (string Type, string Format, bool Required) MapSchemaTypeAndFormat(string schemaType, string schemaFormat, bool required)
+        private OpenApiSchema MapParameterOrPropertyDetailsToSchema(IDictionary<object, object> details)
         {
+            string schemaTypeFromRaml = details.Get("type");
+            string schemaFormatFromRaml = details.Get("format");
+
+            var schemaTypes = (schemaTypeFromRaml ?? "string")
+                .Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries)
+                .Select(s => s.Trim()).ToList();
+            
+            // https://github.com/raml-org/raml-spec/blob/master/versions/raml-10/raml-10.md#nil-type
+            bool isNil = schemaTypes.Contains("nil");
+
+            var schemaTypesExceptNil = schemaTypes.Where(s => s != "nil").Distinct().ToList();
+            string schemaType = schemaTypesExceptNil.Count > 1 ? "object" : schemaTypesExceptNil.FirstOrDefault() ?? "string";
+
+            var schema = new OpenApiSchema
+            {
+                Nullable = isNil,
+                Minimum = details.Get<decimal?>("minimum"),
+                Maximum = details.Get<decimal?>("maximum"),
+                MaxLength = details.Get<int?>("maxLength"),
+                MinLength = details.Get<int?>("minLength")
+            };
+
             switch (schemaType)
             {
                 case "datetime":
-                    return ("string", "date-time", required);
+                    schema.Type = "string";
+                    schema.Format = "date-time";
+                    break;
 
                 case "number":
-                    switch (schemaFormat)
+                    switch (schemaFormatFromRaml)
                     {
                         case "long":
                         case "int64":
-                            return ("integer", "int64", required);
+                            schema.Type = "integer";
+                            schema.Format = "int64";
+                            break;
 
                         case "float":
-                            return ("number", "float", required);
+                            schema.Type = "number";
+                            schema.Format = "float";
+                            break;
 
                         case "double":
-                            return ("number", "double", required);
+                            schema.Type = "number";
+                            schema.Format = "double";
+                            break;
 
                         default:
-                            return ("integer", "int", required);
+                            schema.Type = "integer";
+                            schema.Format = "int";
+                            break;
                     }
+
+                    return schema;
 
                 default:
-                    // Check if the SchemaType is defined as simple or complex type in the _types list
-                    if (schemaType != null && _types.ContainsKey(schemaType))
+                    // Check if the SchemaType is defined as enum, simple or complex type in the _types list
+                    if (_types.ContainsKey(schemaType))
                     {
-                        var parameterDetails = _types.GetAsDictionary(schemaType);
-                        return MapSchemaTypeAndFormat(
-                            parameterDetails.Get("type"), 
-                            parameterDetails.Get("format"), 
-                            parameterDetails.Get<bool?>("required") ?? false);
+                        return CreateDummyOpenApiReferenceSchema(schemaType);
+                        //var childDetails = _types.GetAsDictionary(schemaType);
+                        //return MapParameterOrPropertyDetailsToSchema(childDetails);
                     }
 
-                    return (schemaType ?? "string", schemaFormat, required);
+                    string isEnum = details.Keys.OfType<string>().FirstOrDefault(k => k == "enum");
+                    if (isEnum != null)
+                    {
+                        var enumAsCollection = details.GetAsCollection(isEnum).OfType<string>();
+                        var enumValues = enumAsCollection
+                            .SelectMany(e => e.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries))
+                            .Select(x => new OpenApiString(x.Trim()));
+
+                        schema.Type = "string";
+                        schema.Enum = enumValues.OfType<IOpenApiAny>().ToList();
+                    }
+                    else
+                    {
+                        schema.Type = schemaType;
+                        schema.Format = schemaFormatFromRaml;
+                    }
+
+                    //schema.Type = schemaType;
+                    //schema.Format = schemaFormatFromRaml;
+
+                    break;
             }
+
+            return schema;
         }
     }
 }

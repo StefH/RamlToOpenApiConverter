@@ -1,0 +1,48 @@
+﻿{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Example API",
+    "version": "v1"
+  },
+  "paths": {
+    "/installer": {
+      "get": {
+        "parameters": [
+          {
+            "name": "platform",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/platform"
+            }
+          }
+        ],
+        "responses": { }
+      }
+    },
+    "/foo": {
+      "get": {
+        "parameters": [
+          {
+            "name": "platform",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/platform"
+            }
+          }
+        ],
+        "responses": { }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "platform": {
+        "enum": [
+          "win",
+          "mac"
+        ],
+        "type": "string"
+      }
+    }
+  }
+}

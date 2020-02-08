@@ -1,0 +1,18 @@
+﻿#%RAML 1.0
+title: Example API
+version: v1
+types:
+  platform:
+    enum:
+      - win
+      - mac
+/installer:
+  get:
+    queryParameters:
+      platform:
+        type: platform
+/foo:
+  get:
+    queryParameters:
+      platform:
+        type: platform

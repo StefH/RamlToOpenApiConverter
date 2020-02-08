@@ -8,11 +8,17 @@ namespace RamlToOpenApiConverter
     {
         private IList<OpenApiServer> MapServers(IDictionary<object, object> items)
         {
+            string baseUri = items.Get("baseUri");
+            if (string.IsNullOrEmpty(baseUri))
+            {
+                return null;
+            }
+
             return new List<OpenApiServer>
             {
                 new OpenApiServer
                 {
-                    Url = items.Get("baseUri")
+                    Url = baseUri
                 }
             };
         }

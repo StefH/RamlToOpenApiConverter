@@ -104,7 +104,7 @@ namespace RamlToOpenApiConverter
 
             if (values == null)
             {
-                return openApiResponses;
+                return null;
             }
 
             // SharpYampl uses int but YamlDotNet uses string
@@ -134,7 +134,7 @@ namespace RamlToOpenApiConverter
                 }
             }
 
-            return openApiResponses;
+            return openApiResponses.Count > 0 ? openApiResponses : null;
         }
 
         private OpenApiRequestBody MapRequest(IDictionary<object, object> values)

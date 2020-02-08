@@ -3,9 +3,6 @@
   "info": {
     "title": "Using XML and JSON Schema"
   },
-  "servers": [
-    { }
-  ],
   "paths": {
     "/person": {
       "get": {
@@ -44,19 +41,7 @@
       "post": {
         "requestBody": {
           "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "firstName": {
-                    "type": "string"
-                  },
-                  "lastName": {
-                    "type": "string"
-                  }
-                }
-              }
-            }
+            "application/json": { }
           }
         },
         "responses": { }
@@ -81,7 +66,6 @@
           "age": {
             "minimum": 0,
             "type": "integer",
-            "description": "Age in years",
             "format": "int64"
           }
         }
@@ -101,8 +85,7 @@
           },
           "age": {
             "minimum": 0,
-            "type": "integer",
-            "description": "Age in years"
+            "type": "integer"
           },
           "test": {
             "type": "string"

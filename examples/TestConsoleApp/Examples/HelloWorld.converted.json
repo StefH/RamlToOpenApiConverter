@@ -3,9 +3,6 @@
   "info": {
     "title": "Hello world"
   },
-  "servers": [
-    { }
-  ],
   "paths": {
     "/helloworld": {
       "get": {
@@ -13,6 +10,7 @@
           {
             "name": "titles",
             "in": "query",
+            "description": "The Titles !",
             "required": true,
             "schema": {
               "enum": [
@@ -21,6 +19,15 @@
                 "C"
               ],
               "type": "string"
+            }
+          },
+          {
+            "name": "canBeNullOrNumber",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int",
+              "nullable": true
             }
           }
         ],
@@ -52,6 +59,5 @@
         }
       }
     }
-  },
-  "components": { }
+  }
 }

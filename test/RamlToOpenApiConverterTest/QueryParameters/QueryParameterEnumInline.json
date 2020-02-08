@@ -1,0 +1,28 @@
+﻿{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "ParameterEnumInline"
+  },
+  "paths": {
+    "/helloworld": {
+      "get": {
+        "parameters": [
+          {
+            "name": "titles",
+            "in": "query",
+            "description": "The Titles !",
+            "schema": {
+              "enum": [
+                "A",
+                "B",
+                "C"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": { }
+      }
+    }
+  }
+}

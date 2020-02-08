@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 using RamlToOpenApiConverter.Extensions;
 
@@ -19,34 +20,43 @@ namespace RamlToOpenApiConverter
             {
                 foreach (var key in types.Keys.OfType<string>())
                 {
-                    IDictionary<object, object> items = null;
-
                     switch (types[key])
                     {
                         case IDictionary<object, object> values:
-                            bool isObject = values.Get("type") == "object";
-
-                            if (isObject)
+                            if (values.Get("type") == "object")
                             {
-                                items = values;
+                                var required = values.GetAsCollection("required");
+                                var properties = values.GetAsDictionary("properties");
+                                components.Schemas.Add(key, MapSchema(properties, required));
+                            }
+
+                            if (values.ContainsKey("enum"))
+                            {
+                                var enumAsCollection = values.GetAsCollection("enum").OfType<string>();
+                                var enumValues = enumAsCollection
+                                    .SelectMany(e => e.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries))
+                                    .Select(x => new OpenApiString(x.Trim()));
+
+                                var schema = new OpenApiSchema
+                                {
+                                    Type = "string",
+                                    Enum = enumValues.OfType<IOpenApiAny>().ToList()
+                                };
+                                components.Schemas.Add(key, schema);
                             }
                             break;
 
                         case string jsonOrYaml:
-                            items = _deserializer.Deserialize<IDictionary<object, object>>(jsonOrYaml);
+                            var items = _deserializer.Deserialize<IDictionary<object, object>>(jsonOrYaml);
+                            var requiredX = items.GetAsCollection("required");
+                            var propertiesX = items.GetAsDictionary("properties");
+                            components.Schemas.Add(key, MapSchema(propertiesX, requiredX));
                             break;
-                    }
-
-                    if (items != null)
-                    {
-                        var required = items.GetAsCollection("required");
-                        var properties = items.GetAsDictionary("properties");
-                        components.Schemas.Add(key, MapSchema(properties, required));
                     }
                 }
             }
 
-            return components;
+            return components.Schemas.Count > 0 ? components: null;
         }
 
         private OpenApiSchema MapSchema(IDictionary<object, object> properties, ICollection<object> required)
@@ -56,24 +66,6 @@ namespace RamlToOpenApiConverter
                 Type = "object",
                 Required = required != null ? new HashSet<string>(required.OfType<string>()) : null,
                 Properties = MapProperties(properties, required)
-            };
-        }
-
-        private OpenApiSchema MapProperty(IDictionary<object, object> values)
-        {
-            bool required = values.Get<bool?>("required") ?? false;
-            var map = MapSchemaTypeAndFormat(values.Get("type"), values.Get("format"), required);
-
-            return new OpenApiSchema
-            {
-                Type = map.Type,
-                Format = map.Format,
-                Nullable = !required,
-                Description = values.Get("description"),
-                Minimum = values.Get<decimal?>("minimum"),
-                Maximum = values.Get<decimal?>("maximum"),
-                MaxLength = values.Get<int?>("maxLength"),
-                MinLength = values.Get<int?>("minLength")
             };
         }
 
@@ -88,9 +80,11 @@ namespace RamlToOpenApiConverter
                 switch (properties[key])
                 {
                     case string stringValue:
-                        values = new Dictionary<object, object>();
-                        values.Add("type", stringValue);
-                        values.Add("properties", new Dictionary<object, object>());
+                        values = new Dictionary<object, object>
+                        {
+                            { "type", stringValue },
+                            { "properties", new Dictionary<object, object>() }
+                        };
                         break;
 
                     case IDictionary<object, object> complex:
@@ -113,12 +107,12 @@ namespace RamlToOpenApiConverter
                 {
                     // Simple Type
                     var simpleType = _types.GetAsDictionary(propertyType);
-                    schema = MapProperty(simpleType);
+                    schema = MapParameterOrPropertyDetailsToSchema(simpleType);
                 }
                 else
                 {
                     // Normal property
-                    schema = MapProperty(values);
+                    schema = MapParameterOrPropertyDetailsToSchema(values);
                 }
 
                 openApiProperties.Add(key, schema);

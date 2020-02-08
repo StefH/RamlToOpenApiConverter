@@ -7,6 +7,9 @@ title: Hello world # required title
       titles:
         required: true
         enum: [A|B|C]
+        description: The Titles !
+      canBeNullOrNumber:
+        type: nil | number
     responses: # declare a response
       200: # HTTP status code
         body: # declare content of response

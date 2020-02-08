@@ -1,0 +1,9 @@
+﻿#%RAML 1.0
+title: ParameterRequired
+
+/helloworld:
+  get:
+    queryParameters:
+      stringIsRequired:
+        type: string
+        required: true

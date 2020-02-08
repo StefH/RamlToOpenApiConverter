@@ -1,0 +1,17 @@
+#%RAML 1.0
+title: PersonInclude
+
+types:
+ PersonIncludeJson: !include person.json
+
+/person:
+  get:
+    queryParameters:
+      start:
+        type: integer
+        format: int64
+    responses:
+      200:
+        body:
+          application/json:
+            schema: PersonIncludeJson
