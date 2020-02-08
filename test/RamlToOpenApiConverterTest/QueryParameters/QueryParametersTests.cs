@@ -27,7 +27,7 @@ namespace RamlToOpenApiConverterTest.QueryParameters
             string result = _sut.Convert(Path.Combine("QueryParameters", $"{path}.raml"));
 
             // Assert
-            result.Should().Be(expected);
+            result.Should().BeEquivalentTo(expected);
         }
     }
 }

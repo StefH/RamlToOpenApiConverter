@@ -24,7 +24,7 @@ namespace RamlToOpenApiConverterTest.TypesAndSchemas
             string result = _sut.Convert(Path.Combine("TypesAndSchemas", "TypesEnum.raml"));
 
             // Assert
-            result.Should().Be(expected);
+            result.Should().BeEquivalentTo(expected);
         }
     }
 }
