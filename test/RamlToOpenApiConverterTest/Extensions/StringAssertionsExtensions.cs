@@ -10,13 +10,12 @@
 //    {
 //        public static AndConstraint<StringAssertions> BeEquivalentTo2(this StringAssertions sa, string expected)
 //        {
-//            sa.Subject
+//            return sa.Be() Normalize(sa.Subject) == Normalize(expected)
+//        }
+
+//        private static string Normalize(string x)
+//        {
+//            return x?.Replace("\r\n", "\n").Replace("\r", "\n");
 //        }
 //    }
 //}
-
-
-//// public AndConstraint<StringAssertions> BeEquivalentTo(
-//string expected,
-//string because = "",
-//params object[] becauseArgs);
