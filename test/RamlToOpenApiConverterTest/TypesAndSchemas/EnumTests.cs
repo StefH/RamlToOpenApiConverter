@@ -1,6 +1,8 @@
 using System.IO;
 using FluentAssertions;
 using RamlToOpenApiConverter;
+using RamlToOpenApiConverterTest.Extensions;
+using RamlToOpenApiConverterTest.FluentAssertions;
 using Xunit;
 
 namespace RamlToOpenApiConverterTest.TypesAndSchemas
@@ -24,7 +26,7 @@ namespace RamlToOpenApiConverterTest.TypesAndSchemas
             string result = _sut.Convert(Path.Combine("TypesAndSchemas", "TypesEnum.raml"));
 
             // Assert
-            result.Should().BeEquivalentTo(expected);
+            result.NormalizeNewLines().Should().BeEquivalentTo(expected.NormalizeNewLines());
         }
     }
 }
