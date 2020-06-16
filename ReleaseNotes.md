@@ -1,3 +1,6 @@
+# 0.1.1 (16 June 2020)
+- [#6](https://github.com/StefH/RamlToOpenApiConverter/pull/6) - Support .NET Framework 4.6 [enhancement] contributed by [StefH](https://github.com/StefH)
+
 # 0.1.0 (16 June 2020)
 - [#5](https://github.com/StefH/RamlToOpenApiConverter/pull/5) - New OpenApiReader (1.2.0) [enhancement] contributed by [StefH](https://github.com/StefH)
 
