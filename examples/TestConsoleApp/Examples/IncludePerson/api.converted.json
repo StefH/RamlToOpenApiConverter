@@ -19,6 +19,7 @@
         ],
         "responses": {
           "200": {
+            "description": null,
             "content": {
               "application/json": {
                 "schema": {
@@ -28,6 +29,7 @@
             }
           },
           "201": {
+            "description": null,
             "content": {
               "application/json": {
                 "schema": {

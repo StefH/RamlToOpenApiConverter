@@ -2,9 +2,9 @@
 {
     internal static class StringExtensions
     {
-        public static string NormalizeNewLines(this string x)
+        public static string NormalizeNewLines(this string source)
         {
-            return x?.Replace("\r\n", "\n").Replace("\r", "\n");
+            return source?.Replace("\r\n", "\n").Replace("\r", "\n");
         }
     }
 }
