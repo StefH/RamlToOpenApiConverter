@@ -1,3 +1,6 @@
+# 0.1.0 (16 June 2020)
+- [#5](https://github.com/StefH/RamlToOpenApiConverter/pull/5) - New OpenApiReader (1.2.0) [enhancement] contributed by [StefH](https://github.com/StefH)
+
 # 0.0.4 (28 February 2020)
 - [#4](https://github.com/StefH/RamlToOpenApiConverter/pull/4) - Remove direct dependency to SharpYaml [enhancement] contributed by [StefH](https://github.com/StefH)
 
