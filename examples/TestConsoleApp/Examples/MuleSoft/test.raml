@@ -1,0 +1,44 @@
+#%RAML 1.0
+title: example raml document
+description: this is a description of the raml file
+protocols:
+  - HTTP
+version: 1.0
+baseUri: http://urlthatnotexist.api/api
+mediaType:
+  - application/json
+securitySchemes:
+  basic: !include common/securityScheme.raml
+
+uses:
+  ComplexLib: datatype/library.raml
+
+traits:
+  somerequirement:
+    headers:
+      name:
+        type: string
+        required: true
+      id:
+        type: string
+        required: true
+
+types:
+  RequestEmail: !include datatype/email_request.raml
+  ResponseEmail: !include datatype/email_response.raml
+
+/someendpoint:
+  post:
+    description: This is an example endpoint
+    is: [somerequirement]
+    body:
+      application/json:
+        type: RequestEmail
+        example: !include examples/email_request.json
+          
+    responses:
+      200:
+        body:
+          application/json:
+            type: ResponseEmail
+            example: !include examples/email_response.json

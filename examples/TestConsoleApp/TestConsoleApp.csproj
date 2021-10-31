@@ -29,6 +29,7 @@
 
   <ItemGroup>
     <Folder Include="Examples\IncludePerson\" />
+    <Folder Include="Examples\MuleSoft\" />
   </ItemGroup>
 
   <ItemGroup>
