@@ -1,3 +1,6 @@
+# 0.3.0 (03 November 2021)
+- [#9](https://github.com/StefH/RamlToOpenApiConverter/pull/9) - Add support for nested !include [enhancement] contributed by [StefH](https://github.com/StefH)
+
 # 0.2.0 (14 July 2021)
 - [#7](https://github.com/StefH/RamlToOpenApiConverter/pull/7) - Upgrade Microsoft.OpenApi.Readers to 1.2.3 [enhancement] contributed by [StefH](https://github.com/StefH)
 
