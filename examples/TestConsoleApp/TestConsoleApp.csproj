@@ -10,25 +10,24 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Examples\HelloWorld.raml">
+    <None Update="Examples\*.*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Examples\IncludePerson\api.raml">
+    <None Update="Examples\IncludePerson\*.*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Examples\IncludePerson\person.json">
+    <None Update="Examples\MuleSoft\common\*.*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Examples\MediaWiki.json">
+    <None Update="Examples\MuleSoft\datatype\*.*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Examples\MediaWiki.raml">
+    <None Update="Examples\MuleSoft\examples\*.*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Examples\IncludePerson\" />
+    <None Update="Examples\MuleSoft\*.*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
   <ItemGroup>

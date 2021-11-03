@@ -1,0 +1,120 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "example raml document",
+    "description": "this is a description of the raml file",
+    "version": "1.0"
+  },
+  "servers": [
+    {
+      "url": "http://urlthatnotexist.api/api"
+    }
+  ],
+  "paths": {
+    "/postendpoint": {
+      "post": {
+        "description": "This is an example endpoint",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RequestEmail"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": null,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseEmail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/person": {
+      "get": {
+        "description": "This is an example endpoint",
+        "responses": {
+          "200": {
+            "description": null,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PersonResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/person2": {
+      "get": {
+        "description": "This is an example endpoint",
+        "responses": {
+          "200": {
+            "description": null,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PersonResponse2"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "RequestEmail": {
+        "type": "object",
+        "properties": {
+          "subject": {
+            "type": "string"
+          },
+          "body": {
+            "type": "string"
+          }
+        }
+      },
+      "ResponseEmail": {
+        "type": "object",
+        "properties": {
+          "response": {
+            "type": "string"
+          }
+        }
+      },
+      "PersonResponse": {
+        "type": "object",
+        "properties": {
+          "client": {
+            "type": "array"
+          },
+          "employee": {
+            "type": "array"
+          }
+        }
+      },
+      "PersonResponse2": {
+        "type": "object",
+        "properties": {
+          "client": {
+            "type": "array"
+          },
+          "employee": {
+            "type": "array"
+          }
+        }
+      }
+    }
+  }
+}

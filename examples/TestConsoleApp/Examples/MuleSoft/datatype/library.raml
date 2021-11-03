@@ -1,0 +1,13 @@
+#%RAML 1.0 Library
+types:
+  emaillisttype:
+    displayName: this is subject
+    properties:
+      emaillist:
+        type: array
+        items:
+          type: object
+          properties:
+            subject: string
+            body: string
+      otherthing: string

@@ -1,5 +1,6 @@
-﻿using System;
+using System;
 using System.IO;
+using RamlToOpenApiConverter.Builders;
 using YamlDotNet.Core;
 using YamlDotNet.Core.Events;
 using YamlDotNet.Serialization;
@@ -19,12 +20,14 @@ namespace RamlToOpenApiConverter.Yaml
         {
             if (parser.Accept(out Scalar scalar) && scalar.Tag == Constants.IncludeTag)
             {
-                string fileName = scalar.Value;
+                string fileName = scalar.Value.Replace('/', Path.DirectorySeparatorChar);
                 string includePath = Path.Combine(_options.DirectoryName, fileName);
 
-                using (var includedFile = File.OpenText(includePath))
+                var deserializer = IncludeNodeDeserializerBuilder.Build(Path.GetDirectoryName(includePath));
+
+                using (var includedFileText = File.OpenText(includePath))
                 {
-                    var includeRef = (IncludeRef)_options.Deserializer.Deserialize(new Parser(includedFile), expectedType);
+                    var includeRef = (IncludeRef)deserializer.Deserialize(new Parser(includedFileText), expectedType);
                     includeRef.FileName = fileName;
 
                     parser.MoveNext();
