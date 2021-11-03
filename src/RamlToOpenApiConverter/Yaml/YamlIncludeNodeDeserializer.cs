@@ -24,7 +24,8 @@ namespace RamlToOpenApiConverter.Yaml
 
                 using (var includedFileText = File.OpenText(includePath))
                 {
-                    var includeRef = (IncludeRef)_options.Deserializer.Deserialize(new Parser(includedFileText), expectedType);
+                    var parseResult = _options.Deserializer.Deserialize(new Parser(includedFileText), expectedType);
+                    var includeRef = (IncludeRef)parseResult;
                     includeRef.FileName = fileName;
 
                     parser.MoveNext();
