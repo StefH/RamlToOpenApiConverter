@@ -1,0 +1,12 @@
+#%RAML 1.0 DataType
+type: object
+properties:
+  purchase:
+    type: array
+    items: !include purchase_response.raml
+  date: 
+    type: datetime
+    required: false
+  cid:
+    type: integer
+    required: false

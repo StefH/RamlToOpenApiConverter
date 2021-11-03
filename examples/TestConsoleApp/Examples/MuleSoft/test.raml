@@ -1,4 +1,5 @@
 #%RAML 1.0
+
 title: example raml document
 description: this is a description of the raml file
 protocols:
@@ -21,13 +22,16 @@ traits:
         required: true
       id:
         type: string
-        required: true
+        required: false
 
 types:
   RequestEmail: !include datatype/email_request.raml
   ResponseEmail: !include datatype/email_response.raml
+  PersonResponse: !include datatype/person_response.raml
+  PersonResponse2: !include datatype/person_response2.raml
+  
 
-/someendpoint:
+/postendpoint:
   post:
     description: This is an example endpoint
     is: [somerequirement]
@@ -41,4 +45,26 @@ types:
         body:
           application/json:
             type: ResponseEmail
-            example: !include examples/email_response.json
+            example:
+              !include examples/email_response.json
+  
+/person:
+  get:
+    description: This is an example endpoint 
+    responses:
+      200:
+        body:
+          application/json:
+            type: PersonResponse
+
+/person2:
+  get:
+    description: This is an example endpoint 
+    responses:
+      200:
+        body:
+          application/json:
+            type: PersonResponse2
+
+
+          

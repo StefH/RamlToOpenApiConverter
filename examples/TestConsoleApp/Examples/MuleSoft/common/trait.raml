@@ -1,0 +1,23 @@
+#%RAML 1.0 Trait
+somerequirement:
+  headers:
+    name:
+      type: string
+      required: true
+    id:
+      type: string
+      required: true
+      
+queryParameters:
+  offset:
+    displayName: first page
+    type: integer
+    required: false
+    example: 1
+  limit:
+    description: max page number
+    type: integer
+    required: false
+    example: 99
+      
+    

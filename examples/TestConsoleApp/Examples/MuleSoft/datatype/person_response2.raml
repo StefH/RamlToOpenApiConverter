@@ -1,0 +1,67 @@
+#%RAML 1.0 DataType
+type: object
+properties:
+  client: 
+    type: array
+    items:
+      type: object
+      properties:
+        purchase:
+          type: array
+          items:
+            type: object
+            properties:
+              itemid: 
+                type: integer
+                required: true
+              price: 
+                type: integer
+                required: false
+              tipos:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    car: 
+                      type: string
+                      required: true
+                    moto: 
+                      type: string
+                      required: false
+                    bike:
+                      type: string
+                      required: false
+        date: 
+          type: datetime
+          required: false
+        cid:
+          type: integer
+          required: false
+  employee: 
+    type: array
+    items:
+      type: object
+      properties:
+        email:
+          type: array
+          items:
+            type: object
+            properties:
+              response: 
+                type: string
+                required: true
+        id: 
+          type: integer
+          required: true
+        name: 
+          type: array
+          items:
+            type: object
+            properties:
+              firstname: 
+                type: string
+                required: true
+              lastname: 
+                type: string
+                required: true
+    
