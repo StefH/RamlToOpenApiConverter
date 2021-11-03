@@ -1,11 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace RamlToOpenApiConverter.Extensions
 {
     internal static class DictionaryExtensions
     {
-        public static string Get(this IDictionary<object, object> d, object key)
+        public static string? Get(this IDictionary<object, object> d, object key)
         {
             if (!d.ContainsKey(key))
             {
@@ -19,13 +19,13 @@ namespace RamlToOpenApiConverter.Extensions
         {
             if (!d.ContainsKey(key))
             {
-                return default(T);
+                return default!;
             }
 
             return ChangeTypeEx<T>(d[key]);
         }
 
-        public static IDictionary<object, object> GetAsDictionary(this IDictionary<object, object> d, object key)
+        public static IDictionary<object, object>? GetAsDictionary(this IDictionary<object, object> d, object key)
         {
             if (d.TryGetValue(key, out object value))
             {
@@ -35,7 +35,7 @@ namespace RamlToOpenApiConverter.Extensions
             return null;
         }
 
-        public static ICollection<object> GetAsCollection(this IDictionary<object, object> d, object key)
+        public static ICollection<object>? GetAsCollection(this IDictionary<object, object> d, object key)
         {
             if (d.TryGetValue(key, out object value))
             {

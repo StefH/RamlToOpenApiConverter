@@ -16,7 +16,7 @@ namespace RamlToOpenApiConverter.Yaml
             _options = options;
         }
 
-        bool INodeDeserializer.Deserialize(IParser parser, Type expectedType, Func<IParser, Type, object> nestedObjectDeserializer, out object value)
+        bool INodeDeserializer.Deserialize(IParser parser, Type expectedType, Func<IParser, Type, object?> nestedObjectDeserializer, out object? value)
         {
             if (parser.Accept(out Scalar scalar) && scalar.Tag == Constants.IncludeTag)
             {

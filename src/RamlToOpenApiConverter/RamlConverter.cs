@@ -14,8 +14,8 @@ namespace RamlToOpenApiConverter
     {
         private readonly IDictionary<object, object> _types = new Dictionary<object, object>();
 
-        private IDeserializer _deserializer;
-        private OpenApiDocument _doc;
+        private IDeserializer _deserializer = default!;
+        private OpenApiDocument _doc = default!;
 
         /// <summary>
         /// Converts the input RAML file to an Open API Specification output string using the provided options.

@@ -5,13 +5,24 @@ types:
     type: object
     properties:
       subject: string
-  Emails:
+  Emails1:
+    type: array
+    items: Email
+  Emails2:
     type: Email[]
 
-/testendpoint:
+/testendpoint1:
   get:
     responses:
       200:
         body:
           application/json:
-            type: Emails
+            type: Emails1
+
+/testendpoint2:
+  get:
+    responses:
+      200:
+        body:
+          application/json:
+            type: Emails2

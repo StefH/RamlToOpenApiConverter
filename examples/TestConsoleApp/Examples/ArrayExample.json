@@ -4,7 +4,7 @@
     "title": "Hello Arrays"
   },
   "paths": {
-    "/testendpoint": {
+    "/testendpoint1": {
       "get": {
         "responses": {
           "200": {
@@ -12,7 +12,23 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Emails"
+                  "$ref": "#/components/schemas/Emails1"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/testendpoint2": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": null,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Emails2"
                 }
               }
             }
@@ -31,7 +47,13 @@
           }
         }
       },
-      "Emails": {
+      "Emails1": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/Email"
+        }
+      },
+      "Emails2": {
         "type": "array",
         "items": {
           "$ref": "#/components/schemas/Email"
