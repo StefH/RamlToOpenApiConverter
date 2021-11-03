@@ -51,24 +51,7 @@ namespace RamlToOpenApiConverter
         /// <param name="inputPath">The path to the RAML file.</param>
         public OpenApiDocument ConvertToOpenApiDocument(string inputPath)
         {
-            //var builder = new DeserializerBuilder();
-
-            //var includeNodeDeserializerOptions = new YamlIncludeNodeDeserializerOptions
-            //{
-            //    DirectoryName = Path.GetDirectoryName(inputPath)
-            //};
-
-            //var includeNodeDeserializer = new YamlIncludeNodeDeserializer(includeNodeDeserializerOptions);
-
-            //_deserializer = builder
-            //    .WithTagMapping(Constants.IncludeTag, typeof(IncludeRef))
-            //    .WithNodeDeserializer(includeNodeDeserializer, s => s.OnTop())
-            //    .Build();
-
             _deserializer = IncludeNodeDeserializerBuilder.Build(Path.GetDirectoryName(inputPath));
-
-            // Set the inner Deserializer to the same main Deserializer to support nested includes
-            //includeNodeDeserializerOptions.Deserializer = _deserializer;
 
             var result = _deserializer.Deserialize<Dictionary<object, object>>(File.ReadAllText(inputPath));
 
