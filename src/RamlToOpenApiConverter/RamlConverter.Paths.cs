@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -214,7 +214,7 @@ namespace RamlToOpenApiConverter
 
             var referenceSchemas = value
                 .Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries)
-                .Select(o => CreateDummyOpenApiReferenceSchema(o.Trim()))
+                .Select(o => CreateDummyOpenApiReferenceSchema(o.Trim(), "object"))
                 .ToList();
 
             if (referenceSchemas.Count == 1)
@@ -228,13 +228,19 @@ namespace RamlToOpenApiConverter
             };
         }
 
-        private OpenApiSchema CreateDummyOpenApiReferenceSchema(string referenceId)
+        private OpenApiSchema CreateDummyOpenApiReferenceSchema(string referenceId, string type = null)
         {
-            return new OpenApiSchema
+            var schema = new OpenApiSchema
             {
-                Type = "object",
                 Reference = new OpenApiReference { Id = referenceId, Type = ReferenceType.Schema }
             };
+
+            if (!string.IsNullOrEmpty(type))
+            {
+                schema.Type = type;
+            }
+
+            return schema;
         }
 
         private bool TryMapOperationType(string value, out OperationType operationType)
