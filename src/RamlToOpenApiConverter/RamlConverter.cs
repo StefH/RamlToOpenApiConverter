@@ -6,7 +6,6 @@ using Microsoft.OpenApi.Extensions;
 using Microsoft.OpenApi.Models;
 using RamlToOpenApiConverter.Builders;
 using RamlToOpenApiConverter.Extensions;
-using RamlToOpenApiConverter.Yaml;
 using YamlDotNet.Serialization;
 
 namespace RamlToOpenApiConverter

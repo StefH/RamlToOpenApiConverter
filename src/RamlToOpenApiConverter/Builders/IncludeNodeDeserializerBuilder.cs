@@ -1,4 +1,3 @@
-using System.IO;
 using RamlToOpenApiConverter.Yaml;
 using YamlDotNet.Serialization;
 
@@ -12,7 +11,7 @@ namespace RamlToOpenApiConverter.Builders
 
             var includeNodeDeserializerOptions = new YamlIncludeNodeDeserializerOptions
             {
-                DirectoryName = directoryName //!string.IsNullOrEmpty(directoryName) ? Path.GetDirectoryName(directoryName) : string.Empty
+                DirectoryName = directoryName
             };
 
             var includeNodeDeserializer = new YamlIncludeNodeDeserializer(includeNodeDeserializerOptions);
