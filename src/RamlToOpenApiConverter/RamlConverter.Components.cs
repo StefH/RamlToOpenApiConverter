@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.OpenApi.Any;
@@ -11,52 +11,69 @@ namespace RamlToOpenApiConverter
     {
         private OpenApiComponents MapComponents(IDictionary<object, object> types)
         {
+            if (types == null)
+            {
+                return null;
+            }
+
             var components = new OpenApiComponents
             {
                 Schemas = new Dictionary<string, OpenApiSchema>()
             };
 
-            if (types != null)
+            foreach (var key in types.Keys.OfType<string>())
             {
-                foreach (var key in types.Keys.OfType<string>())
+                switch (types[key])
                 {
-                    switch (types[key])
-                    {
-                        case IDictionary<object, object> values:
-                            if (values.Get("type") == "object")
-                            {
-                                var required = values.GetAsCollection("required");
-                                var properties = values.GetAsDictionary("properties");
-                                components.Schemas.Add(key, MapSchema(properties, required));
-                            }
+                    case IDictionary<object, object> values:
+                        var type = values.Get("type");
+                        if (type == "object" || types.ContainsKey(type))
+                        {
+                            var required = values.GetAsCollection("required");
+                            var properties = values.GetAsDictionary("properties");
+                            components.Schemas.Add(key, MapSchema(properties, required));
+                        }
 
-                            if (values.ContainsKey("enum"))
-                            {
-                                var enumAsCollection = values.GetAsCollection("enum").OfType<string>();
-                                var enumValues = enumAsCollection
-                                    .SelectMany(e => e.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries))
-                                    .Select(x => new OpenApiString(x.Trim()));
+                        if (values.ContainsKey("enum"))
+                        {
+                            var enumAsCollection = values.GetAsCollection("enum").OfType<string>();
+                            var enumValues = enumAsCollection
+                                .SelectMany(e => e.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries))
+                                .Select(x => new OpenApiString(x.Trim()));
 
-                                var schema = new OpenApiSchema
+                            var schema = new OpenApiSchema
+                            {
+                                Type = "string",
+                                Enum = enumValues.OfType<IOpenApiAny>().ToList()
+                            };
+                            components.Schemas.Add(key, schema);
+                        }
+
+                        if (type.EndsWith("[]"))
+                        {
+                            var arrayType = type.Substring(0, type.Length - 2);
+                            if (components.Schemas.ContainsKey(arrayType))
+                            {
+                                components.Schemas.Add(key, new OpenApiSchema
                                 {
-                                    Type = "string",
-                                    Enum = enumValues.OfType<IOpenApiAny>().ToList()
-                                };
-                                components.Schemas.Add(key, schema);
+                                    Type = "array",
+                                    Items = CreateDummyOpenApiReferenceSchema(arrayType)
+                                });
                             }
-                            break;
+                        }
 
-                        case string jsonOrYaml:
-                            var items = _deserializer.Deserialize<IDictionary<object, object>>(jsonOrYaml);
-                            var requiredX = items.GetAsCollection("required");
-                            var propertiesX = items.GetAsDictionary("properties");
-                            components.Schemas.Add(key, MapSchema(propertiesX, requiredX));
-                            break;
-                    }
+                        break;
+
+                    case string jsonOrYaml:
+                        var items = _deserializer.Deserialize<IDictionary<object, object>>(jsonOrYaml);
+                        var requiredX = items.GetAsCollection("required");
+                        var propertiesX = items.GetAsDictionary("properties");
+                        components.Schemas.Add(key, MapSchema(propertiesX, requiredX));
+                        break;
                 }
             }
 
-            return components.Schemas.Count > 0 ? components: null;
+            return components.Schemas.Count > 0 ? components : null;
         }
 
         private OpenApiSchema MapSchema(IDictionary<object, object> properties, ICollection<object> required)
