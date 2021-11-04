@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Microsoft.OpenApi.Models;
 using RamlToOpenApiConverter.Extensions;
 
@@ -6,9 +6,9 @@ namespace RamlToOpenApiConverter
 {
     public partial class RamlConverter
     {
-        private IList<OpenApiServer> MapServers(IDictionary<object, object> items)
+        private IList<OpenApiServer>? MapServers(IDictionary<object, object> items)
         {
-            string baseUri = items.Get("baseUri");
+            var baseUri = items.Get("baseUri");
             if (string.IsNullOrEmpty(baseUri))
             {
                 return null;

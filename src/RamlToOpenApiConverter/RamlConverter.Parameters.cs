@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.OpenApi.Any;
@@ -20,7 +20,7 @@ namespace RamlToOpenApiConverter
             return parameters;
         }
 
-        private IList<OpenApiParameter> MapParameters(IDictionary<object, object> parameters, ParameterLocation parameterLocation)
+        private IList<OpenApiParameter> MapParameters(IDictionary<object, object>? parameters, ParameterLocation parameterLocation)
         {
             var openApiParameters = new List<OpenApiParameter>();
 
@@ -51,8 +51,8 @@ namespace RamlToOpenApiConverter
 
         private OpenApiSchema MapParameterOrPropertyDetailsToSchema(IDictionary<object, object> details)
         {
-            string schemaTypeFromRaml = details.Get("type");
-            string schemaFormatFromRaml = details.Get("format");
+            var schemaTypeFromRaml = details.Get("type");
+            var schemaFormatFromRaml = details.Get("format");
 
             var schemaTypes = (schemaTypeFromRaml ?? "string")
                 .Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries)

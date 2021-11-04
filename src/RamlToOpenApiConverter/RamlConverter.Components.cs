@@ -9,7 +9,7 @@ namespace RamlToOpenApiConverter
 {
     public partial class RamlConverter
     {
-        private OpenApiComponents MapComponents(IDictionary<object, object> types)
+        private OpenApiComponents? MapComponents(IDictionary<object, object> types)
         {
             if (types == null)
             {
@@ -49,9 +49,18 @@ namespace RamlToOpenApiConverter
                             components.Schemas.Add(key, schema);
                         }
 
-                        if (type.EndsWith("[]"))
+                        string? arrayType = null;
+                        if (type == "array" && values.TryGetValue("items", out var arrayItem))
                         {
-                            var arrayType = type.Substring(0, type.Length - 2);
+                            arrayType = arrayItem as string;
+                        }
+                        else if (type.EndsWith("[]"))
+                        {
+                            arrayType = type.Substring(0, type.Length - 2);
+                            
+                        }
+                        if (arrayType is not null)
+                        {
                             if (components.Schemas.ContainsKey(arrayType))
                             {
                                 components.Schemas.Add(key, new OpenApiSchema
@@ -86,7 +95,7 @@ namespace RamlToOpenApiConverter
             };
         }
 
-        private IDictionary<string, OpenApiSchema> MapProperties(IDictionary<object, object> properties, ICollection<object> required)
+        private IDictionary<string, OpenApiSchema> MapProperties(IDictionary<object, object> properties, ICollection<object>? required)
         {
             var openApiProperties = new Dictionary<string, OpenApiSchema>();
             foreach (var key in properties.Keys.OfType<string>())
