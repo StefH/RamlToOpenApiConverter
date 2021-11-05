@@ -1,0 +1,48 @@
+#%RAML 1.0
+title: include example files
+description: this is a description of include example using include
+protocols:
+  - HTTP
+version: 1.0
+mediaType:
+  - application/json
+
+types:
+  Email:
+    type: object
+    properties:
+      subject:
+        type: string
+      body:
+        type: string
+  Emails:
+    type: array
+    items: Email
+
+/testemails:
+  get:
+    description: this is an example response
+    responses:
+      200:
+        body:
+          application/json:
+            type: Emails
+            example: !include examples/emails.json
+
+/testemails2:
+  get:
+    description: this is an example response
+    responses:
+      200:
+        body:
+          application/json:
+            type: Emails
+            example: |
+              [{
+                "subject": "Email subject1",
+                "body": "Email body1"
+              },
+              {
+                "subject": "Email subject2",
+                "body": "Email body2"
+              }]
