@@ -27,32 +27,33 @@ namespace RamlToOpenApiConverter.Yaml
                 string fileName = scalar.Value.Replace('/', Path.DirectorySeparatorChar);
                 string includePath = Path.Combine(_options.DirectoryName, fileName);
 
-                var deserializer = IncludeNodeDeserializerBuilder.Build(Path.GetDirectoryName(includePath));
+                value = ReadIncludedFile(includePath, expectedType);
 
-                using (var includedFileTextReader = File.OpenText(includePath))
-                {
-                    var extension = Path.GetExtension(fileName);
-                    if (YamlExtensionRegex.IsMatch(extension))
-                    {
-                        value = deserializer.Deserialize(new Parser(includedFileTextReader), expectedType);
-                    }
-                    else if (JsonExtensionRegex.IsMatch(extension))
-                    {
-                        value = includedFileTextReader.ReadToEnd();
-                    }
-                    else
-                    {
-                        throw new NotSupportedException($"The file extension '{extension}' is not supported in a '{Constants.IncludeTag}' tag.");
-                    }
+                parser.MoveNext();
 
-                    parser.MoveNext();
-
-                    return true;
-                }
+                return true;
             }
 
             value = null;
             return false;
+        }
+
+        private static object? ReadIncludedFile(string includePath, Type expectedType)
+        {
+            var extension = Path.GetExtension(includePath);
+
+            if (YamlExtensionRegex.IsMatch(extension))
+            {
+                var deserializer = IncludeNodeDeserializerBuilder.Build(Path.GetDirectoryName(includePath));
+                return deserializer.Deserialize(new Parser(File.OpenText(includePath)), expectedType);
+            }
+
+            if (JsonExtensionRegex.IsMatch(extension))
+            {
+                return File.ReadAllText(includePath);
+            }
+
+            throw new NotSupportedException($"The file extension '{extension}' is not supported in a '{Constants.IncludeTag}' tag.");
         }
     }
 }
