@@ -22,18 +22,26 @@ namespace RamlToOpenApiConverter.Yaml
             {
                 string fileName = scalar.Value.Replace('/', Path.DirectorySeparatorChar);
                 string includePath = Path.Combine(_options.DirectoryName, fileName);
-
                 var deserializer = IncludeNodeDeserializerBuilder.Build(Path.GetDirectoryName(includePath));
-
+                FileInfo fi = new FileInfo(includePath);
+                string extn = fi.Extension;
+                if(extn.ToLower() == ".json")
+                {
+                    string includedJson = File.ReadAllText(includePath);
+                    parser.MoveNext();
+                    value = includedJson;
+                    return true;
+                }
+                else
+                {
                 using (var includedFileText = File.OpenText(includePath))
                 {
                     var includeRef = (IncludeRef)deserializer.Deserialize(new Parser(includedFileText), expectedType);
                     includeRef.FileName = fileName;
-
                     parser.MoveNext();
-
                     value = includeRef;
                     return true;
+                }
                 }
             }
 
