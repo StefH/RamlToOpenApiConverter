@@ -1,6 +1,6 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
+using System.Text.RegularExpressions;
 using RamlToOpenApiConverter.Builders;
 using YamlDotNet.Core;
 using YamlDotNet.Core.Events;
@@ -10,6 +10,9 @@ namespace RamlToOpenApiConverter.Yaml
 {
     public class YamlIncludeNodeDeserializer : INodeDeserializer
     {
+        private static readonly Regex JsonExtensionRegex = new(@"^\.json$", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline);
+        private static readonly Regex YamlExtensionRegex = new(@"^\.yaml$", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline);
+
         private readonly YamlIncludeNodeDeserializerOptions _options;
 
         public YamlIncludeNodeDeserializer(YamlIncludeNodeDeserializerOptions options)
@@ -28,25 +31,22 @@ namespace RamlToOpenApiConverter.Yaml
 
                 using (var includedFileTextReader = File.OpenText(includePath))
                 {
-                    IncludeRef? includeRef = null;
-                    try
+                    var extension = Path.GetExtension(fileName);
+                    if (YamlExtensionRegex.IsMatch(extension))
                     {
-                        // var items = deserializer.Deserialize<IDictionary<object, object>>(includedFileTextReader);
-                        includeRef = deserializer.Deserialize(new Parser(includedFileTextReader), expectedType) as IncludeRef;
+                        value = deserializer.Deserialize(new Parser(includedFileTextReader), expectedType);
                     }
-                    catch
+                    else if (JsonExtensionRegex.IsMatch(extension))
                     {
-                        includeRef = new IncludeRef
-                        {
-                            { "x", "y"}
-                        };
+                        value = includedFileTextReader.ReadToEnd();
                     }
-                    
-                    // includeRef.FileName = fileName;
+                    else
+                    {
+                        throw new NotSupportedException($"The file extension '{extension}' is not supported in a '{Constants.IncludeTag}' tag.");
+                    }
 
                     parser.MoveNext();
 
-                    value = includeRef;
                     return true;
                 }
             }

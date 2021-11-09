@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+// using System.Collections.Generic;
 
 namespace RamlToOpenApiConverter.Yaml
 {
@@ -6,6 +6,6 @@ namespace RamlToOpenApiConverter.Yaml
     {
         public string DirectoryName { get; set; } = default!;
 
-        public IList<IncludeRef> includeRefs { get; set; } = default!;
+        // public IList<IncludeRef> IncludeRefs { get; set; } = default!;
     }
 }
