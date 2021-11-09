@@ -19,6 +19,10 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/RequestEmail"
+              },
+              "example": {
+                "subject": "email subject",
+                "body": "email body"
               }
             }
           }
@@ -30,6 +34,9 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ResponseEmail"
+                },
+                "example": {
+                  "response": "email response"
                 }
               }
             }

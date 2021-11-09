@@ -11,7 +11,7 @@ namespace RamlToOpenApiConverter.Yaml
     public class YamlIncludeNodeDeserializer : INodeDeserializer
     {
         private static readonly Regex JsonExtensionRegex = new(@"^\.json$", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline);
-        private static readonly Regex YamlExtensionRegex = new(@"^\.yaml$", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline);
+        private static readonly Regex RamlExtensionRegex = new(@"^\.raml$", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline);
 
         private readonly YamlIncludeNodeDeserializerOptions _options;
 
@@ -42,7 +42,7 @@ namespace RamlToOpenApiConverter.Yaml
         {
             var extension = Path.GetExtension(includePath);
 
-            if (YamlExtensionRegex.IsMatch(extension))
+            if (RamlExtensionRegex.IsMatch(extension))
             {
                 var deserializer = IncludeNodeDeserializerBuilder.Build(Path.GetDirectoryName(includePath));
                 return deserializer.Deserialize(new Parser(File.OpenText(includePath)), expectedType);
