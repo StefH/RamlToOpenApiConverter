@@ -1,6 +1,15 @@
+# 0.4.2 (09 November 2021)
+- [#15](https://github.com/StefH/RamlToOpenApiConverter/pull/15) - Add support for !include example.json [enhancement] contributed by [StefH](https://github.com/StefH)
+- [#13](https://github.com/StefH/RamlToOpenApiConverter/issues/13) - Problem with including example files using &quot;!include&quot;
+
+# 0.4.1 (04 November 2021)
+- [#11](https://github.com/StefH/RamlToOpenApiConverter/pull/11) - Add handling of &quot;type&quot;: &quot;array&quot; [enhancement] contributed by [StefH](https://github.com/StefH)
+
 # 0.4.0 (03 November 2021)
-- [#9](https://github.com/StefH/RamlToOpenApiConverter/pull/9) - Add support for nested !include [enhancement] contributed by [StefH](https://github.com/StefH)
 - [#10](https://github.com/StefH/RamlToOpenApiConverter/pull/10) - Add support for referenced type (e.g. array) [enhancement] contributed by [StefH](https://github.com/StefH)
+
+# 0.3.0 (03 November 2021)
+- [#9](https://github.com/StefH/RamlToOpenApiConverter/pull/9) - Add support for nested !include [enhancement] contributed by [StefH](https://github.com/StefH)
 
 # 0.2.0 (14 July 2021)
 - [#7](https://github.com/StefH/RamlToOpenApiConverter/pull/7) - Upgrade Microsoft.OpenApi.Readers to 1.2.3 [enhancement] contributed by [StefH](https://github.com/StefH)
