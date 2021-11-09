@@ -59,6 +59,7 @@ namespace RamlToOpenApiConverter
                             arrayType = type.Substring(0, type.Length - 2);
                             
                         }
+
                         if (arrayType is not null)
                         {
                             if (components.Schemas.ContainsKey(arrayType))

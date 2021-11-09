@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Text.RegularExpressions;
 using RamlToOpenApiConverter.Builders;
 using YamlDotNet.Core;
 using YamlDotNet.Core.Events;
@@ -9,6 +10,9 @@ namespace RamlToOpenApiConverter.Yaml
 {
     public class YamlIncludeNodeDeserializer : INodeDeserializer
     {
+        private static readonly Regex JsonExtensionRegex = new(@"^\.json$", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline);
+        private static readonly Regex YamlExtensionRegex = new(@"^\.yaml$", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline);
+
         private readonly YamlIncludeNodeDeserializerOptions _options;
 
         public YamlIncludeNodeDeserializer(YamlIncludeNodeDeserializerOptions options)
@@ -23,22 +27,33 @@ namespace RamlToOpenApiConverter.Yaml
                 string fileName = scalar.Value.Replace('/', Path.DirectorySeparatorChar);
                 string includePath = Path.Combine(_options.DirectoryName, fileName);
 
-                var deserializer = IncludeNodeDeserializerBuilder.Build(Path.GetDirectoryName(includePath));
+                value = ReadIncludedFile(includePath, expectedType);
 
-                using (var includedFileText = File.OpenText(includePath))
-                {
-                    var includeRef = (IncludeRef)deserializer.Deserialize(new Parser(includedFileText), expectedType);
-                    includeRef.FileName = fileName;
+                parser.MoveNext();
 
-                    parser.MoveNext();
-
-                    value = includeRef;
-                    return true;
-                }
+                return true;
             }
 
             value = null;
             return false;
+        }
+
+        private static object? ReadIncludedFile(string includePath, Type expectedType)
+        {
+            var extension = Path.GetExtension(includePath);
+
+            if (YamlExtensionRegex.IsMatch(extension))
+            {
+                var deserializer = IncludeNodeDeserializerBuilder.Build(Path.GetDirectoryName(includePath));
+                return deserializer.Deserialize(new Parser(File.OpenText(includePath)), expectedType);
+            }
+
+            if (JsonExtensionRegex.IsMatch(extension))
+            {
+                return File.ReadAllText(includePath);
+            }
+
+            throw new NotSupportedException($"The file extension '{extension}' is not supported in a '{Constants.IncludeTag}' tag.");
         }
     }
 }
