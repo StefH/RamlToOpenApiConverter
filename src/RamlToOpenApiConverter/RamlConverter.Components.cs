@@ -132,9 +132,12 @@ namespace RamlToOpenApiConverter
                 }
                 else if (propertyType != null && _types.ContainsKey(propertyType))
                 {
-                    // Simple Type
                     var simpleType = _types.GetAsDictionary(propertyType);
-                    schema = MapParameterOrPropertyDetailsToSchema(simpleType);
+                    var props = simpleType?.GetAsDictionary("properties");
+                    // custom types
+                    if (props != null) schema = CreateDummyOpenApiReferenceSchema(propertyType);
+                    // simple types
+                    else schema = MapParameterOrPropertyDetailsToSchema(simpleType);
                 }
                 else
                 {
