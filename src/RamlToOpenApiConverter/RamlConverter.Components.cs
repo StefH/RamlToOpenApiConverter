@@ -134,7 +134,7 @@ namespace RamlToOpenApiConverter
                 {
                     var simpleType = _types.GetAsDictionary(propertyType);
                     var props = simpleType?.GetAsDictionary("properties");
-                    schema = properties != null ?
+                    schema = props != null ?
                     CreateDummyOpenApiReferenceSchema(propertyType) : // Custom type
                     MapParameterOrPropertyDetailsToSchema(simpleType); //  Simple Type
                 }
