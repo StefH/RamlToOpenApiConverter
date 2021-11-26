@@ -1,3 +1,6 @@
+# 0.5.0 (26 November 2021)
+- [#16](https://github.com/StefH/RamlToOpenApiConverter/pull/16) - Handling Simple Inherited DataTypes contributed by [mcheguini](https://github.com/mcheguini)
+
 # 0.4.2 (09 November 2021)
 - [#15](https://github.com/StefH/RamlToOpenApiConverter/pull/15) - Add support for !include example.json [enhancement] contributed by [StefH](https://github.com/StefH)
 - [#13](https://github.com/StefH/RamlToOpenApiConverter/issues/13) - Problem with including example files using &quot;!include&quot;
