@@ -1,0 +1,53 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "My API with Types"
+  },
+  "paths": {
+    "/simpleinherited": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": null,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Email"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Email": {
+        "type": "object",
+        "properties": {
+          "subject": {
+            "type": "string"
+          },
+          "body": {
+            "$ref": "#/components/schemas/emailbody"
+          }
+        }
+      },
+      "emailbody": {
+        "type": "object",
+        "properties": {
+          "maintext": {
+            "type": "string"
+          },
+          "footer": {
+            "type": "string"
+          },
+          "id": {
+            "type": "integer"
+          }
+        }
+      }
+    }
+  }
+}
