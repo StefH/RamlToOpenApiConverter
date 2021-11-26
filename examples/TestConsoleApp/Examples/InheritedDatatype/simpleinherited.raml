@@ -1,0 +1,22 @@
+#%RAML 1.0
+title: My API with Types
+mediaType: application/json
+types:
+  Email:
+    type: object
+    properties:
+      subject: string
+      body: emailbody
+  emailbody:
+    type: object
+    properties:
+      maintext: string 
+      footer: string
+      id: integer
+/simpleinherited:
+  get:
+    responses:
+      200:
+        body:
+          application/json:
+            type: Email
