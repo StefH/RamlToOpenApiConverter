@@ -1,3 +1,6 @@
+# 0.6.0 (11 December 2021)
+- [#17](https://github.com/StefH/RamlToOpenApiConverter/pull/17) - Sign Assembly [enhancement] contributed by [StefH](https://github.com/StefH)
+
 # 0.5.0 (26 November 2021)
 - [#16](https://github.com/StefH/RamlToOpenApiConverter/pull/16) - Handling Simple Inherited DataTypes contributed by [mcheguini](https://github.com/mcheguini)
 
