@@ -54,7 +54,7 @@ namespace RamlToOpenApiConverter
         {
             _deserializer = IncludeNodeDeserializerBuilder.Build(Path.GetDirectoryName(inputPath));
 
-            var result = _deserializer.Deserialize<Dictionary<object, object>>(File.ReadAllText(inputPath));
+            var result = _deserializer.Deserialize<IDictionary<object, object>>(File.ReadAllText(inputPath));
 
             // Step 1 - Get all uses
             var uses = result.GetAsDictionary("uses");
@@ -64,6 +64,7 @@ namespace RamlToOpenApiConverter
                 {
                     _uses.Add(use.Key, use.Value);
                 }
+                result = ReplaceUses(result,_uses);
             }
 
             // Step 2 - Get all types and schemas

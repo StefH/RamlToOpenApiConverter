@@ -61,7 +61,10 @@ namespace RamlToOpenApiConverter.Extensions
         {
             if (d.TryGetValue(key, out object value))
             {
-                return value.ToString();
+                if (value.GetType() == typeof(string))
+                    return value.ToString();
+                else
+                    return null;
             }
 
             return null;
