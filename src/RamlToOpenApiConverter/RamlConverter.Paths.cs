@@ -271,7 +271,6 @@ namespace RamlToOpenApiConverter
             {
                 foreach (var path_value in source)
                 {
-
                     var type = path_value.Value.GetType();
                     if (path_value.Value.GetType() == typeof(Dictionary<object, object>))
                     {
