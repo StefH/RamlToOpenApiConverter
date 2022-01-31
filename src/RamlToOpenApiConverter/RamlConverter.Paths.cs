@@ -265,7 +265,7 @@ namespace RamlToOpenApiConverter
         private IDictionary<object, object> ReplaceUses(IDictionary<object, object> source, IDictionary<object, object> uses)
         {
             //replace uses in file
-            IDictionary<object, object> use_replace = new Dictionary<object, object>();
+            IDictionary<object, object> useReplace = new Dictionary<object, object>();
 
             if (uses.Count > 0)
             {
@@ -283,13 +283,13 @@ namespace RamlToOpenApiConverter
                             {
                                 if (use.Key.ToString() == path_is_separator[0].ToString())
                                 {
-                                    use_replace = ((IDictionary<object, object>)use.Value).GetAsDictionary(Constants.Traits);
+                                    useReplace = ((IDictionary<object, object>)use.Value).GetAsDictionary(Constants.Traits);
 
                                     for (int i = 1; i < path_is_separator.Count(); i++)
                                     {
-                                        use_replace = use_replace.GetAsDictionary(path_is_separator[i]);
+                                        useReplace = useReplace.GetAsDictionary(path_is_separator[i]);
                                     }
-                                    ((IDictionary<object, object>)path_value.Value).Replace(use_replace, Constants.IsTag);
+                                    ((IDictionary<object, object>)path_value.Value).Replace(useReplace, Constants.IsTag);
                                 }
                             }
                         }
