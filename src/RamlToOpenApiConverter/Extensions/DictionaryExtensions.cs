@@ -5,29 +5,29 @@ namespace RamlToOpenApiConverter.Extensions
 {
     internal static class DictionaryExtensions
     {
-        public static string? Get(this IDictionary<object, object> d, object key)
+        public static string? Get(this IDictionary<object, object> source, object key)
         {
-            if (!d.ContainsKey(key))
+            if (!source.ContainsKey(key))
             {
                 return null;
             }
 
-            return d[key] as string;
+            return source[key] as string;
         }
 
-        public static T Get<T>(this IDictionary<object, object> d, object key)
+        public static T Get<T>(this IDictionary<object, object> source, object key)
         {
-            if (!d.ContainsKey(key))
+            if (!source.ContainsKey(key))
             {
                 return default!;
             }
 
-            return ChangeTypeEx<T>(d[key]);
+            return ChangeTypeEx<T>(source[key]);
         }
 
-        public static IDictionary<object, object>? GetAsDictionary(this IDictionary<object, object> d, object key)
+        public static IDictionary<object, object>? GetAsDictionary(this IDictionary<object, object> source, object key)
         {
-            if (d.TryGetValue(key, out object value))
+            if (source.TryGetValue(key, out object value))
             {
                 return value as IDictionary<object, object>;
             }
@@ -35,21 +35,21 @@ namespace RamlToOpenApiConverter.Extensions
             return null;
         }
 
-        public static void Replace(this IDictionary<object, object> d, IDictionary<object, object> c, object key)
+        public static void Replace(this IDictionary<object, object> source, IDictionary<object, object> newValue, object key)
         {
-            if (d.TryGetValue(key, out object value))
+            if (source.TryGetValue(key, out object value))
             {
-                d.Remove(key);
-                foreach (KeyValuePair<object, object> item in c)
+                source.Remove(key);
+                foreach (KeyValuePair<object, object> item in newValue)
                 {
-                    d.Add(item.Key, item.Value);
+                    source.Add(item.Key, item.Value);
                 }
             }
         }
 
-        public static ICollection<object>? GetAsCollection(this IDictionary<object, object> d, object key)
+        public static ICollection<object>? GetAsCollection(this IDictionary<object, object> source, object key)
         {
-            if (d.TryGetValue(key, out object value))
+            if (source.TryGetValue(key, out object value))
             {
                 return value as ICollection<object>;
             }
@@ -57,9 +57,9 @@ namespace RamlToOpenApiConverter.Extensions
             return null;
         }
 
-        public static string? GetAsString(this IDictionary<object, object> d, object key)
+        public static string? GetAsString(this IDictionary<object, object> source, object key)
         {
-            if (d.TryGetValue(key, out object value))
+            if (source.TryGetValue(key, out object value))
             {
                 if (value.GetType() == typeof(string))
                     return value.ToString();
