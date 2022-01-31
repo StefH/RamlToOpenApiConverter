@@ -42,7 +42,7 @@ namespace RamlToOpenApiConverter
                 foreach (var path_value in values)
                 {
 
-                    var _is_val = ((Dictionary<object, object>)path_value.Value).GetAsString(Constants.Is_tag);
+                    var _is_val = ((Dictionary<object, object>)path_value.Value).GetAsString(Constants.IsTag);
 
                     if (_is_val != null)
                     {
@@ -51,14 +51,14 @@ namespace RamlToOpenApiConverter
                         {
                             if (use.Key.ToString() == path_is_separator[0].ToString())
                             {
-                                use_replace = ((Dictionary<object, object>)use.Value).GetAsDictionary(Constants.Root_uses);
+                                use_replace = ((Dictionary<object, object>)use.Value).GetAsDictionary(Constants.Traits);
 
                                 for (int i = 1; i < path_is_separator.Count(); i++)
                                 {
                                     use_replace = use_replace.GetAsDictionary(path_is_separator[i]);
                                 }
 
-                                ((Dictionary<object, object>)path_value.Value).Replace(use_replace, Constants.Is_tag);
+                                ((Dictionary<object, object>)path_value.Value).Replace(use_replace, Constants.IsTag);
 
                             }
                         }
