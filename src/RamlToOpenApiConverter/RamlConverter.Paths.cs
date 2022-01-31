@@ -127,7 +127,7 @@ namespace RamlToOpenApiConverter
         {
             return new OpenApiOperation
             {
-                Description = values.Get("displayName"),
+                Description = values.Get("description"),
                 Parameters = MapParameters(values),
                 Responses = MapResponses(values.GetAsDictionary("responses")),
                 RequestBody = MapRequest(values.GetAsDictionary("body")),
