@@ -14,13 +14,15 @@ namespace RamlToOpenApiConverter
 {
     public partial class RamlConverter
     {
-        private OpenApiPaths MapPaths(IDictionary<object, object> o)
+        private IDictionary<object, object> dic = new Dictionary<object, object>();
+
+        private OpenApiPaths MapPaths(IDictionary<object, object> o, IDictionary<object, object> uses)
         {
             var paths = new OpenApiPaths();
 
             foreach (var key in o.Keys.OfType<string>().Where(k => k.StartsWith("/")))
             {
-                var pathItems = MapPathItems(key, new List<OpenApiParameter>(), o.GetAsDictionary(key));
+                var pathItems = MapPathItems(key, new List<OpenApiParameter>(), o.GetAsDictionary(key), uses);
                 foreach (var pathItem in pathItems)
                 {
                     paths.Add(pathItem.AdjustedPath, pathItem.Item);
@@ -30,8 +32,42 @@ namespace RamlToOpenApiConverter
             return paths;
         }
 
-        private ICollection<(OpenApiPathItem Item, string AdjustedPath)> MapPathItems(string parent, IList<OpenApiParameter> parentParameters, IDictionary<object, object> values)
+        private ICollection<(OpenApiPathItem Item, string AdjustedPath)> MapPathItems(string parent, IList<OpenApiParameter> parentParameters, IDictionary<object, object> values, IDictionary<object, object> uses)
         {
+            //replace uses in file
+            IDictionary<object, object> use_replace = new Dictionary<object, object>();
+
+            if (uses.Count > 0)
+            {
+                foreach (var path_value in values)
+                {
+
+                    var _is_val = ((Dictionary<object, object>)path_value.Value).GetAsString(Constants.Is_tag);
+
+                    if (_is_val != null)
+                    {
+                        var path_is_separator = _is_val.ToString().Split('.');
+                        foreach (var use in uses)
+                        {
+                            if (use.Key.ToString() == path_is_separator[0].ToString())
+                            {
+                                use_replace = ((Dictionary<object, object>)use.Value).GetAsDictionary(Constants.Root_uses);
+
+                                for (int i = 1; i < path_is_separator.Count(); i++)
+                                {
+                                    use_replace = use_replace.GetAsDictionary(path_is_separator[i]);
+                                }
+
+                                ((Dictionary<object, object>)path_value.Value).Replace(use_replace, Constants.Is_tag);
+
+                            }
+                        }
+
+                    }
+
+                }
+            }
+
             var items = new List<(OpenApiPathItem Item, string AdjustedPath)>();
 
             // Fetch all parameters from this path
@@ -80,7 +116,7 @@ namespace RamlToOpenApiConverter
             {
                 var d = values.GetAsDictionary(key);
                 string newPath = $"{parent}{key}";
-                var mapItems = MapPathItems(newPath, parameters, d);
+                var mapItems = MapPathItems(newPath, parameters, d, uses);
                 items.AddRange(mapItems);
             }
 
@@ -91,7 +127,7 @@ namespace RamlToOpenApiConverter
         {
             return new OpenApiOperation
             {
-                Description = values.Get("description"),
+                Description = values.Get("displayName"),
                 Parameters = MapParameters(values),
                 Responses = MapResponses(values.GetAsDictionary("responses")),
                 RequestBody = MapRequest(values.GetAsDictionary("body")),

@@ -35,11 +35,33 @@ namespace RamlToOpenApiConverter.Extensions
             return null;
         }
 
+        public static void Replace(this IDictionary<object, object> d, IDictionary<object, object> c, object key)
+        {
+            if (d.TryGetValue(key, out object value))
+            {
+                d.Remove(key);
+                foreach (KeyValuePair<object, object> item in c)
+                {
+                    d.Add(item.Key, item.Value);
+                }
+            }
+        }
+
         public static ICollection<object>? GetAsCollection(this IDictionary<object, object> d, object key)
         {
             if (d.TryGetValue(key, out object value))
             {
                 return value as ICollection<object>;
+            }
+
+            return null;
+        }
+
+        public static string? GetAsString(this IDictionary<object, object> d, object key)
+        {
+            if (d.TryGetValue(key, out object value))
+            {
+                return value.ToString();
             }
 
             return null;
