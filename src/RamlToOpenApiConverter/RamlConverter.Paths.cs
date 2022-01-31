@@ -289,18 +289,13 @@ namespace RamlToOpenApiConverter
                                     {
                                         use_replace = use_replace.GetAsDictionary(path_is_separator[i]);
                                     }
-
                                     ((IDictionary<object, object>)path_value.Value).Replace(use_replace, Constants.IsTag);
-
                                 }
                             }
-
                         }
                     }
-
                 }
             }
-
             return source;
         }
     }
