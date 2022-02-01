@@ -1,0 +1,86 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "test3",
+    "description": "Test3.",
+    "version": "v1"
+  },
+  "servers": [
+    {
+      "url": "/test/raml/4"
+    }
+  ],
+  "paths": {
+    "/path2": {
+      "put": {
+        "parameters": [
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "Starting entry number, first entry is 1",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Maximum number of entries per page",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Response Success Test 4 Put"
+          }
+        }
+      },
+      "get": {
+        "parameters": [
+          {
+            "name": "X-Correlation-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Response Success Test 4 Get"
+          }
+        }
+      }
+    },
+    "/path1": {
+      "post": {
+        "parameters": [
+          {
+            "name": "test_id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "test_secret",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Response Success Test 4 Post"
+          }
+        }
+      }
+    }
+  }
+}

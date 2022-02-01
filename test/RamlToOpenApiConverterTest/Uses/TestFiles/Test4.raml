@@ -1,0 +1,17 @@
+#%RAML 1.0
+title: test3
+description: Test3.
+mediaType:
+  - application/json
+version: "v1"
+protocols:
+  - HTTPS
+
+baseUri: /test/raml/4
+
+uses:
+  paths: TestExternalFiles/common-traits4.raml
+  methods: TestExternalFiles/common-traits4-1.raml
+  uses_traits: TestExternalFiles/common-traits1.raml
+
+is: paths

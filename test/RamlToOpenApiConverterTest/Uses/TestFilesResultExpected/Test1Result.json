@@ -1,0 +1,34 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "test1",
+    "description": "Test1.",
+    "version": "v1"
+  },
+  "servers": [
+    {
+      "url": "/test/raml/1"
+    }
+  ],
+  "paths": {
+    "/": {
+      "get": {
+        "parameters": [
+          {
+            "name": "X-Correlation-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Response Success Test 1"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "test3",
+    "description": "Test3.",
+    "version": "v1"
+  },
+  "servers": [
+    {
+      "url": "/test/raml/3"
+    }
+  ],
+  "paths": {
+    "/": {
+      "post": {
+        "parameters": [
+          {
+            "name": "test_id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "test_secret",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Response Success Test 3"
+          }
+        }
+      }
+    }
+  }
+}

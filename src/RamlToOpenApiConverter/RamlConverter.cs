@@ -64,6 +64,7 @@ namespace RamlToOpenApiConverter
                 {
                     _uses.Add(use.Key, use.Value);
                 }
+                result.Remove("uses");
                 result = ReplaceUses(result,_uses);
             }
 

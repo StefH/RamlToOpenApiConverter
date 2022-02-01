@@ -25,6 +25,26 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="Uses.Test\" />
+    <None Remove="Uses\TestFiles\" />
+    <None Remove="Uses\TestFiles\TestExternalFiles\" />
+    <None Remove="Uses\TestFilesResult\" />
+    <None Remove="Uses\TestFiles\Test1.raml" />
+    <None Remove="Uses\TestFilesResultExpected\Test1Result.json" />
+    <None Remove="Uses\TestFiles\TestExternalFiles\common-traits.raml" />
+    <None Remove="Uses\TestFiles\Test1 %28copy%29.raml" />
+    <None Remove="Uses\TestFilesResultExpected\Test2Result.json" />
+    <None Remove="Uses\TestFiles\TestExternalFiles\common-traits3.raml" />
+    <None Remove="Uses\TestFiles\Test3.raml" />
+    <None Remove="Uses\TestFilesResultExpected\Test3Result.json" />
+    <None Remove="Uses\TestFiles\TestExternalFiles\common-traits2.raml" />
+    <None Remove="Uses\TestFiles\Test2.raml" />
+    <None Remove="Uses\TestFilesResultExpected\Test4Result.json" />
+    <None Remove="Uses\TestFiles\Test4.raml" />
+    <None Remove="Uses\TestFiles\TestExternalFiles\common-traits4-1.raml" />
+    <None Remove="Uses\TestFiles\TestExternalFiles\common-traits4.raml" />
+  </ItemGroup>
+  <ItemGroup>
     <None Update="QueryParameters\QueryParameterRequired.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -66,4 +86,54 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Uses\" />
+    <Folder Include="Uses\TestFiles\" />
+    <Folder Include="Uses\TestFiles\TestExternalFiles\" />
+    <Folder Include="Uses\TestFilesResultExpected\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Uses\TestFiles\Test1.raml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Uses\TestFilesResultExpected\Test1Result.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Uses\TestFiles\TestExternalFiles\common-traits1.raml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Uses\TestFiles\Test2.raml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Uses\TestFilesResultExpected\Test2Result.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Uses\TestFiles\TestExternalFiles\common-traits3.raml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Uses\TestFiles\Test3.raml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Uses\TestFilesResultExpected\Test3Result.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Uses\TestFiles\TestExternalFiles\common-traits2.raml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Uses\TestFiles\Test2.raml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Uses\TestFilesResultExpected\Test4Result.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Uses\TestFiles\Test4.raml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Uses\TestFiles\TestExternalFiles\common-traits4-1.raml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Uses\TestFiles\TestExternalFiles\common-traits4.raml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
 </Project>

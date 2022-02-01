@@ -39,7 +39,9 @@ namespace RamlToOpenApiConverter.Extensions
         {
             if (source.TryGetValue(key, out object value))
             {
-                source.Remove(key);
+                if(newValue.Count > 0)
+                    source.Remove(key);
+
                 foreach (KeyValuePair<object, object> item in newValue)
                 {
                     source.Add(item.Key, item.Value);

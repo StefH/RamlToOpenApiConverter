@@ -1,0 +1,21 @@
+#%RAML 1.0
+title: test2
+description: Test2.
+mediaType:
+  - application/json
+version: "v1"
+protocols:
+  - HTTPS
+
+baseUri: /test/raml/2
+
+uses: 
+  uses_traits: TestExternalFiles/common-traits2.raml
+
+/:
+  patch: 
+    displayName: "Test2"
+    is: uses_traits.ex2.pagination
+    responses:
+      201:
+        description: "Response Success Test 2"

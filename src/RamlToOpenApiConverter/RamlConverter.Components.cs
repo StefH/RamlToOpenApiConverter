@@ -57,7 +57,7 @@ namespace RamlToOpenApiConverter
                         else if (type.EndsWith("[]"))
                         {
                             arrayType = type.Substring(0, type.Length - 2);
-                            
+
                         }
 
                         if (arrayType is not null)
@@ -148,6 +148,55 @@ namespace RamlToOpenApiConverter
             }
 
             return openApiProperties;
+        }
+
+        private IDictionary<object, object> ReplaceUses(IDictionary<object, object> source, IDictionary<object, object> uses)
+        {
+            //replace uses in file
+
+            IDictionary<object, object> useReplace = new Dictionary<object, object>();
+            useReplace = ReplaceIs((IDictionary<object, object>)source, uses);
+            source.Replace(useReplace, Constants.IsTag);
+
+            if (uses.Count > 0)
+            {
+                foreach (var pathValue in source)
+                {
+                    if (pathValue.Value.GetType() == typeof(Dictionary<object, object>))
+                    {
+                        useReplace = ReplaceIs((IDictionary<object, object>)pathValue.Value, uses);
+                        ((IDictionary<object, object>)pathValue.Value).Replace(useReplace, Constants.IsTag);
+                    }
+                }
+            }
+            return source;
+        }
+
+        private IDictionary<object, object> ReplaceIs(IDictionary<object, object> source, IDictionary<object, object> uses)
+        {
+            IDictionary<object, object> useReplace = new Dictionary<object, object>();
+            if (uses.Count > 0)
+            {
+                var _is_val = ((IDictionary<object, object>)source).GetAsString(Constants.IsTag);
+                if (_is_val != null)
+                {
+                    var path_is_separator = _is_val.ToString().Split('.');
+                    foreach (var use in uses)
+                    {
+                        if (use.Key.ToString() == path_is_separator[0].ToString())
+                        {
+                            useReplace = ((IDictionary<object, object>)use.Value).GetAsDictionary(Constants.Traits);
+
+                            for (int i = 1; i < path_is_separator.Count(); i++)
+                            {
+                                useReplace = useReplace.GetAsDictionary(path_is_separator[i]);
+                            }
+                        }
+                    }
+                }
+            }
+
+            return useReplace;
         }
     }
 }
