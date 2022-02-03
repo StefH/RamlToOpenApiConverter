@@ -98,7 +98,7 @@ namespace RamlToOpenApiConverter
             _doc.Paths = MapPaths(result, _uses);
 
             // Check if valid
-            var text = _doc.Serialize(OpenApiSpecVersion.OpenApi3_0, OpenApiFormat.Json);
+            _doc.Serialize(OpenApiSpecVersion.OpenApi3_0, OpenApiFormat.Json);
 
             return _doc;
         }

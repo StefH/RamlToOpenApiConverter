@@ -116,7 +116,7 @@ namespace RamlToOpenApiConverter
                         //return MapParameterOrPropertyDetailsToSchema(childDetails);
                     }
 
-                    string isEnum = details.Keys.OfType<string>().FirstOrDefault(k => k == "enum");
+                    var isEnum = details.Keys.OfType<string>().FirstOrDefault(k => k == "enum");
                     if (isEnum != null)
                     {
                         var enumAsCollection = details.GetAsCollection(isEnum).OfType<string>();

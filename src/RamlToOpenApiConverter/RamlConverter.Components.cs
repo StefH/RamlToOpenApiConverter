@@ -9,7 +9,7 @@ namespace RamlToOpenApiConverter
 {
     public partial class RamlConverter
     {
-        private OpenApiComponents? MapComponents(IDictionary<object, object> types)
+        private OpenApiComponents? MapComponents(IDictionary<object, object>? types)
         {
             if (types == null)
             {
@@ -36,17 +36,20 @@ namespace RamlToOpenApiConverter
 
                         if (values.ContainsKey("enum"))
                         {
-                            var enumAsCollection = values.GetAsCollection("enum").OfType<string>();
-                            var enumValues = enumAsCollection
-                                .SelectMany(e => e.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries))
-                                .Select(x => new OpenApiString(x.Trim()));
-
-                            var schema = new OpenApiSchema
+                            var enumAsCollection = values.GetAsCollection("enum")?.OfType<string>();
+                            if (enumAsCollection != null)
                             {
-                                Type = "string",
-                                Enum = enumValues.OfType<IOpenApiAny>().ToList()
-                            };
-                            components.Schemas.Add(key, schema);
+                                var enumValues = enumAsCollection
+                                    .SelectMany(e => e.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries))
+                                    .Select(x => new OpenApiString(x.Trim()));
+
+                                var schema = new OpenApiSchema
+                                {
+                                    Type = "string",
+                                    Enum = enumValues.OfType<IOpenApiAny>().ToList()
+                                };
+                                components.Schemas.Add(key, schema);
+                            }
                         }
 
                         string? arrayType = null;
@@ -128,7 +131,7 @@ namespace RamlToOpenApiConverter
                         throw new NotSupportedException();
                 }
 
-                string propertyType = values.Get("type");
+                var propertyType = values.Get("type");
                 if (propertyType == "object")
                 {
                     // Object
@@ -156,29 +159,29 @@ namespace RamlToOpenApiConverter
             return openApiProperties;
         }
 
+        /// <summary>
+        /// Replace uses in file
+        /// </summary>
         private IDictionary<object, object> ReplaceUses(IDictionary<object, object> source, IDictionary<object, object> uses)
         {
-            //replace uses in file
-
-            IDictionary<object, object> useReplace = new Dictionary<object, object>();
-            useReplace = ReplaceIs((IDictionary<object, object>)source, uses);
+            var useReplace = ReplaceIs(source, uses);
             source.Replace(useReplace, Constants.IsTag);
 
-            if (uses.Count > 0)
+            if (uses.Count <= 0)
             {
-                foreach (var pathValue in source)
-                {
-                    if (pathValue.Value.GetType() == typeof(Dictionary<object, object>))
-                    {
-                        useReplace = ReplaceIs((IDictionary<object, object>)pathValue.Value, uses);
-                        ((IDictionary<object, object>)pathValue.Value).Replace(useReplace, Constants.IsTag);
-                    }
-                }
+                return source;
             }
+
+            foreach (var pathValue in source.Values.OfType<Dictionary<object, object>>())
+            {
+                useReplace = ReplaceIs(pathValue, uses);
+                pathValue.Replace(useReplace, Constants.IsTag);
+            }
+
             return source;
         }
 
-        private IDictionary<object, object> ReplaceIs(IDictionary<object, object> source, IDictionary<object, object> uses)
+        private static IDictionary<object, object> ReplaceIs(IDictionary<object, object> source, IDictionary<object, object> uses)
         {
             IDictionary<object, object> useReplace = new Dictionary<object, object>();
 

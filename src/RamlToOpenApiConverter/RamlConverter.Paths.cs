@@ -154,7 +154,7 @@ namespace RamlToOpenApiConverter
             return requestBody;
         }
 
-        private IDictionary<string, OpenApiMediaType> MapContents(IDictionary<object, object> values)
+        private IDictionary<string, OpenApiMediaType>? MapContents(IDictionary<object, object>? values)
         {
             if (values == null)
             {
@@ -168,12 +168,12 @@ namespace RamlToOpenApiConverter
                 if (values.ContainsKey(key))
                 {
                     var items = values.GetAsDictionary(key); // Body and Example and Type and Schema
-                    string exampleAsJson = items?.Get("example");
+                    var exampleAsJson = items?.Get("example");
 
-                    string type = items?.Get("type");
-                    string schemaValue = items?.Get("schema");
+                    var type = items?.Get("type");
+                    var schemaValue = items?.Get("schema");
 
-                    OpenApiSchema schema = null;
+                    OpenApiSchema? schema = null;
                     if (!string.IsNullOrEmpty(type))
                     {
                         schema = MapMediaTypeSchema(type);
