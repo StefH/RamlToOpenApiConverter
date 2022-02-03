@@ -14,8 +14,6 @@ namespace RamlToOpenApiConverter
 {
     public partial class RamlConverter
     {
-        private IDictionary<object, object> dic = new Dictionary<object, object>();
-
         private OpenApiPaths MapPaths(IDictionary<object, object> o, IDictionary<object, object> uses)
         {
             var paths = new OpenApiPaths();
@@ -102,7 +100,7 @@ namespace RamlToOpenApiConverter
             };
         }
 
-        private OpenApiResponses MapResponses(IDictionary<object, object> values)
+        private OpenApiResponses? MapResponses(IDictionary<object, object>? values)
         {
             var openApiResponses = new OpenApiResponses();
 
@@ -141,7 +139,7 @@ namespace RamlToOpenApiConverter
             return openApiResponses.Count > 0 ? openApiResponses : null;
         }
 
-        private OpenApiRequestBody MapRequest(IDictionary<object, object> values)
+        private OpenApiRequestBody? MapRequest(IDictionary<object, object>? values)
         {
             if (values == null)
             {
@@ -198,12 +196,12 @@ namespace RamlToOpenApiConverter
             return content;
         }
 
-        private IOpenApiAny MapExample(string exampleAsJson)
+        private static IOpenApiAny MapExample(string exampleAsJson)
         {
             var stringAsStream = new MemoryStream(Encoding.UTF8.GetBytes(exampleAsJson));
 
             var reader = new OpenApiStreamReader();
-            return reader.ReadFragment<IOpenApiAny>(stringAsStream, OpenApiSpecVersion.OpenApi3_0, out var _);
+            return reader.ReadFragment<IOpenApiAny>(stringAsStream, OpenApiSpecVersion.OpenApi3_0, out _);
         }
 
         private OpenApiSchema MapMediaTypeSchema(string value)
