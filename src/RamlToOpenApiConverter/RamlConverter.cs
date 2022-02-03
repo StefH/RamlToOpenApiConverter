@@ -13,6 +13,8 @@ namespace RamlToOpenApiConverter
     public partial class RamlConverter
     {
         private readonly IDictionary<object, object> _types = new Dictionary<object, object>();
+        private readonly IDictionary<object, object> _uses = new Dictionary<object, object>();
+
 
         private IDeserializer _deserializer = default!;
         private OpenApiDocument _doc = default!;
@@ -52,9 +54,21 @@ namespace RamlToOpenApiConverter
         {
             _deserializer = IncludeNodeDeserializerBuilder.Build(Path.GetDirectoryName(inputPath));
 
-            var result = _deserializer.Deserialize<Dictionary<object, object>>(File.ReadAllText(inputPath));
+            var result = _deserializer.Deserialize<IDictionary<object, object>>(File.ReadAllText(inputPath));
 
-            // Step 1 - Get all types and schemas
+            // Step 1 - Get all uses
+            var uses = result.GetAsDictionary("uses");
+            if (uses != null)
+            {
+                foreach (var use in uses.Where(x => !_uses.ContainsKey(x.Key)))
+                {
+                    _uses.Add(use.Key, use.Value);
+                }
+                result.Remove("uses");
+                result = ReplaceUses(result,_uses);
+            }
+
+            // Step 2 - Get all types and schemas
             var types = result.GetAsDictionary("types");
             if (types != null)
             {
@@ -72,7 +86,7 @@ namespace RamlToOpenApiConverter
                 }
             }
 
-            // Step 2 - Get Info, Servers and Components
+            // Step 3 - Get Info, Servers and Components
             _doc = new OpenApiDocument
             {
                 Info = MapInfo(result),
@@ -80,8 +94,8 @@ namespace RamlToOpenApiConverter
                 Components = MapComponents(_types)
             };
 
-            // Step 3 - Get Paths
-            _doc.Paths = MapPaths(result);
+            // Step 4 - Get Paths
+            _doc.Paths = MapPaths(result, _uses);
 
             // Check if valid
             var text = _doc.Serialize(OpenApiSpecVersion.OpenApi3_0, OpenApiFormat.Json);

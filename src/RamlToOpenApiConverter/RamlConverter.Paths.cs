@@ -14,13 +14,15 @@ namespace RamlToOpenApiConverter
 {
     public partial class RamlConverter
     {
-        private OpenApiPaths MapPaths(IDictionary<object, object> o)
+        private IDictionary<object, object> dic = new Dictionary<object, object>();
+
+        private OpenApiPaths MapPaths(IDictionary<object, object> o, IDictionary<object, object> uses)
         {
             var paths = new OpenApiPaths();
 
             foreach (var key in o.Keys.OfType<string>().Where(k => k.StartsWith("/")))
             {
-                var pathItems = MapPathItems(key, new List<OpenApiParameter>(), o.GetAsDictionary(key));
+                var pathItems = MapPathItems(key, new List<OpenApiParameter>(), o.GetAsDictionary(key), uses);
                 foreach (var pathItem in pathItems)
                 {
                     paths.Add(pathItem.AdjustedPath, pathItem.Item);
@@ -30,8 +32,10 @@ namespace RamlToOpenApiConverter
             return paths;
         }
 
-        private ICollection<(OpenApiPathItem Item, string AdjustedPath)> MapPathItems(string parent, IList<OpenApiParameter> parentParameters, IDictionary<object, object> values)
+        private ICollection<(OpenApiPathItem Item, string AdjustedPath)> MapPathItems(string parent, IList<OpenApiParameter> parentParameters, IDictionary<object, object> values, IDictionary<object, object> uses)
         {
+            values = ReplaceUses(values, uses);
+
             var items = new List<(OpenApiPathItem Item, string AdjustedPath)>();
 
             // Fetch all parameters from this path
@@ -80,7 +84,7 @@ namespace RamlToOpenApiConverter
             {
                 var d = values.GetAsDictionary(key);
                 string newPath = $"{parent}{key}";
-                var mapItems = MapPathItems(newPath, parameters, d);
+                var mapItems = MapPathItems(newPath, parameters, d, uses);
                 items.AddRange(mapItems);
             }
 
