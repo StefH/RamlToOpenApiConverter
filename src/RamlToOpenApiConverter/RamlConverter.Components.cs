@@ -27,7 +27,7 @@ namespace RamlToOpenApiConverter
                 {
                     case IDictionary<object, object> values:
                         var type = values.Get("type");
-                        if (type == "object" || types.ContainsKey(type))
+                        if (type == "object" || (type != null && types.ContainsKey(type)))
                         {
                             var required = values.GetAsCollection("required");
                             var properties = values.GetAsDictionary("properties");
@@ -54,7 +54,7 @@ namespace RamlToOpenApiConverter
                         {
                             arrayType = arrayItem as string;
                         }
-                        else if (type.EndsWith("[]"))
+                        else if (type?.EndsWith("[]") == true)
                         {
                             arrayType = type.Substring(0, type.Length - 2);
 
