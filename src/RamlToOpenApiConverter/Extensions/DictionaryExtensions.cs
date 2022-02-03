@@ -37,12 +37,14 @@ namespace RamlToOpenApiConverter.Extensions
 
         public static void Replace(this IDictionary<object, object> source, IDictionary<object, object> newValue, object key)
         {
-            if (source.TryGetValue(key, out object value))
+            if (source.TryGetValue(key, out _))
             {
-                if(newValue.Count > 0)
+                if (newValue.Count > 0)
+                {
                     source.Remove(key);
+                }
 
-                foreach (KeyValuePair<object, object> item in newValue)
+                foreach (var item in newValue)
                 {
                     source.Add(item.Key, item.Value);
                 }

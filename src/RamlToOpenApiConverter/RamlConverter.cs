@@ -52,7 +52,7 @@ namespace RamlToOpenApiConverter
         /// <param name="inputPath">The path to the RAML file.</param>
         public OpenApiDocument ConvertToOpenApiDocument(string inputPath)
         {
-            _deserializer = IncludeNodeDeserializerBuilder.Build(Path.GetDirectoryName(inputPath));
+            _deserializer = IncludeNodeDeserializerBuilder.Build(Path.GetDirectoryName(inputPath)!);
 
             var result = _deserializer.Deserialize<IDictionary<object, object>>(File.ReadAllText(inputPath));
 

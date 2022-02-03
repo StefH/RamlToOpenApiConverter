@@ -30,7 +30,11 @@ namespace RamlToOpenApiConverter
             return paths;
         }
 
-        private ICollection<(OpenApiPathItem Item, string AdjustedPath)> MapPathItems(string parent, IList<OpenApiParameter> parentParameters, IDictionary<object, object> values, IDictionary<object, object> uses)
+        private ICollection<(OpenApiPathItem Item, string AdjustedPath)> MapPathItems(
+            string parent,
+            IList<OpenApiParameter> parentParameters,
+            IDictionary<object, object> values,
+            IDictionary<object, object> uses)
         {
             values = ReplaceUses(values, uses);
 
@@ -109,14 +113,14 @@ namespace RamlToOpenApiConverter
                 return null;
             }
 
-            // SharpYampl uses int but YamlDotNet uses string
+            // SharpYaml uses int but YamlDotNet uses string
             foreach (string key in values.Keys.OfType<string>())
             {
                 var response = values.GetAsDictionary(key);
                 if (response != null)
                 {
                     var body = response.GetAsDictionary("body");
-                    string description = response.Get("description");
+                    var description = response.Get("description");
                     if (body != null)
                     {
                         var openApiResponse = new OpenApiResponse
@@ -176,11 +180,11 @@ namespace RamlToOpenApiConverter
                     OpenApiSchema? schema = null;
                     if (!string.IsNullOrEmpty(type))
                     {
-                        schema = MapMediaTypeSchema(type);
+                        schema = MapMediaTypeSchema(type!);
                     }
                     else if (!string.IsNullOrEmpty(schemaValue))
                     {
-                        schema = MapMediaTypeSchema(schemaValue);
+                        schema = MapMediaTypeSchema(schemaValue!);
                     }
 
                     var openApiMediaType = new OpenApiMediaType
@@ -230,7 +234,7 @@ namespace RamlToOpenApiConverter
             };
         }
 
-        private OpenApiSchema CreateDummyOpenApiReferenceSchema(string referenceId, string type = null)
+        private OpenApiSchema CreateDummyOpenApiReferenceSchema(string referenceId, string? type = null)
         {
             var schema = new OpenApiSchema
             {

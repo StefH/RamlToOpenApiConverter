@@ -119,13 +119,13 @@ namespace RamlToOpenApiConverter
                     var isEnum = details.Keys.OfType<string>().FirstOrDefault(k => k == "enum");
                     if (isEnum != null)
                     {
-                        var enumAsCollection = details.GetAsCollection(isEnum).OfType<string>();
-                        var enumValues = enumAsCollection
+                        var enumAsCollection = details.GetAsCollection(isEnum)?.OfType<string>();
+                        var enumValues = enumAsCollection?
                             .SelectMany(e => e.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries))
                             .Select(x => new OpenApiString(x.Trim()));
 
                         schema.Type = "string";
-                        schema.Enum = enumValues.OfType<IOpenApiAny>().ToList();
+                        schema.Enum = enumValues?.OfType<IOpenApiAny>().ToList() ?? new List<IOpenApiAny>();
                     }
                     else
                     {
