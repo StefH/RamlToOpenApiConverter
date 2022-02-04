@@ -1,3 +1,7 @@
+# 0.6.1 (04 February 2022)
+- [#18](https://github.com/StefH/RamlToOpenApiConverter/pull/18) - Uses statement contributed by [andresendava](https://github.com/andresendava)
+- [#19](https://github.com/StefH/RamlToOpenApiConverter/pull/19) - Fixes contributed by [StefH](https://github.com/StefH)
+
 # 0.6.0 (11 December 2021)
 - [#17](https://github.com/StefH/RamlToOpenApiConverter/pull/17) - Sign Assembly [enhancement] contributed by [StefH](https://github.com/StefH)
 
