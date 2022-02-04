@@ -9,7 +9,7 @@ namespace RamlToOpenApiConverter
 {
     public partial class RamlConverter
     {
-        private OpenApiComponents? MapComponents(IDictionary<object, object> types)
+        private OpenApiComponents? MapComponents(IDictionary<object, object>? types)
         {
             if (types == null)
             {
@@ -36,17 +36,20 @@ namespace RamlToOpenApiConverter
 
                         if (values.ContainsKey("enum"))
                         {
-                            var enumAsCollection = values.GetAsCollection("enum").OfType<string>();
-                            var enumValues = enumAsCollection
-                                .SelectMany(e => e.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries))
-                                .Select(x => new OpenApiString(x.Trim()));
-
-                            var schema = new OpenApiSchema
+                            var enumAsCollection = values.GetAsCollection("enum")?.OfType<string>();
+                            if (enumAsCollection != null)
                             {
-                                Type = "string",
-                                Enum = enumValues.OfType<IOpenApiAny>().ToList()
-                            };
-                            components.Schemas.Add(key, schema);
+                                var enumValues = enumAsCollection
+                                    .SelectMany(e => e.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries))
+                                    .Select(x => new OpenApiString(x.Trim()));
+
+                                var schema = new OpenApiSchema
+                                {
+                                    Type = "string",
+                                    Enum = enumValues.OfType<IOpenApiAny>().ToList()
+                                };
+                                components.Schemas.Add(key, schema);
+                            }
                         }
 
                         string? arrayType = null;
@@ -86,7 +89,7 @@ namespace RamlToOpenApiConverter
             return components.Schemas.Count > 0 ? components : null;
         }
 
-        private OpenApiSchema MapSchema(IDictionary<object, object> properties, ICollection<object> required)
+        private OpenApiSchema MapSchema(IDictionary<object, object>? properties, ICollection<object>? required)
         {
             return new OpenApiSchema
             {
@@ -96,9 +99,15 @@ namespace RamlToOpenApiConverter
             };
         }
 
-        private IDictionary<string, OpenApiSchema> MapProperties(IDictionary<object, object> properties, ICollection<object>? required)
+        private IDictionary<string, OpenApiSchema> MapProperties(IDictionary<object, object>? properties, ICollection<object>? required)
         {
             var openApiProperties = new Dictionary<string, OpenApiSchema>();
+
+            if (properties == null)
+            {
+                return openApiProperties;
+            }
+
             foreach (var key in properties.Keys.OfType<string>())
             {
                 OpenApiSchema schema;
@@ -122,7 +131,7 @@ namespace RamlToOpenApiConverter
                         throw new NotSupportedException();
                 }
 
-                string propertyType = values.Get("type");
+                var propertyType = values.Get("type");
                 if (propertyType == "object")
                 {
                     // Object
@@ -150,47 +159,57 @@ namespace RamlToOpenApiConverter
             return openApiProperties;
         }
 
+        /// <summary>
+        /// Replace uses in file
+        /// </summary>
         private IDictionary<object, object> ReplaceUses(IDictionary<object, object> source, IDictionary<object, object> uses)
         {
-            //replace uses in file
-
-            IDictionary<object, object> useReplace = new Dictionary<object, object>();
-            useReplace = ReplaceIs((IDictionary<object, object>)source, uses);
+            var useReplace = ReplaceIs(source, uses);
             source.Replace(useReplace, Constants.IsTag);
 
-            if (uses.Count > 0)
+            if (uses.Count <= 0)
             {
-                foreach (var pathValue in source)
-                {
-                    if (pathValue.Value.GetType() == typeof(Dictionary<object, object>))
-                    {
-                        useReplace = ReplaceIs((IDictionary<object, object>)pathValue.Value, uses);
-                        ((IDictionary<object, object>)pathValue.Value).Replace(useReplace, Constants.IsTag);
-                    }
-                }
+                return source;
             }
+
+            foreach (var pathValue in source.Values.OfType<Dictionary<object, object>>())
+            {
+                useReplace = ReplaceIs(pathValue, uses);
+                pathValue.Replace(useReplace, Constants.IsTag);
+            }
+
             return source;
         }
 
-        private IDictionary<object, object> ReplaceIs(IDictionary<object, object> source, IDictionary<object, object> uses)
+        private static IDictionary<object, object> ReplaceIs(IDictionary<object, object> source, IDictionary<object, object> uses)
         {
             IDictionary<object, object> useReplace = new Dictionary<object, object>();
-            if (uses.Count > 0)
-            {
-                var _is_val = ((IDictionary<object, object>)source).GetAsString(Constants.IsTag);
-                if (_is_val != null)
-                {
-                    var path_is_separator = _is_val.ToString().Split('.');
-                    foreach (var use in uses)
-                    {
-                        if (use.Key.ToString() == path_is_separator[0].ToString())
-                        {
-                            useReplace = ((IDictionary<object, object>)use.Value).GetAsDictionary(Constants.Traits);
 
-                            for (int i = 1; i < path_is_separator.Count(); i++)
-                            {
-                                useReplace = useReplace.GetAsDictionary(path_is_separator[i]);
-                            }
+            if (uses.Count <= 0)
+            {
+                return useReplace;
+            }
+
+            var isTag = source.GetAsString(Constants.IsTag);
+            if (isTag == null)
+            {
+                return useReplace;
+            }
+
+            var pathSeparators = isTag.Split('.');
+            foreach (var use in uses.Where(u => u.Key.ToString() == pathSeparators.First()))
+            {
+                var traits = (use.Value as IDictionary<object, object>)?.GetAsDictionary(Constants.Traits);
+                if (traits != null)
+                {
+                    useReplace = traits;
+
+                    foreach (var pathSeparator in pathSeparators.Skip(1))
+                    {
+                        var replaced = useReplace.GetAsDictionary(pathSeparator);
+                        if (replaced != null)
+                        {
+                            useReplace = replaced;
                         }
                     }
                 }

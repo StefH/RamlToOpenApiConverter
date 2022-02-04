@@ -22,16 +22,14 @@ namespace RamlToOpenApiConverter.Yaml
 
         bool INodeDeserializer.Deserialize(IParser parser, Type expectedType, Func<IParser, Type, object?> nestedObjectDeserializer, out object? value)
         {
-
             if (parser.Accept(out Scalar scalar) && scalar != null)
             {
                 string fileName = scalar.Value.Replace('/', Path.DirectorySeparatorChar);
                 var extension = Path.GetExtension(fileName);
-                string? includePath = null;
 
                 if (scalar.Tag == Constants.IncludeTag || (scalar.Tag != Constants.IncludeTag && (RamlExtensionRegex.IsMatch(extension) || JsonExtensionRegex.IsMatch(extension))))
                 {
-                    includePath = Path.Combine(_options.DirectoryName, fileName);
+                    var includePath = Path.Combine(_options.DirectoryName, fileName);
                     value = ReadIncludedFile(includePath, expectedType);
                     parser.MoveNext();
                     return true;
