@@ -2,8 +2,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Microsoft.OpenApi;
-using Microsoft.OpenApi.Extensions;
 using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi.Writers;
 using RamlToOpenApiConverter.Builders;
 using RamlToOpenApiConverter.Extensions;
 using YamlDotNet.Serialization;
@@ -14,7 +14,6 @@ namespace RamlToOpenApiConverter
     {
         private readonly IDictionary<object, object> _types = new Dictionary<object, object>();
         private readonly IDictionary<object, object> _uses = new Dictionary<object, object>();
-
 
         private IDeserializer _deserializer = default!;
         private OpenApiDocument _doc = default!;
@@ -29,7 +28,12 @@ namespace RamlToOpenApiConverter
         {
             var document = ConvertToOpenApiDocument(inputPath);
 
-            return document.Serialize(specVersion, format);
+            using var stringWriter = new StringWriter();
+            IOpenApiWriter openApiWriter = format == OpenApiFormat.Json ? new OpenApiJsonWriter(stringWriter) : new OpenApiYamlWriter(stringWriter);
+
+            document.SerializeAs(specVersion, openApiWriter);
+
+            return stringWriter.ToString();
         }
 
         /// <summary>
@@ -98,7 +102,8 @@ namespace RamlToOpenApiConverter
             _doc.Paths = MapPaths(result, _uses);
 
             // Check if valid
-            _doc.Serialize(OpenApiSpecVersion.OpenApi3_0, OpenApiFormat.Json);
+            using var stringWriter = new StringWriter();
+            _doc.SerializeAs(OpenApiSpecVersion.OpenApi3_0, new OpenApiJsonWriter(stringWriter));
 
             return _doc;
         }

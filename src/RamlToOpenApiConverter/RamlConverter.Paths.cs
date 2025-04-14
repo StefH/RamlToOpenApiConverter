@@ -1,13 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
-using Microsoft.OpenApi;
-using Microsoft.OpenApi.Any;
-using Microsoft.OpenApi.Extensions;
+using System.Net.Http;
+using System.Text.Json.Nodes;
 using Microsoft.OpenApi.Models;
-using Microsoft.OpenApi.Readers;
+using Microsoft.OpenApi.Models.Interfaces;
+using Microsoft.OpenApi.Models.References;
 using RamlToOpenApiConverter.Extensions;
 
 namespace RamlToOpenApiConverter
@@ -20,7 +18,7 @@ namespace RamlToOpenApiConverter
 
             foreach (var key in o.Keys.OfType<string>().Where(k => k.StartsWith("/")))
             {
-                var pathItems = MapPathItems(key, new List<OpenApiParameter>(), o.GetAsDictionary(key), uses);
+                var pathItems = MapPathItems(key, new List<IOpenApiParameter>(), o.GetAsDictionary(key), uses);
                 foreach (var pathItem in pathItems)
                 {
                     paths.Add(pathItem.AdjustedPath, pathItem.Item);
@@ -30,15 +28,15 @@ namespace RamlToOpenApiConverter
             return paths;
         }
 
-        private ICollection<(OpenApiPathItem Item, string AdjustedPath)> MapPathItems(
+        private ICollection<(IOpenApiPathItem Item, string AdjustedPath)> MapPathItems(
             string parent,
-            IList<OpenApiParameter> parentParameters,
+            IList<IOpenApiParameter> parentParameters,
             IDictionary<object, object> values,
             IDictionary<object, object> uses)
         {
             values = ReplaceUses(values, uses);
 
-            var items = new List<(OpenApiPathItem Item, string AdjustedPath)>();
+            var items = new List<(IOpenApiPathItem Item, string AdjustedPath)>();
 
             // Fetch all parameters from this path
             var parameters = MapParameters(values);
@@ -49,13 +47,13 @@ namespace RamlToOpenApiConverter
                 parameters.Add(parameter);
             }
 
-            var operations = new Dictionary<OperationType, OpenApiOperation>();
+            var operations = new Dictionary<HttpMethod, OpenApiOperation>();
 
             // Loop all keys which do not start with a '/'
             foreach (string key in values.Keys.OfType<string>().Where(k => !k.StartsWith("/")))
             {
                 // And try to match operations
-                if (TryMapOperationType(key, out OperationType operationType))
+                if (TryMapOperationType(key, out HttpMethod operationType))
                 {
                     var operationValues = values.GetAsDictionary(key);
                     var operation = MapOperation(operationValues);
@@ -177,7 +175,7 @@ namespace RamlToOpenApiConverter
                     var type = items?.Get("type");
                     var schemaValue = items?.Get("schema");
 
-                    OpenApiSchema? schema = null;
+                    IOpenApiSchema? schema = null;
                     if (!string.IsNullOrEmpty(type))
                     {
                         schema = MapMediaTypeSchema(type!);
@@ -190,7 +188,7 @@ namespace RamlToOpenApiConverter
                     var openApiMediaType = new OpenApiMediaType
                     {
                         Schema = schema,
-                        Example = !string.IsNullOrEmpty(exampleAsJson) ? MapExample(exampleAsJson) : null,
+                        Example = !string.IsNullOrEmpty(exampleAsJson) ? MapExample(exampleAsJson) : null
                     };
 
                     content.Add(key, openApiMediaType);
@@ -200,15 +198,20 @@ namespace RamlToOpenApiConverter
             return content;
         }
 
-        private static IOpenApiAny MapExample(string exampleAsJson)
-        {
-            var stringAsStream = new MemoryStream(Encoding.UTF8.GetBytes(exampleAsJson));
+        //private static IOpenApiAny MapExample(string exampleAsJson)
+        //{
+        //    var stringAsStream = new MemoryStream(Encoding.UTF8.GetBytes(exampleAsJson));
 
-            var reader = new OpenApiStreamReader();
-            return reader.ReadFragment<IOpenApiAny>(stringAsStream, OpenApiSpecVersion.OpenApi3_0, out _);
+        //    var reader = new OpenApiStreamReader();
+        //    return reader.ReadFragment<IOpenApiAny>(stringAsStream, OpenApiSpecVersion.OpenApi3_0, out _);
+        //}
+
+        private static JsonNode? MapExample(string exampleAsJson)
+        {
+            return JsonNode.Parse(exampleAsJson);
         }
 
-        private OpenApiSchema MapMediaTypeSchema(string value)
+        private IOpenApiSchema MapMediaTypeSchema(string value)
         {
             if (value.StartsWith("{"))
             {
@@ -234,33 +237,34 @@ namespace RamlToOpenApiConverter
             };
         }
 
-        private OpenApiSchema CreateDummyOpenApiReferenceSchema(string referenceId, string? type = null)
+        private IOpenApiSchema CreateDummyOpenApiReferenceSchema(string referenceId, string? type = null)
         {
-            var schema = new OpenApiSchema
+            var schema = new OpenApiSchemaReference(referenceId)
             {
-                Reference = new OpenApiReference { Id = referenceId, Type = ReferenceType.Schema }
+                //Reference = new OpenApiReference { Id = referenceId, Type = ReferenceType.Schema }
             };
 
-            if (!string.IsNullOrEmpty(type))
-            {
-                schema.Type = type;
-            }
+            //if (!string.IsNullOrEmpty(type))
+            //{
+            //    schema.Type = type;
+            //}
 
             return schema;
         }
 
-        private bool TryMapOperationType(string value, out OperationType operationType)
+        private static bool TryMapOperationType(string value, out HttpMethod operationType)
         {
-            foreach (OperationType @enum in Enum.GetValues(typeof(OperationType)))
+            try
             {
-                if (@enum.GetDisplayName().Equals(value, StringComparison.OrdinalIgnoreCase))
-                {
-                    operationType = @enum;
-                    return true;
-                }
+                operationType = new HttpMethod(value);
+                return true;
+            }
+            catch
+            {
+                // NO-OP
             }
 
-            operationType = OperationType.Get;
+            operationType = HttpMethod.Get;
             return false;
         }
     }

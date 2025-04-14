@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.OpenApi.Any;
+using System.Text.Json.Nodes;
 using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi.Models.Interfaces;
 using RamlToOpenApiConverter.Extensions;
 
 namespace RamlToOpenApiConverter
@@ -18,7 +19,7 @@ namespace RamlToOpenApiConverter
 
             var components = new OpenApiComponents
             {
-                Schemas = new Dictionary<string, OpenApiSchema>()
+                Schemas = new Dictionary<string, IOpenApiSchema>()
             };
 
             foreach (var key in types.Keys.OfType<string>())
@@ -41,12 +42,12 @@ namespace RamlToOpenApiConverter
                             {
                                 var enumValues = enumAsCollection
                                     .SelectMany(e => e.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries))
-                                    .Select(x => new OpenApiString(x.Trim()));
+                                    .Select(x => JsonNode.Parse(x.Trim()));
 
                                 var schema = new OpenApiSchema
                                 {
-                                    Type = "string",
-                                    Enum = enumValues.OfType<IOpenApiAny>().ToList()
+                                    Type = JsonSchemaType.String,
+                                    Enum = enumValues.OfType<JsonNode>().ToList()
                                 };
                                 components.Schemas.Add(key, schema);
                             }
@@ -69,7 +70,7 @@ namespace RamlToOpenApiConverter
                             {
                                 components.Schemas.Add(key, new OpenApiSchema
                                 {
-                                    Type = "array",
+                                    Type = JsonSchemaType.Array,
                                     Items = CreateDummyOpenApiReferenceSchema(arrayType)
                                 });
                             }
@@ -93,15 +94,15 @@ namespace RamlToOpenApiConverter
         {
             return new OpenApiSchema
             {
-                Type = "object",
+                Type = JsonSchemaType.Object,
                 Required = required != null ? new HashSet<string>(required.OfType<string>()) : null,
                 Properties = MapProperties(properties, required)
             };
         }
 
-        private IDictionary<string, OpenApiSchema> MapProperties(IDictionary<object, object>? properties, ICollection<object>? required)
+        private IDictionary<string, IOpenApiSchema> MapProperties(IDictionary<object, object>? properties, ICollection<object>? required)
         {
-            var openApiProperties = new Dictionary<string, OpenApiSchema>();
+            var openApiProperties = new Dictionary<string, IOpenApiSchema>();
 
             if (properties == null)
             {
@@ -110,7 +111,7 @@ namespace RamlToOpenApiConverter
 
             foreach (var key in properties.Keys.OfType<string>())
             {
-                OpenApiSchema schema;
+                IOpenApiSchema schema;
 
                 IDictionary<object, object> values;
                 switch (properties[key])
@@ -145,7 +146,7 @@ namespace RamlToOpenApiConverter
                     var props = simpleType?.GetAsDictionary("properties");
                     schema = props != null ?
                         CreateDummyOpenApiReferenceSchema(propertyType) : // Custom type
-                        MapParameterOrPropertyDetailsToSchema(simpleType); //  Simple Type
+                        MapParameterOrPropertyDetailsToSchema(simpleType!); //  Simple Type
                 }
                 else
                 {

@@ -1,17 +1,18 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.OpenApi.Any;
+using System.Text.Json.Nodes;
 using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi.Models.Interfaces;
 using RamlToOpenApiConverter.Extensions;
 
 namespace RamlToOpenApiConverter
 {
     public partial class RamlConverter
     {
-        private IList<OpenApiParameter> MapParameters(IDictionary<object, object> values)
+        private IList<IOpenApiParameter> MapParameters(IDictionary<object, object> values)
         {
-            var parameters = new List<OpenApiParameter>();
+            var parameters = new List<IOpenApiParameter>();
 
             parameters.AddRange(MapParameters(values.GetAsDictionary("queryParameters"), ParameterLocation.Query));
             parameters.AddRange(MapParameters(values.GetAsDictionary("uriParameters"), ParameterLocation.Path));
@@ -49,24 +50,25 @@ namespace RamlToOpenApiConverter
             return openApiParameters;
         }
 
-        private OpenApiSchema MapParameterOrPropertyDetailsToSchema(IDictionary<object, object> details)
+        private IOpenApiSchema MapParameterOrPropertyDetailsToSchema(IDictionary<object, object> details)
         {
             var schemaTypeFromRaml = details.Get("type");
             var schemaFormatFromRaml = details.Get("format");
 
             var schemaTypes = (schemaTypeFromRaml ?? "string")
                 .Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries)
-                .Select(s => s.Trim()).ToList();
-            
+                .Select(s => s.Trim())
+                .ToList();
+
             // https://github.com/raml-org/raml-spec/blob/master/versions/raml-10/raml-10.md#nil-type
-            bool isNil = schemaTypes.Contains("nil");
+            // bool isNil = schemaTypes.Contains("nil");
 
             var schemaTypesExceptNil = schemaTypes.Where(s => s != "nil").Distinct().ToList();
-            string schemaType = schemaTypesExceptNil.Count > 1 ? "object" : schemaTypesExceptNil.FirstOrDefault() ?? "string";
+            var schemaType = schemaTypesExceptNil.Count > 1 ? "object" : schemaTypesExceptNil.FirstOrDefault() ?? "string";
 
             var schema = new OpenApiSchema
             {
-                Nullable = isNil,
+                // Nullable = isNil,
                 Minimum = details.Get<decimal?>("minimum"),
                 Maximum = details.Get<decimal?>("maximum"),
                 MaxLength = details.Get<int?>("maxLength"),
@@ -76,7 +78,7 @@ namespace RamlToOpenApiConverter
             switch (schemaType)
             {
                 case "datetime":
-                    schema.Type = "string";
+                    schema.Type = JsonSchemaType.String;
                     schema.Format = "date-time";
                     break;
 
@@ -85,22 +87,22 @@ namespace RamlToOpenApiConverter
                     {
                         case "long":
                         case "int64":
-                            schema.Type = "integer";
+                            schema.Type = JsonSchemaType.Integer;
                             schema.Format = "int64";
                             break;
 
                         case "float":
-                            schema.Type = "number";
+                            schema.Type = JsonSchemaType.Number;
                             schema.Format = "float";
                             break;
 
                         case "double":
-                            schema.Type = "number";
+                            schema.Type = JsonSchemaType.Number;
                             schema.Format = "double";
                             break;
 
                         default:
-                            schema.Type = "integer";
+                            schema.Type = JsonSchemaType.Integer;
                             schema.Format = "int";
                             break;
                     }
@@ -122,14 +124,14 @@ namespace RamlToOpenApiConverter
                         var enumAsCollection = details.GetAsCollection(isEnum)?.OfType<string>();
                         var enumValues = enumAsCollection?
                             .SelectMany(e => e.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries))
-                            .Select(x => new OpenApiString(x.Trim()));
+                            .Select(x => JsonNode.Parse(x.Trim()));
 
-                        schema.Type = "string";
-                        schema.Enum = enumValues?.OfType<IOpenApiAny>().ToList() ?? new List<IOpenApiAny>();
+                        schema.Type = JsonSchemaType.String;
+                        schema.Enum = enumValues?.OfType<JsonNode>().ToList() ?? new List<JsonNode>();
                     }
                     else
                     {
-                        schema.Type = schemaType;
+                        schema.Type = JsonSchemaType.Object; // TODO Is this correct?
                         schema.Format = schemaFormatFromRaml;
                     }
 

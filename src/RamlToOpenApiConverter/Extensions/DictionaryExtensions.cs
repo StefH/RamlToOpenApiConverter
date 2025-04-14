@@ -63,7 +63,7 @@ namespace RamlToOpenApiConverter.Extensions
 
         public static string? GetAsString(this IDictionary<object, object> source, object key)
         {
-            if (source.TryGetValue(key, out object value))
+            if (source.TryGetValue(key, out var value))
             {
                 return value is string ? value.ToString() : null;
             }
@@ -80,8 +80,9 @@ namespace RamlToOpenApiConverter.Extensions
                 // get the T in ?T
                 var typeArgument = type.GetGenericArguments()[0];
                 obj = Convert.ChangeType(obj, typeArgument);
+
                 // get the Nullable<T>(T) constructor
-                var ctor = type.GetConstructor(new[] { typeArgument });
+                var ctor = type.GetConstructor(new[] { typeArgument })!;
                 return (T)ctor.Invoke(new[] { obj });
             }
 
