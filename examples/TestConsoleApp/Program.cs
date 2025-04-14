@@ -8,6 +8,7 @@ namespace TestConsoleApp;
 class Program
 {
     private const string DestFolder = "..\\..\\..\\Examples\\";
+
     static void Main(string[] args)
     {
         new RamlConverter().ConvertToFile("Examples\\exampleinclude\\exampletest.raml", Path.Combine(DestFolder, "exampleinclude.json"));
