@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json.Nodes;
+using Microsoft.OpenApi.Interfaces;
 using Microsoft.OpenApi.Models;
 using Microsoft.OpenApi.Models.Interfaces;
 using RamlToOpenApiConverter.Extensions;
@@ -54,7 +55,6 @@ public partial class RamlConverter
     {
         var schemaTypeFromRaml = details.Get("type");
         var schemaFormatFromRaml = details.Get("format");
-        // var isRequiredFromRaml = details.TryGetValue("required", out var requiredValue) && bool.TryParse(requiredValue as string, out var required) && required;
 
         var schemaTypes = (schemaTypeFromRaml ?? "string")
             .Split(['|'], StringSplitOptions.RemoveEmptyEntries)
@@ -69,11 +69,14 @@ public partial class RamlConverter
 
         var schema = new OpenApiSchema
         {
-            // Nullable = isNil,
-            Minimum = details.Get<decimal?>("minimum"),
-            Maximum = details.Get<decimal?>("maximum"),
-            MaxLength = details.Get<int?>("maxLength"),
-            MinLength = details.Get<int?>("minLength")
+            Extensions = new Dictionary<string, IOpenApiExtension>
+            {
+                //{ OpenApiConstants.Nullable, new NullableOpenApiExtension(isNil) }
+            },
+            Minimum = details.Get<decimal?>(OpenApiConstants.Minimum),
+            Maximum = details.Get<decimal?>(OpenApiConstants.Maximum),
+            MaxLength = details.Get<int?>(OpenApiConstants.MaxLength),
+            MinLength = details.Get<int?>(OpenApiConstants.MinLength)
         };
 
         switch (schemaType)

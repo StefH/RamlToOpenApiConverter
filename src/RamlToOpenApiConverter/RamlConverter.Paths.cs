@@ -83,7 +83,7 @@ public partial class RamlConverter
         foreach (string key in values.Keys.OfType<string>().Where(k => k.StartsWith("/")))
         {
             var d = values.GetAsDictionary(key);
-            string newPath = $"{parent}{key}";
+            var newPath = $"{parent}{key}";
             var mapItems = MapPathItems(newPath, parameters, d, uses);
             items.AddRange(mapItems);
         }
@@ -112,7 +112,7 @@ public partial class RamlConverter
         }
 
         // SharpYaml uses int but YamlDotNet uses string
-        foreach (string key in values.Keys.OfType<string>())
+        foreach (var key in values.Keys.OfType<string>())
         {
             var response = values.GetAsDictionary(key);
             if (response != null)
