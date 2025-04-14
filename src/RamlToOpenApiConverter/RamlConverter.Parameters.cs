@@ -57,7 +57,7 @@ public partial class RamlConverter
         // var isRequiredFromRaml = details.TryGetValue("required", out var requiredValue) && bool.TryParse(requiredValue as string, out var required) && required;
 
         var schemaTypes = (schemaTypeFromRaml ?? "string")
-            .Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries)
+            .Split(['|'], StringSplitOptions.RemoveEmptyEntries)
             .Select(s => s.Trim())
             .ToList();
 
@@ -115,8 +115,6 @@ public partial class RamlConverter
                 if (_types.ContainsKey(schemaType))
                 {
                     return CreateDummyOpenApiReferenceSchema(schemaType);
-                    //var childDetails = _types.GetAsDictionary(schemaType);
-                    //return MapParameterOrPropertyDetailsToSchema(childDetails);
                 }
 
                 var isEnum = details.Keys.OfType<string>().FirstOrDefault(k => k == "enum");
@@ -124,15 +122,15 @@ public partial class RamlConverter
                 {
                     var enumAsCollection = details.GetAsCollection(isEnum)?.OfType<string>();
                     var enumValues = enumAsCollection?
-                        .SelectMany(e => e.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries))
+                        .SelectMany(e => e.Split(['|'], StringSplitOptions.RemoveEmptyEntries))
                         .Select(x => JsonValue.Create(x.Trim()));
 
                     schema.Type = JsonSchemaType.String;
-                    schema.Enum = enumValues?.OfType<JsonNode>().ToList() ?? new List<JsonNode>();
+                    schema.Enum = enumValues?.OfType<JsonNode>().ToList() ?? [];
                 }
                 else
                 {
-                    schema.Type = ParseSchemaType(schemaType); // TODO?
+                    schema.Type = ParseSchemaType(schemaType);
                     schema.Format = schemaFormatFromRaml;
                 }
                 break;

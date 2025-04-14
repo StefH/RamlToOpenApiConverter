@@ -6,7 +6,7 @@ namespace RamlToOpenApiConverter;
 
 public partial class RamlConverter
 {
-    private OpenApiInfo MapInfo(IDictionary<object, object> o)
+    private static OpenApiInfo MapInfo(IDictionary<object, object> o)
     {
         return new OpenApiInfo
         {

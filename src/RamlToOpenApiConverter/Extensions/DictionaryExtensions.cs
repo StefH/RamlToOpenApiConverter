@@ -7,27 +7,27 @@ internal static class DictionaryExtensions
 {
     public static string? Get(this IDictionary<object, object> source, object key)
     {
-        if (!source.ContainsKey(key))
+        if (!source.TryGetValue(key, out var value))
         {
             return null;
         }
 
-        return source[key] as string;
+        return value as string;
     }
 
     public static T Get<T>(this IDictionary<object, object> source, object key)
     {
-        if (!source.ContainsKey(key))
+        if (!source.TryGetValue(key, out var value))
         {
             return default!;
         }
 
-        return ChangeTypeEx<T>(source[key]);
+        return ChangeTypeEx<T>(value);
     }
 
     public static IDictionary<object, object>? GetAsDictionary(this IDictionary<object, object> source, object key)
     {
-        if (source.TryGetValue(key, out object value))
+        if (source.TryGetValue(key, out var value))
         {
             return value as IDictionary<object, object>;
         }
@@ -53,7 +53,7 @@ internal static class DictionaryExtensions
 
     public static ICollection<object>? GetAsCollection(this IDictionary<object, object> source, object key)
     {
-        if (source.TryGetValue(key, out object value))
+        if (source.TryGetValue(key, out var value))
         {
             return value as ICollection<object>;
         }
@@ -73,17 +73,17 @@ internal static class DictionaryExtensions
 
     private static T ChangeTypeEx<T>(object obj)
     {
-        Type type = typeof(T);
+        var type = typeof(T);
 
         if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
         {
-            // get the T in ?T
+            // Get the T in ?T
             var typeArgument = type.GetGenericArguments()[0];
             obj = Convert.ChangeType(obj, typeArgument);
 
-            // get the Nullable<T>(T) constructor
-            var ctor = type.GetConstructor(new[] { typeArgument })!;
-            return (T)ctor.Invoke(new[] { obj });
+            // Get the Nullable<T>(T) constructor
+            var ctor = type.GetConstructor([typeArgument])!;
+            return (T)ctor.Invoke([obj]);
         }
 
         return (T)Convert.ChangeType(obj, type);

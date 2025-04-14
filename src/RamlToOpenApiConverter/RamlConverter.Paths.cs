@@ -18,7 +18,7 @@ public partial class RamlConverter
 
         foreach (var key in o.Keys.OfType<string>().Where(k => k.StartsWith("/")))
         {
-            var pathItems = MapPathItems(key, new List<IOpenApiParameter>(), o.GetAsDictionary(key), uses);
+            var pathItems = MapPathItems(key, new List<IOpenApiParameter>(), o.GetAsDictionary(key)!, uses);
             foreach (var pathItem in pathItems)
             {
                 paths.Add(pathItem.AdjustedPath, pathItem.Item);
@@ -50,18 +50,18 @@ public partial class RamlConverter
         var operations = new Dictionary<HttpMethod, OpenApiOperation>();
 
         // Loop all keys which do not start with a '/'
-        foreach (string key in values.Keys.OfType<string>().Where(k => !k.StartsWith("/")))
+        foreach (var key in values.Keys.OfType<string>().Where(k => !k.StartsWith("/")))
         {
             // And try to match operations
-            if (TryMapOperationType(key, out HttpMethod operationType))
+            if (TryMapOperationType(key, out var operationType))
             {
-                var operationValues = values.GetAsDictionary(key);
+                var operationValues = values.GetAsDictionary(key)!;
                 var operation = MapOperation(operationValues);
 
                 // Add parameters from the path to this operation
                 foreach (var parameter in parameters)
                 {
-                    operation.Parameters.Add(parameter);
+                    operation.Parameters?.Add(parameter);
                 }
 
                 operations.Add(operationType, operation);
@@ -98,7 +98,7 @@ public partial class RamlConverter
             Description = values.Get("description"),
             Parameters = MapParameters(values),
             Responses = MapResponses(values.GetAsDictionary("responses")),
-            RequestBody = MapRequest(values.GetAsDictionary("body")),
+            RequestBody = MapRequest(values.GetAsDictionary("body"))
         };
     }
 
@@ -165,7 +165,7 @@ public partial class RamlConverter
 
         var content = new Dictionary<string, OpenApiMediaType>();
 
-        foreach (string key in new[] { "application/json", "application/xml" })
+        foreach (var key in new[] { "application/json", "application/xml" })
         {
             if (values.ContainsKey(key))
             {
@@ -227,19 +227,10 @@ public partial class RamlConverter
         };
     }
 
-    private IOpenApiSchema CreateDummyOpenApiReferenceSchema(string referenceId, string? type = null)
+    // ReSharper disable once UnusedParameter.Local
+    private static IOpenApiSchema CreateDummyOpenApiReferenceSchema(string referenceId, string? type = null)
     {
-        var schema = new OpenApiSchemaReference(referenceId)
-        {
-            //Reference = new OpenApiReference { Id = referenceId, Type = ReferenceType.Schema }
-        };
-
-        //if (!string.IsNullOrEmpty(type))
-        //{
-        //    schema.Type = type;
-        //}
-
-        return schema;
+        return new OpenApiSchemaReference(referenceId);
     }
 
     private static bool TryMapOperationType(string value, out HttpMethod operationType)

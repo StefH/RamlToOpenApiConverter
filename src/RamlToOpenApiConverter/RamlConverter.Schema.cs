@@ -9,7 +9,7 @@ namespace RamlToOpenApiConverter;
 
 public partial class RamlConverter
 {
-    internal IOpenApiSchema MapValuesToSchema(IDictionary<object, object> values)
+    private IOpenApiSchema MapValuesToSchema(IDictionary<object, object> values)
     {
         var required = values.GetAsCollection("required");
         var properties = values.GetAsDictionary("properties");

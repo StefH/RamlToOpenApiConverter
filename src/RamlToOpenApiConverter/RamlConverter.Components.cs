@@ -76,9 +76,6 @@ public partial class RamlConverter
 
                 case string jsonOrYaml:
                     var items = _deserializer.Deserialize<IDictionary<object, object>>(jsonOrYaml);
-                    var requiredX = items.GetAsCollection("required");
-                    var propertiesX = items.GetAsDictionary("properties");
-                    var exampleX = items.GetAsDictionary("example");
                     components.Schemas.Add(key, MapValuesToSchema(items));
                     break;
             }
@@ -117,9 +114,6 @@ public partial class RamlConverter
                     throw new NotSupportedException();
             }
 
-            var exampleAsJson = values.Get("example");
-
-
             var propertyType = values.Get("type");
             if (propertyType == "object")
             {
@@ -133,7 +127,7 @@ public partial class RamlConverter
                 var props = simpleType?.GetAsDictionary("properties");
                 var schema = props != null ?
                     CreateDummyOpenApiReferenceSchema(propertyType) : // Custom type
-                    MapParameterOrPropertyDetailsToSchema(simpleType!); //  Simple Type
+                    MapParameterOrPropertyDetailsToSchema(simpleType!); // Simple Type
 
                 openApiProperties.Add(key, schema);
                 continue;
