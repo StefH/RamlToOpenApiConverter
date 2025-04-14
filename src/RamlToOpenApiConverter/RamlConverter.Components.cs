@@ -163,7 +163,7 @@ namespace RamlToOpenApiConverter
         /// <summary>
         /// Replace uses in file
         /// </summary>
-        private IDictionary<object, object> ReplaceUses(IDictionary<object, object> source, IDictionary<object, object> uses)
+        private static IDictionary<object, object> ReplaceUses(IDictionary<object, object> source, IDictionary<object, object> uses)
         {
             var useReplace = ReplaceIs(source, uses);
             source.Replace(useReplace, Constants.IsTag);

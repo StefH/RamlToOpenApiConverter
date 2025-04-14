@@ -54,6 +54,7 @@ namespace RamlToOpenApiConverter
         {
             var schemaTypeFromRaml = details.Get("type");
             var schemaFormatFromRaml = details.Get("format");
+            // var isRequiredFromRaml = details.TryGetValue("required", out var requiredValue) && bool.TryParse(requiredValue as string, out var required) && required;
 
             var schemaTypes = (schemaTypeFromRaml ?? "string")
                 .Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries)
@@ -131,13 +132,26 @@ namespace RamlToOpenApiConverter
                     }
                     else
                     {
-                        schema.Type = JsonSchemaType.String;
+                        schema.Type = ParseSchemaType(schemaType); // TODO?
                         schema.Format = schemaFormatFromRaml;
                     }
                     break;
             }
 
             return schema;
+        }
+
+        private static JsonSchemaType ParseSchemaType(string schemaType)
+        {
+            return schemaType.ToLower() switch
+            {
+                "string" => JsonSchemaType.String,
+                "number" => JsonSchemaType.Number,
+                "integer" => JsonSchemaType.Integer,
+                "boolean" => JsonSchemaType.Boolean,
+                "array" => JsonSchemaType.Array,
+                _ => JsonSchemaType.Object,
+            };
         }
     }
 }
