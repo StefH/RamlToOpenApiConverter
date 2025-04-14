@@ -131,13 +131,9 @@ namespace RamlToOpenApiConverter
                     }
                     else
                     {
-                        schema.Type = JsonSchemaType.Object; // TODO Is this correct?
+                        schema.Type = JsonSchemaType.String;
                         schema.Format = schemaFormatFromRaml;
                     }
-
-                    //schema.Type = schemaType;
-                    //schema.Format = schemaFormatFromRaml;
-
                     break;
             }
 
