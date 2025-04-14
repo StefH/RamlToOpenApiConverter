@@ -11,8 +11,8 @@ class Program
     static void Main(string[] args)
     {
         //new RamlConverter().ConvertToFile("Examples\\exampleinclude\\exampletest.raml", Path.Combine(DestFolder, "exampleinclude.json"));
-        new RamlConverter().ConvertToFile("Examples\\ArrayExample.raml", Path.Combine(DestFolder, "ArrayExample.json"));
-        new RamlConverter().ConvertToFile("Examples\\MuleSoft\\test.raml", Path.Combine(DestFolder, "MuleSoft.converted.json"));
+        //new RamlConverter().ConvertToFile("Examples\\ArrayExample.raml", Path.Combine(DestFolder, "ArrayExample.json"));
+        //new RamlConverter().ConvertToFile("Examples\\MuleSoft\\test.raml", Path.Combine(DestFolder, "MuleSoft.converted.json"));
         // new RamlConverter().ConvertToFile("Examples\\InheritedDatatype\\simpleinherited.raml", Path.Combine(DestFolder, "simpleinherited.json"));
 
         new RamlConverter().ConvertToFile("Examples\\HelloWorld.raml", Path.Combine(DestFolder, "HelloWorld.converted.json"));

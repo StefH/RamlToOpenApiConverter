@@ -1,5 +1,5 @@
 {
-  "openapi": "3.0.1",
+  "openapi": "3.0.4",
   "info": {
     "title": "Hello world"
   },
@@ -26,8 +26,7 @@
             "in": "query",
             "schema": {
               "type": "integer",
-              "format": "int",
-              "nullable": true
+              "format": "int"
             }
           }
         ],

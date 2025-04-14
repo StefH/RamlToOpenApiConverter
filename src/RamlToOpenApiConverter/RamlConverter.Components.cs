@@ -42,7 +42,7 @@ namespace RamlToOpenApiConverter
                             {
                                 var enumValues = enumAsCollection
                                     .SelectMany(e => e.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries))
-                                    .Select(x => JsonNode.Parse(x.Trim()));
+                                    .Select(x => JsonValue.Create(x.Trim()));
 
                                 var schema = new OpenApiSchema
                                 {

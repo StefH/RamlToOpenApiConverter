@@ -198,14 +198,6 @@ namespace RamlToOpenApiConverter
             return content;
         }
 
-        //private static IOpenApiAny MapExample(string exampleAsJson)
-        //{
-        //    var stringAsStream = new MemoryStream(Encoding.UTF8.GetBytes(exampleAsJson));
-
-        //    var reader = new OpenApiStreamReader();
-        //    return reader.ReadFragment<IOpenApiAny>(stringAsStream, OpenApiSpecVersion.OpenApi3_0, out _);
-        //}
-
         private static JsonNode? MapExample(string exampleAsJson)
         {
             return JsonNode.Parse(exampleAsJson);

@@ -125,7 +125,7 @@ namespace RamlToOpenApiConverter
                         var enumAsCollection = details.GetAsCollection(isEnum)?.OfType<string>();
                         var enumValues = enumAsCollection?
                             .SelectMany(e => e.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries))
-                            .Select(x => JsonNode.Parse(x.Trim()));
+                            .Select(x => JsonValue.Create(x.Trim()));
 
                         schema.Type = JsonSchemaType.String;
                         schema.Enum = enumValues?.OfType<JsonNode>().ToList() ?? new List<JsonNode>();
