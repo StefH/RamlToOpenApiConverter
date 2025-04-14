@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Text.Json.Nodes;
 using Microsoft.OpenApi.Models;
 using Microsoft.OpenApi.Models.Interfaces;
@@ -32,7 +33,8 @@ namespace RamlToOpenApiConverter
                         {
                             var required = values.GetAsCollection("required");
                             var properties = values.GetAsDictionary("properties");
-                            components.Schemas.Add(key, MapSchema(properties, required));
+                            var example = values.GetAsDictionary("example");
+                            components.Schemas.Add(key, MapSchema(properties, required, example));
                         }
 
                         if (values.ContainsKey("enum"))
@@ -61,7 +63,6 @@ namespace RamlToOpenApiConverter
                         else if (type?.EndsWith("[]") == true)
                         {
                             arrayType = type.Substring(0, type.Length - 2);
-
                         }
 
                         if (arrayType is not null)
@@ -75,14 +76,14 @@ namespace RamlToOpenApiConverter
                                 });
                             }
                         }
-
                         break;
 
                     case string jsonOrYaml:
                         var items = _deserializer.Deserialize<IDictionary<object, object>>(jsonOrYaml);
                         var requiredX = items.GetAsCollection("required");
                         var propertiesX = items.GetAsDictionary("properties");
-                        components.Schemas.Add(key, MapSchema(propertiesX, requiredX));
+                        var exampleX = items.GetAsDictionary("example");
+                        components.Schemas.Add(key, MapSchema(propertiesX, requiredX, exampleX));
                         break;
                 }
             }
@@ -90,13 +91,14 @@ namespace RamlToOpenApiConverter
             return components.Schemas.Count > 0 ? components : null;
         }
 
-        private OpenApiSchema MapSchema(IDictionary<object, object>? properties, ICollection<object>? required)
+        private IOpenApiSchema MapSchema(IDictionary<object, object>? properties, ICollection<object>? required, IDictionary<object, object>? example)
         {
             return new OpenApiSchema
             {
                 Type = JsonSchemaType.Object,
                 Required = required != null ? new HashSet<string>(required.OfType<string>()) : null,
-                Properties = MapProperties(properties, required)
+                Properties = MapProperties(properties, required),
+                Example = example != null ? JsonSerializer.SerializeToNode(example) : null
             };
         }
 
@@ -111,8 +113,6 @@ namespace RamlToOpenApiConverter
 
             foreach (var key in properties.Keys.OfType<string>())
             {
-                IOpenApiSchema schema;
-
                 IDictionary<object, object> values;
                 switch (properties[key])
                 {
@@ -132,29 +132,53 @@ namespace RamlToOpenApiConverter
                         throw new NotSupportedException();
                 }
 
+                var exampleAsJson = values.Get("example");
+
+
                 var propertyType = values.Get("type");
                 if (propertyType == "object")
                 {
                     // Object
                     var props = values.GetAsDictionary("properties");
                     var req = values.GetAsCollection("required");
-                    schema = MapSchema(props, req);
+                    var example = values.GetAsDictionary("example");
+                    openApiProperties.Add(key, MapSchema(props, req, example));
+                    continue;
                 }
-                else if (propertyType != null && _types.ContainsKey(propertyType))
+
+                if (propertyType != null && _types.ContainsKey(propertyType))
                 {
                     var simpleType = _types.GetAsDictionary(propertyType);
                     var props = simpleType?.GetAsDictionary("properties");
-                    schema = props != null ?
+                    var schema = props != null ?
                         CreateDummyOpenApiReferenceSchema(propertyType) : // Custom type
                         MapParameterOrPropertyDetailsToSchema(simpleType!); //  Simple Type
-                }
-                else
-                {
-                    // Normal property
-                    schema = MapParameterOrPropertyDetailsToSchema(values);
+
+                    openApiProperties.Add(key, schema);
+                    continue;
                 }
 
-                openApiProperties.Add(key, schema);
+                string? arrayType = null;
+                if (propertyType == "array" && values.TryGetValue("items", out var arrayItem))
+                {
+                    arrayType = arrayItem as string;
+                }
+                else if (propertyType?.EndsWith("[]") == true)
+                {
+                    arrayType = propertyType.Substring(0, propertyType.Length - 2);
+                }
+
+                if (arrayType is not null)
+                {
+                    openApiProperties.Add(key, new OpenApiSchema
+                    {
+                        Type = JsonSchemaType.Array,
+                        Items = CreateDummyOpenApiReferenceSchema(arrayType)
+                    });
+                    continue;
+                }
+
+                openApiProperties.Add(key, MapParameterOrPropertyDetailsToSchema(values));
             }
 
             return openApiProperties;

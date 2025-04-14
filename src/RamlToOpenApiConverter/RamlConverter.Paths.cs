@@ -210,7 +210,8 @@ namespace RamlToOpenApiConverter
                 var objectType = _deserializer.Deserialize<IDictionary<object, object>>(value);
                 var properties = objectType.GetAsDictionary("properties");
                 var required = objectType.GetAsCollection("required");
-                return MapSchema(properties, required);
+                var example = objectType.GetAsDictionary("example");
+                return MapSchema(properties, required, example);
             }
 
             var referenceSchemas = value
