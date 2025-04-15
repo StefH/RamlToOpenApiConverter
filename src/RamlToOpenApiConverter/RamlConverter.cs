@@ -90,7 +90,7 @@ public partial class RamlConverter
                 _types.Add(schema.Key, schema.Value);
             }
         }
-        
+
         _doc = new OpenApiDocument
         {
             // Step 3 - Get Info, Servers and Components
