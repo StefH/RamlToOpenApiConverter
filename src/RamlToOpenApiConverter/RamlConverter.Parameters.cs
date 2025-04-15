@@ -59,7 +59,7 @@ public partial class RamlConverter
         var schemaFormatFromRaml = details.Get("format");
 
         var schemaTypes = (schemaTypeFromRaml ?? "string")
-            .Split(['|'], StringSplitOptions.RemoveEmptyEntries)
+            .Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries)
             .Select(s => s.Trim())
             .ToArray();
 
@@ -129,7 +129,7 @@ public partial class RamlConverter
                 {
                     var enumAsCollection = details.GetAsCollection(isEnum)?.OfType<string>();
                     var enumValues = enumAsCollection?
-                        .SelectMany(e => e.Split(['|'], StringSplitOptions.RemoveEmptyEntries))
+                        .SelectMany(e => e.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries))
                         .Select(x => JsonValue.Create(x.Trim()));
 
                     schema.Type = JsonSchemaType.String.AddNullable(isNil);

@@ -214,7 +214,7 @@ public partial class RamlConverter
         }
 
         var referenceSchemas = value
-            .Split(['|'], StringSplitOptions.RemoveEmptyEntries)
+            .Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries)
             .Select(o => CreateDummyOpenApiReferenceSchema(o.Trim(), false, "object"))
             .ToList();
 
