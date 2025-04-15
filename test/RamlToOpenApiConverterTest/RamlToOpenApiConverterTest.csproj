@@ -1,139 +1,146 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <IsPackable>false</IsPackable>
+    </PropertyGroup>
 
-    <IsPackable>false</IsPackable>
-  </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="FluentAssertions" Version="5.10.3" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
+        <PackageReference Include="xunit" Version="2.9.3" />
+        <PackageReference Include="xunit.runner.visualstudio" Version="3.0.2">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="coverlet.collector" Version="6.0.4">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+    </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="FluentAssertions" Version="5.10.3" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
-    <PackageReference Include="xunit" Version="2.4.1" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.2">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="coverlet.collector" Version="1.3.0">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\..\src\RamlToOpenApiConverter\RamlToOpenApiConverter.csproj" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\RamlToOpenApiConverter\RamlToOpenApiConverter.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <None Remove="Uses.Test\" />
+        <None Remove="Uses\TestFiles\" />
+        <None Remove="Uses\TestFiles\TestExternalFiles\" />
+        <None Remove="Uses\TestFilesResult\" />
+        <None Remove="Uses\TestFiles\Test1.raml" />
+        <None Remove="Uses\TestFilesResultExpected\Test1Result.json" />
+        <None Remove="Uses\TestFiles\TestExternalFiles\common-traits.raml" />
+        <None Remove="Uses\TestFiles\Test1 %28copy%29.raml" />
+        <None Remove="Uses\TestFilesResultExpected\Test2Result.json" />
+        <None Remove="Uses\TestFiles\TestExternalFiles\common-traits3.raml" />
+        <None Remove="Uses\TestFiles\Test3.raml" />
+        <None Remove="Uses\TestFilesResultExpected\Test3Result.json" />
+        <None Remove="Uses\TestFiles\TestExternalFiles\common-traits2.raml" />
+        <None Remove="Uses\TestFiles\Test2.raml" />
+        <None Remove="Uses\TestFilesResultExpected\Test4Result.json" />
+        <None Remove="Uses\TestFiles\Test4.raml" />
+        <None Remove="Uses\TestFiles\TestExternalFiles\common-traits4-1.raml" />
+        <None Remove="Uses\TestFiles\TestExternalFiles\common-traits4.raml" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <None Remove="Uses.Test\" />
-    <None Remove="Uses\TestFiles\" />
-    <None Remove="Uses\TestFiles\TestExternalFiles\" />
-    <None Remove="Uses\TestFilesResult\" />
-    <None Remove="Uses\TestFiles\Test1.raml" />
-    <None Remove="Uses\TestFilesResultExpected\Test1Result.json" />
-    <None Remove="Uses\TestFiles\TestExternalFiles\common-traits.raml" />
-    <None Remove="Uses\TestFiles\Test1 %28copy%29.raml" />
-    <None Remove="Uses\TestFilesResultExpected\Test2Result.json" />
-    <None Remove="Uses\TestFiles\TestExternalFiles\common-traits3.raml" />
-    <None Remove="Uses\TestFiles\Test3.raml" />
-    <None Remove="Uses\TestFilesResultExpected\Test3Result.json" />
-    <None Remove="Uses\TestFiles\TestExternalFiles\common-traits2.raml" />
-    <None Remove="Uses\TestFiles\Test2.raml" />
-    <None Remove="Uses\TestFilesResultExpected\Test4Result.json" />
-    <None Remove="Uses\TestFiles\Test4.raml" />
-    <None Remove="Uses\TestFiles\TestExternalFiles\common-traits4-1.raml" />
-    <None Remove="Uses\TestFiles\TestExternalFiles\common-traits4.raml" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Update="QueryParameters\QueryParameterRequired.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="QueryParameters\QueryParameterRequired.raml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="QueryParameters\QueryParameterNil.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="QueryParameters\QueryParameterNil.raml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="QueryParameters\QueryParameterEnumInline.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="QueryParameters\QueryParameterEnumInline.raml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="TypesAndSchemas\person.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="TypesAndSchemas\TypesObjectInclude.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="TypesAndSchemas\TypesObjectInclude.raml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="TypesAndSchemas\TypesObjectInline.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="TypesAndSchemas\TypesObjectInline.raml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="TypesAndSchemas\TypesEnum.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="TypesAndSchemas\TypesEnum.raml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
+    <ItemGroup>
+        <None Update="QueryParameters\QueryParameterNil31.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="QueryParameters\QueryParameterNil3.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="QueryParameters\QueryParameterRequired.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="QueryParameters\QueryParameterRequired.raml">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="QueryParameters\QueryParameterNil2.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="QueryParameters\QueryParameterNil.raml">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="QueryParameters\QueryParameterEnumInline.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="QueryParameters\QueryParameterEnumInline.raml">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="TypesAndSchemas\person.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="TypesAndSchemas\TypesObjectInclude.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="TypesAndSchemas\TypesObjectInclude.raml">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="TypesAndSchemas\TypesObjectInline.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="TypesAndSchemas\TypesObjectInline.raml">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="TypesAndSchemas\TypesEnum.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="TypesAndSchemas\TypesEnum.raml">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Uses\" />
-    <Folder Include="Uses\TestFiles\" />
-    <Folder Include="Uses\TestFiles\TestExternalFiles\" />
-    <Folder Include="Uses\TestFilesResultExpected\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Uses\TestFiles\Test1.raml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Uses\TestFilesResultExpected\Test1Result.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Uses\TestFiles\TestExternalFiles\common-traits1.raml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Uses\TestFiles\Test2.raml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Uses\TestFilesResultExpected\Test2Result.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Uses\TestFiles\TestExternalFiles\common-traits3.raml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Uses\TestFiles\Test3.raml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Uses\TestFilesResultExpected\Test3Result.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Uses\TestFiles\TestExternalFiles\common-traits2.raml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Uses\TestFiles\Test2.raml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Uses\TestFilesResultExpected\Test4Result.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Uses\TestFiles\Test4.raml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Uses\TestFiles\TestExternalFiles\common-traits4-1.raml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Uses\TestFiles\TestExternalFiles\common-traits4.raml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
+    <ItemGroup>
+        <Folder Include="Uses\" />
+        <Folder Include="Uses\TestFiles\" />
+        <Folder Include="Uses\TestFiles\TestExternalFiles\" />
+        <Folder Include="Uses\TestFilesResultExpected\" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Content Include="Uses\TestFiles\Test1.raml">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+        <Content Include="Uses\TestFilesResultExpected\Test1Result.json">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+        <Content Include="Uses\TestFiles\TestExternalFiles\common-traits1.raml">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+        <Content Include="Uses\TestFiles\Test2.raml">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+        <Content Include="Uses\TestFilesResultExpected\Test2Result.json">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+        <Content Include="Uses\TestFiles\TestExternalFiles\common-traits3.raml">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+        <Content Include="Uses\TestFiles\Test3.raml">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+        <Content Include="Uses\TestFilesResultExpected\Test3Result.json">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+        <Content Include="Uses\TestFiles\TestExternalFiles\common-traits2.raml">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+        <Content Include="Uses\TestFiles\Test2.raml">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+        <Content Include="Uses\TestFilesResultExpected\Test4Result.json">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+        <Content Include="Uses\TestFiles\Test4.raml">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+        <Content Include="Uses\TestFiles\TestExternalFiles\common-traits4-1.raml">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+        <Content Include="Uses\TestFiles\TestExternalFiles\common-traits4.raml">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+    </ItemGroup>
 </Project>

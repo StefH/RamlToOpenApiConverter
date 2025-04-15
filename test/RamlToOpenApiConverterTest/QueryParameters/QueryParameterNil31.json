@@ -1,18 +1,21 @@
 {
-  "openapi": "3.0.4",
+  "openapi": "3.1.1",
   "info": {
-    "title": "ParameterRequired"
+    "title": "ParameterNil"
   },
   "paths": {
     "/helloworld": {
       "get": {
         "parameters": [
           {
-            "name": "stringIsRequired",
+            "name": "canBeNullOrNumber",
             "in": "query",
-            "required": true,
             "schema": {
-              "type": "string"
+              "type": [
+                "null",
+                "integer"
+              ],
+              "format": "int"
             }
           }
         ],

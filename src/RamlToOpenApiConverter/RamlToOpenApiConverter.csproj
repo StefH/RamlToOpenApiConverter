@@ -1,10 +1,10 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <Authors>Stef Heyenrath</Authors>
         <Description>Convert RAML file to Open API Specification</Description>
         <PackageTags>raml;openapi;OAS;converter</PackageTags>
-        <TargetFrameworks>net46;netstandard2.0</TargetFrameworks>
+        <TargetFrameworks>netstandard2.0;net8.0</TargetFrameworks>
         <PackageReleaseNotes>See ReleaseNotes.md</PackageReleaseNotes>
         <PackageProjectUrl>https://github.com/StefH/RamlToOpenApiConverter</PackageProjectUrl>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -13,7 +13,7 @@
         <ProjectGuid>{D3804228-91F4-1111-9595-39584E5A01AD}</ProjectGuid>
         <PublishRepositoryUrl>true</PublishRepositoryUrl>
         <Nullable>enable</Nullable>
-        <LangVersion>9.0</LangVersion>
+        <LangVersion>latest</LangVersion>
         <SignAssembly>True</SignAssembly>
         <AssemblyOriginatorKeyFile>RamlToOpenApiConverter.snk</AssemblyOriginatorKeyFile>
     </PropertyGroup>
@@ -23,7 +23,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.OpenApi.Readers" Version="1.2.3" />
+        <PackageReference Include="Microsoft.OpenApi.YamlReader" Version="2.0.0-preview.16" />
         <PackageReference Include="YamlDotNet" Version="8.1.0" />
     </ItemGroup>
 

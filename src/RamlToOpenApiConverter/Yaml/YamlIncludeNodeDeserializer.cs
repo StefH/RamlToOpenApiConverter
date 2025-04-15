@@ -6,56 +6,55 @@ using YamlDotNet.Core;
 using YamlDotNet.Core.Events;
 using YamlDotNet.Serialization;
 
-namespace RamlToOpenApiConverter.Yaml
+namespace RamlToOpenApiConverter.Yaml;
+
+public class YamlIncludeNodeDeserializer : INodeDeserializer
 {
-    public class YamlIncludeNodeDeserializer : INodeDeserializer
+    private static readonly Regex JsonExtensionRegex = new(@"^\.json$", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline);
+    private static readonly Regex RamlExtensionRegex = new(@"^\.raml$", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline);
+
+    private readonly YamlIncludeNodeDeserializerOptions _options;
+
+    public YamlIncludeNodeDeserializer(YamlIncludeNodeDeserializerOptions options)
     {
-        private static readonly Regex JsonExtensionRegex = new(@"^\.json$", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline);
-        private static readonly Regex RamlExtensionRegex = new(@"^\.raml$", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline);
+        _options = options;
+    }
 
-        private readonly YamlIncludeNodeDeserializerOptions _options;
-
-        public YamlIncludeNodeDeserializer(YamlIncludeNodeDeserializerOptions options)
+    bool INodeDeserializer.Deserialize(IParser parser, Type expectedType, Func<IParser, Type, object?> nestedObjectDeserializer, out object? value)
+    {
+        if (parser.Accept<Scalar>(out var scalar))
         {
-            _options = options;
+            var fileName = scalar.Value.Replace('/', Path.DirectorySeparatorChar);
+            var extension = Path.GetExtension(fileName);
+
+            if (scalar.Tag == Constants.IncludeTag || (scalar.Tag != Constants.IncludeTag && (RamlExtensionRegex.IsMatch(extension) || JsonExtensionRegex.IsMatch(extension))))
+            {
+                var includePath = Path.Combine(_options.DirectoryName, fileName);
+                value = ReadIncludedFile(includePath, expectedType);
+                parser.MoveNext();
+                return true;
+            }
         }
 
-        bool INodeDeserializer.Deserialize(IParser parser, Type expectedType, Func<IParser, Type, object?> nestedObjectDeserializer, out object? value)
+        value = null;
+        return false;
+    }
+
+    private static object? ReadIncludedFile(string includePath, Type expectedType)
+    {
+        var extension = Path.GetExtension(includePath);
+
+        if (RamlExtensionRegex.IsMatch(extension))
         {
-            if (parser.Accept(out Scalar scalar) && scalar != null)
-            {
-                string fileName = scalar.Value.Replace('/', Path.DirectorySeparatorChar);
-                var extension = Path.GetExtension(fileName);
-
-                if (scalar.Tag == Constants.IncludeTag || (scalar.Tag != Constants.IncludeTag && (RamlExtensionRegex.IsMatch(extension) || JsonExtensionRegex.IsMatch(extension))))
-                {
-                    var includePath = Path.Combine(_options.DirectoryName, fileName);
-                    value = ReadIncludedFile(includePath, expectedType);
-                    parser.MoveNext();
-                    return true;
-                }
-            }
-
-            value = null;
-            return false;
+            var deserializer = IncludeNodeDeserializerBuilder.Build(Path.GetDirectoryName(includePath)!);
+            return deserializer.Deserialize(new Parser(File.OpenText(includePath)), expectedType);
         }
 
-        private static object? ReadIncludedFile(string includePath, Type expectedType)
+        if (JsonExtensionRegex.IsMatch(extension))
         {
-            var extension = Path.GetExtension(includePath);
-
-            if (RamlExtensionRegex.IsMatch(extension))
-            {
-                var deserializer = IncludeNodeDeserializerBuilder.Build(Path.GetDirectoryName(includePath));
-                return deserializer.Deserialize(new Parser(File.OpenText(includePath)), expectedType);
-            }
-
-            if (JsonExtensionRegex.IsMatch(extension))
-            {
-                return File.ReadAllText(includePath);
-            }
-
-            throw new NotSupportedException($"The file extension '{extension}' is not supported in a '{Constants.IncludeTag}' tag.");
+            return File.ReadAllText(includePath);
         }
+
+        throw new NotSupportedException($"The file extension '{extension}' is not supported in a '{Constants.IncludeTag}' tag.");
     }
 }

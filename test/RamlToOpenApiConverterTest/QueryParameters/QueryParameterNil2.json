@@ -1,19 +1,18 @@
 {
-  "openapi": "3.0.4",
+  "swagger": "2.0",
   "info": {
-    "title": "ParameterRequired"
+    "title": "ParameterNil"
   },
   "paths": {
     "/helloworld": {
       "get": {
         "parameters": [
           {
-            "name": "stringIsRequired",
             "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
+            "name": "canBeNullOrNumber",
+            "type": "integer",
+            "format": "int",
+            "x-nullable": true
           }
         ],
         "responses": { }
