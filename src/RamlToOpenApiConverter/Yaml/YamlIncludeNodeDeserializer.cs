@@ -22,9 +22,9 @@ public class YamlIncludeNodeDeserializer : INodeDeserializer
 
     bool INodeDeserializer.Deserialize(IParser parser, Type expectedType, Func<IParser, Type, object?> nestedObjectDeserializer, out object? value)
     {
-        if (parser.Accept(out Scalar scalar) && scalar != null)
+        if (parser.Accept<Scalar>(out var scalar))
         {
-            string fileName = scalar.Value.Replace('/', Path.DirectorySeparatorChar);
+            var fileName = scalar.Value.Replace('/', Path.DirectorySeparatorChar);
             var extension = Path.GetExtension(fileName);
 
             if (scalar.Tag == Constants.IncludeTag || (scalar.Tag != Constants.IncludeTag && (RamlExtensionRegex.IsMatch(extension) || JsonExtensionRegex.IsMatch(extension))))
@@ -46,7 +46,7 @@ public class YamlIncludeNodeDeserializer : INodeDeserializer
 
         if (RamlExtensionRegex.IsMatch(extension))
         {
-            var deserializer = IncludeNodeDeserializerBuilder.Build(Path.GetDirectoryName(includePath));
+            var deserializer = IncludeNodeDeserializerBuilder.Build(Path.GetDirectoryName(includePath)!);
             return deserializer.Deserialize(new Parser(File.OpenText(includePath)), expectedType);
         }
 

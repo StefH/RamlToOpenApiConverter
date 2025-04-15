@@ -82,9 +82,9 @@ public partial class RamlConverter
         }
 
         // Now check 1 level deeper (loop all keys which do start with a '/')
-        foreach (string key in values.Keys.OfType<string>().Where(k => k.StartsWith("/")))
+        foreach (var key in values.Keys.OfType<string>().Where(k => k.StartsWith("/")))
         {
-            var d = values.GetAsDictionary(key);
+            var d = values.GetAsDictionary(key) ?? new Dictionary<object, object>();
             var newPath = $"{parent}{key}";
             var mapItems = MapPathItems(newPath, parameters, d, uses, specVersion);
             items.AddRange(mapItems);
@@ -190,7 +190,7 @@ public partial class RamlConverter
                 var openApiMediaType = new OpenApiMediaType
                 {
                     Schema = schema,
-                    Example = !string.IsNullOrEmpty(exampleAsJson) ? MapExample(exampleAsJson) : null
+                    Example = !string.IsNullOrEmpty(exampleAsJson) ? MapExample(exampleAsJson!) : null
                 };
 
                 content.Add(key, openApiMediaType);

@@ -13,7 +13,7 @@
         <ProjectGuid>{D3804228-91F4-1111-9595-39584E5A01AD}</ProjectGuid>
         <PublishRepositoryUrl>true</PublishRepositoryUrl>
         <Nullable>enable</Nullable>
-        <LangVersion>12</LangVersion>
+        <LangVersion>latest</LangVersion>
         <SignAssembly>True</SignAssembly>
         <AssemblyOriginatorKeyFile>RamlToOpenApiConverter.snk</AssemblyOriginatorKeyFile>
     </PropertyGroup>
