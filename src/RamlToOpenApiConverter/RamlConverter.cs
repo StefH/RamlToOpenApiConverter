@@ -26,7 +26,7 @@ public partial class RamlConverter
     /// <param name="format">Open API document format.</param>
     public string Convert(string inputPath, OpenApiSpecVersion specVersion = OpenApiSpecVersion.OpenApi3_0, OpenApiFormat format = OpenApiFormat.Json)
     {
-        var document = ConvertToOpenApiDocument(inputPath);
+        var document = ConvertToOpenApiDocument(inputPath, specVersion);
 
         using var stringWriter = new StringWriter();
         IOpenApiWriter openApiWriter = format == OpenApiFormat.Json ? new OpenApiJsonWriter(stringWriter) : new OpenApiYamlWriter(stringWriter);
@@ -45,7 +45,7 @@ public partial class RamlConverter
     /// <param name="format">Open API document format.</param>
     public void ConvertToFile(string inputPath, string outputPath, OpenApiSpecVersion specVersion = OpenApiSpecVersion.OpenApi3_0, OpenApiFormat format = OpenApiFormat.Json)
     {
-        string contents = Convert(inputPath, specVersion, format);
+        var contents = Convert(inputPath, specVersion, format);
 
         File.WriteAllText(outputPath, contents);
     }
@@ -54,7 +54,8 @@ public partial class RamlConverter
     /// Converts the input RAML stream to an Open API Specification document.
     /// </summary>
     /// <param name="inputPath">The path to the RAML file.</param>
-    public OpenApiDocument ConvertToOpenApiDocument(string inputPath)
+    /// <param name="specVersion">The Open API specification version.</param>
+    public OpenApiDocument ConvertToOpenApiDocument(string inputPath, OpenApiSpecVersion specVersion = OpenApiSpecVersion.OpenApi3_0)
     {
         _deserializer = IncludeNodeDeserializerBuilder.Build(Path.GetDirectoryName(inputPath)!);
 
@@ -69,7 +70,7 @@ public partial class RamlConverter
                 _uses.Add(use.Key, use.Value);
             }
             result.Remove("uses");
-            result = ReplaceUses(result,_uses);
+            result = ReplaceUses(result, _uses);
         }
 
         // Step 2 - Get all types and schemas
@@ -89,21 +90,21 @@ public partial class RamlConverter
                 _types.Add(schema.Key, schema.Value);
             }
         }
-
-        // Step 3 - Get Info, Servers and Components
+        
         _doc = new OpenApiDocument
         {
+            // Step 3 - Get Info, Servers and Components
             Info = MapInfo(result),
             Servers = MapServers(result),
-            Components = MapComponents(_types)
-        };
+            Components = MapComponents(_types, specVersion),
 
-        // Step 4 - Get Paths
-        _doc.Paths = MapPaths(result, _uses);
+            // Step 4 - Get Paths
+            Paths = MapPaths(result, _uses, specVersion)
+        };
 
         // Check if valid
         using var stringWriter = new StringWriter();
-        _doc.SerializeAs(OpenApiSpecVersion.OpenApi3_0, new OpenApiJsonWriter(stringWriter));
+        _doc.SerializeAs(specVersion, new OpenApiJsonWriter(stringWriter));
 
         return _doc;
     }

@@ -26,6 +26,7 @@
             "in": "query",
             "schema": {
               "type": "integer",
+              "nullable": true,
               "format": "int"
             }
           }

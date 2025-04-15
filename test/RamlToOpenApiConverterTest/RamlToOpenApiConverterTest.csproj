@@ -45,13 +45,19 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="QueryParameters\QueryParameterNil31.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="QueryParameters\QueryParameterNil3.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="QueryParameters\QueryParameterRequired.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="QueryParameters\QueryParameterRequired.raml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="QueryParameters\QueryParameterNil.json">
+    <None Update="QueryParameters\QueryParameterNil2.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="QueryParameters\QueryParameterNil.raml">

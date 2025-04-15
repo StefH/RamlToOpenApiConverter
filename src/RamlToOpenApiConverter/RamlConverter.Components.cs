@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json.Nodes;
+using Microsoft.OpenApi;
 using Microsoft.OpenApi.Models;
 using Microsoft.OpenApi.Models.Interfaces;
 using RamlToOpenApiConverter.Extensions;
@@ -10,7 +11,7 @@ namespace RamlToOpenApiConverter;
 
 public partial class RamlConverter
 {
-    private OpenApiComponents? MapComponents(IDictionary<object, object>? types)
+    private OpenApiComponents? MapComponents(IDictionary<object, object>? types, OpenApiSpecVersion specVersion)
     {
         if (types == null)
         {
@@ -30,7 +31,7 @@ public partial class RamlConverter
                     var type = values.Get("type");
                     if (type == "object" || (type != null && types.ContainsKey(type)))
                     {
-                        components.Schemas.Add(key, MapValuesToSchema(values));
+                        components.Schemas.Add(key, MapValuesToSchema(values, specVersion));
                     }
 
                     if (values.ContainsKey("enum"))
@@ -68,7 +69,7 @@ public partial class RamlConverter
                             components.Schemas.Add(key, new OpenApiSchema
                             {
                                 Type = JsonSchemaType.Array,
-                                Items = CreateDummyOpenApiReferenceSchema(arrayType)
+                                Items = CreateDummyOpenApiReferenceSchema(arrayType, false)
                             });
                         }
                     }
@@ -76,7 +77,7 @@ public partial class RamlConverter
 
                 case string jsonOrYaml:
                     var items = _deserializer.Deserialize<IDictionary<object, object>>(jsonOrYaml);
-                    components.Schemas.Add(key, MapValuesToSchema(items));
+                    components.Schemas.Add(key, MapValuesToSchema(items, specVersion));
                     break;
             }
         }
@@ -84,7 +85,7 @@ public partial class RamlConverter
         return components.Schemas.Count > 0 ? components : null;
     }
 
-    private IDictionary<string, IOpenApiSchema> MapProperties(IDictionary<object, object>? properties, ICollection<object>? required)
+    private IDictionary<string, IOpenApiSchema> MapProperties(IDictionary<object, object>? properties, ICollection<object>? required, OpenApiSpecVersion specVersion)
     {
         var openApiProperties = new Dictionary<string, IOpenApiSchema>();
 
@@ -117,7 +118,7 @@ public partial class RamlConverter
             var propertyType = values.Get("type");
             if (propertyType == "object")
             {
-                openApiProperties.Add(key, MapValuesToSchema(values));
+                openApiProperties.Add(key, MapValuesToSchema(values, specVersion));
                 continue;
             }
 
@@ -126,8 +127,8 @@ public partial class RamlConverter
                 var simpleType = _types.GetAsDictionary(propertyType);
                 var props = simpleType?.GetAsDictionary("properties");
                 var schema = props != null ?
-                    CreateDummyOpenApiReferenceSchema(propertyType) : // Custom type
-                    MapParameterOrPropertyDetailsToSchema(simpleType!); // Simple Type
+                    CreateDummyOpenApiReferenceSchema(propertyType, false) : // Custom type
+                    MapParameterOrPropertyDetailsToSchema(simpleType!, specVersion); // Simple Type
 
                 openApiProperties.Add(key, schema);
                 continue;
@@ -148,12 +149,12 @@ public partial class RamlConverter
                 openApiProperties.Add(key, new OpenApiSchema
                 {
                     Type = JsonSchemaType.Array,
-                    Items = CreateDummyOpenApiReferenceSchema(arrayType)
+                    Items = CreateDummyOpenApiReferenceSchema(arrayType, false)
                 });
                 continue;
             }
 
-            openApiProperties.Add(key, MapParameterOrPropertyDetailsToSchema(values));
+            openApiProperties.Add(key, MapParameterOrPropertyDetailsToSchema(values, specVersion));
         }
 
         return openApiProperties;

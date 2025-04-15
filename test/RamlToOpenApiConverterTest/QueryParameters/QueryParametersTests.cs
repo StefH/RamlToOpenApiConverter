@@ -1,5 +1,6 @@
 using System.IO;
 using FluentAssertions;
+using Microsoft.OpenApi;
 using RamlToOpenApiConverter;
 using RamlToOpenApiConverterTest.Extensions;
 using Xunit;
@@ -30,15 +31,43 @@ public class QueryParametersTests
         result.NormalizeNewLines().Should().BeEquivalentTo(expected.NormalizeNewLines());
     }
 
-    [Fact(Skip = "nullable is not supported?")]
-    public void CanConvertParameterNil()
+    [Fact]
+    public void CanConvertParameterNil_OpenApi2_0()
     {
         // Arrange
         var path = "QueryParameterNil";
-        var expected = File.ReadAllText(Path.Combine("QueryParameters", $"{path}.json"));
+        var expected = File.ReadAllText(Path.Combine("QueryParameters", $"{path}2.json"));
 
         // Act
-        var result = _sut.Convert(Path.Combine("QueryParameters", $"{path}.raml"));
+        var result = _sut.Convert(Path.Combine("QueryParameters", $"{path}.raml"), OpenApiSpecVersion.OpenApi2_0);
+
+        // Assert
+        result.NormalizeNewLines().Should().BeEquivalentTo(expected.NormalizeNewLines());
+    }
+
+    [Fact]
+    public void CanConvertParameterNil_OpenApi3_0()
+    {
+        // Arrange
+        var path = "QueryParameterNil";
+        var expected = File.ReadAllText(Path.Combine("QueryParameters", $"{path}3.json"));
+
+        // Act
+        var result = _sut.Convert(Path.Combine("QueryParameters", $"{path}.raml"), OpenApiSpecVersion.OpenApi3_0);
+
+        // Assert
+        result.NormalizeNewLines().Should().BeEquivalentTo(expected.NormalizeNewLines());
+    }
+
+    [Fact]
+    public void CanConvertParameterNil_OpenApi3_1()
+    {
+        // Arrange
+        var path = "QueryParameterNil";
+        var expected = File.ReadAllText(Path.Combine("QueryParameters", $"{path}31.json"));
+
+        // Act
+        var result = _sut.Convert(Path.Combine("QueryParameters", $"{path}.raml"), OpenApiSpecVersion.OpenApi3_1);
 
         // Assert
         result.NormalizeNewLines().Should().BeEquivalentTo(expected.NormalizeNewLines());

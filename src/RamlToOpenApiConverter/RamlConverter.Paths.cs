@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Text.Json.Nodes;
+using Microsoft.OpenApi;
 using Microsoft.OpenApi.Models;
 using Microsoft.OpenApi.Models.Interfaces;
 using Microsoft.OpenApi.Models.References;
@@ -12,13 +13,13 @@ namespace RamlToOpenApiConverter;
 
 public partial class RamlConverter
 {
-    private OpenApiPaths MapPaths(IDictionary<object, object> o, IDictionary<object, object> uses)
+    private OpenApiPaths MapPaths(IDictionary<object, object> o, IDictionary<object, object> uses, OpenApiSpecVersion specVersion)
     {
         var paths = new OpenApiPaths();
 
         foreach (var key in o.Keys.OfType<string>().Where(k => k.StartsWith("/")))
         {
-            var pathItems = MapPathItems(key, new List<IOpenApiParameter>(), o.GetAsDictionary(key)!, uses);
+            var pathItems = MapPathItems(key, new List<IOpenApiParameter>(), o.GetAsDictionary(key)!, uses, specVersion);
             foreach (var pathItem in pathItems)
             {
                 paths.Add(pathItem.AdjustedPath, pathItem.Item);
@@ -32,14 +33,15 @@ public partial class RamlConverter
         string parent,
         IList<IOpenApiParameter> parentParameters,
         IDictionary<object, object> values,
-        IDictionary<object, object> uses)
+        IDictionary<object, object> uses,
+        OpenApiSpecVersion specVersion)
     {
         values = ReplaceUses(values, uses);
 
         var items = new List<(IOpenApiPathItem Item, string AdjustedPath)>();
 
         // Fetch all parameters from this path
-        var parameters = MapParameters(values);
+        var parameters = MapParameters(values, specVersion);
 
         // And add parameters from parent
         foreach (var parameter in parentParameters)
@@ -56,7 +58,7 @@ public partial class RamlConverter
             if (TryMapOperationType(key, out var operationType))
             {
                 var operationValues = values.GetAsDictionary(key)!;
-                var operation = MapOperation(operationValues);
+                var operation = MapOperation(operationValues, specVersion);
 
                 // Add parameters from the path to this operation
                 foreach (var parameter in parameters)
@@ -84,25 +86,25 @@ public partial class RamlConverter
         {
             var d = values.GetAsDictionary(key);
             var newPath = $"{parent}{key}";
-            var mapItems = MapPathItems(newPath, parameters, d, uses);
+            var mapItems = MapPathItems(newPath, parameters, d, uses, specVersion);
             items.AddRange(mapItems);
         }
 
         return items;
     }
 
-    private OpenApiOperation MapOperation(IDictionary<object, object> values)
+    private OpenApiOperation MapOperation(IDictionary<object, object> values, OpenApiSpecVersion specVersion)
     {
         return new OpenApiOperation
         {
             Description = values.Get("description"),
-            Parameters = MapParameters(values),
-            Responses = MapResponses(values.GetAsDictionary("responses")),
-            RequestBody = MapRequest(values.GetAsDictionary("body"))
+            Parameters = MapParameters(values, specVersion),
+            Responses = MapResponses(values.GetAsDictionary("responses"), specVersion),
+            RequestBody = MapRequest(values.GetAsDictionary("body"), specVersion)
         };
     }
 
-    private OpenApiResponses? MapResponses(IDictionary<object, object>? values)
+    private OpenApiResponses? MapResponses(IDictionary<object, object>? values, OpenApiSpecVersion specVersion)
     {
         var openApiResponses = new OpenApiResponses();
 
@@ -124,7 +126,7 @@ public partial class RamlConverter
                     var openApiResponse = new OpenApiResponse
                     {
                         Description = description,
-                        Content = MapContents(body)
+                        Content = MapContents(body, specVersion)
                     };
                     openApiResponses.Add(key, openApiResponse);
                 }
@@ -141,7 +143,7 @@ public partial class RamlConverter
         return openApiResponses.Count > 0 ? openApiResponses : null;
     }
 
-    private OpenApiRequestBody? MapRequest(IDictionary<object, object>? values)
+    private OpenApiRequestBody? MapRequest(IDictionary<object, object>? values, OpenApiSpecVersion specVersion)
     {
         if (values == null)
         {
@@ -150,13 +152,13 @@ public partial class RamlConverter
 
         var requestBody = new OpenApiRequestBody
         {
-            Content = MapContents(values)
+            Content = MapContents(values, specVersion)
         };
 
         return requestBody;
     }
 
-    private IDictionary<string, OpenApiMediaType>? MapContents(IDictionary<object, object>? values)
+    private IDictionary<string, OpenApiMediaType>? MapContents(IDictionary<object, object>? values, OpenApiSpecVersion specVersion)
     {
         if (values == null)
         {
@@ -178,11 +180,11 @@ public partial class RamlConverter
                 IOpenApiSchema? schema = null;
                 if (!string.IsNullOrEmpty(type))
                 {
-                    schema = MapMediaTypeSchema(type!);
+                    schema = MapMediaTypeSchema(type!, specVersion);
                 }
                 else if (!string.IsNullOrEmpty(schemaValue))
                 {
-                    schema = MapMediaTypeSchema(schemaValue!);
+                    schema = MapMediaTypeSchema(schemaValue!, specVersion);
                 }
 
                 var openApiMediaType = new OpenApiMediaType
@@ -203,17 +205,17 @@ public partial class RamlConverter
         return JsonNode.Parse(exampleAsJson);
     }
 
-    private IOpenApiSchema MapMediaTypeSchema(string value)
+    private IOpenApiSchema MapMediaTypeSchema(string value, OpenApiSpecVersion specVersion)
     {
         if (value.StartsWith("{"))
         {
             var objectType = _deserializer.Deserialize<IDictionary<object, object>>(value);
-            return MapValuesToSchema(objectType);
+            return MapValuesToSchema(objectType, specVersion);
         }
 
         var referenceSchemas = value
             .Split(['|'], StringSplitOptions.RemoveEmptyEntries)
-            .Select(o => CreateDummyOpenApiReferenceSchema(o.Trim(), "object"))
+            .Select(o => CreateDummyOpenApiReferenceSchema(o.Trim(), false, "object"))
             .ToList();
 
         if (referenceSchemas.Count == 1)
@@ -227,10 +229,17 @@ public partial class RamlConverter
         };
     }
 
-    // ReSharper disable once UnusedParameter.Local
-    private static IOpenApiSchema CreateDummyOpenApiReferenceSchema(string referenceId, string? type = null)
+    private static IOpenApiSchema CreateDummyOpenApiReferenceSchema(string referenceId, bool nullable, string? type = null)
     {
-        return new OpenApiSchemaReference(referenceId);
+        var reference = new OpenApiSchemaReference(referenceId);
+
+        // Not sure if this is needed, can work? (2025-04-14)
+        if (reference.Type != null && nullable)
+        {
+            reference.Type.Value.AddNullable(true);
+        }
+
+        return reference;
     }
 
     private static bool TryMapOperationType(string value, out HttpMethod operationType)
