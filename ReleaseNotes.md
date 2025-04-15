@@ -1,5 +1,8 @@
+# 0.7.0 (15 April 2025)
+- [#22](https://github.com/StefH/RamlToOpenApiConverter/pull/22) - Update Microsoft.OpenApi.YamlReader to 2.0.0-preview.16 to support spec version 3.1 [enhancement] contributed by [StefH](https://github.com/StefH)
+
 # 0.6.1 (04 February 2022)
-- [#18](https://github.com/StefH/RamlToOpenApiConverter/pull/18) - Uses statement contributed by [andresendava](https://github.com/andresendava)
+- [#18](https://github.com/StefH/RamlToOpenApiConverter/pull/18) - Uses statement contributed by [AndresGMD](https://github.com/AndresGMD)
 - [#19](https://github.com/StefH/RamlToOpenApiConverter/pull/19) - Fixes contributed by [StefH](https://github.com/StefH)
 
 # 0.6.0 (11 December 2021)
