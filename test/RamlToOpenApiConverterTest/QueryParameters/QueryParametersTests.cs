@@ -1,6 +1,5 @@
 using System.IO;
 using FluentAssertions;
-using Microsoft.OpenApi;
 using RamlToOpenApiConverter;
 using RamlToOpenApiConverterTest.Extensions;
 using Xunit;
@@ -9,12 +8,7 @@ namespace RamlToOpenApiConverterTest.QueryParameters;
 
 public class QueryParametersTests
 {
-    private readonly RamlConverter _sut;
-
-    public QueryParametersTests()
-    {
-        _sut = new RamlConverter();
-    }
+    private readonly RamlConverter _sut = new();
 
     [Theory]
     [InlineData("QueryParameterEnumInline")]
@@ -39,7 +33,7 @@ public class QueryParametersTests
         var expected = File.ReadAllText(Path.Combine("QueryParameters", $"{path}2.json"));
 
         // Act
-        var result = _sut.Convert(Path.Combine("QueryParameters", $"{path}.raml"), OpenApiSpecVersion.OpenApi2_0);
+        var result = _sut.Convert(Path.Combine("QueryParameters", $"{path}.raml"), OpenApiSpecificationVersion.OpenApi2_0);
 
         // Assert
         result.NormalizeNewLines().Should().BeEquivalentTo(expected.NormalizeNewLines());
@@ -53,7 +47,7 @@ public class QueryParametersTests
         var expected = File.ReadAllText(Path.Combine("QueryParameters", $"{path}3.json"));
 
         // Act
-        var result = _sut.Convert(Path.Combine("QueryParameters", $"{path}.raml"), OpenApiSpecVersion.OpenApi3_0);
+        var result = _sut.Convert(Path.Combine("QueryParameters", $"{path}.raml"), OpenApiSpecificationVersion.OpenApi3_0);
 
         // Assert
         result.NormalizeNewLines().Should().BeEquivalentTo(expected.NormalizeNewLines());
@@ -67,7 +61,7 @@ public class QueryParametersTests
         var expected = File.ReadAllText(Path.Combine("QueryParameters", $"{path}31.json"));
 
         // Act
-        var result = _sut.Convert(Path.Combine("QueryParameters", $"{path}.raml"), OpenApiSpecVersion.OpenApi3_1);
+        var result = _sut.Convert(Path.Combine("QueryParameters", $"{path}.raml"), OpenApiSpecificationVersion.OpenApi3_1);
 
         // Assert
         result.NormalizeNewLines().Should().BeEquivalentTo(expected.NormalizeNewLines());
