@@ -4,26 +4,26 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <Target Name="ILRepacker" AfterTargets="Build" Condition="'$(Configuration)' == 'Release'">
         <ItemGroup>
-            <InputAssemblies Include="$(OutputPath)\RamlToOpenApiConverter.dll" />
+            <InputAssemblies Include="$(OutputPath)RamlToOpenApiConverter.dll" />
             <InputAssemblies Include="@(ReferencePathWithRefAssemblies)" Condition="'%(filename)' == 'Microsoft.OpenApi.YamlReader'" />
             <InputAssemblies Include="@(ReferencePathWithRefAssemblies)" Condition="'%(filename)' == 'Microsoft.OpenApi'" />
             <LibraryPath Include="%(ReferencePathWithRefAssemblies.RelativeDir)" />
         </ItemGroup>
     
         <ItemGroup>
-            <!-- Must be a fully qualified name -->
             <DoNotInternalizeAssemblies Include="RamlToOpenApiConverter" />
         </ItemGroup>
     
         <ILRepack
             Parallel="true"
             Internalize="true"
+            RenameInternalized="true"
             InternalizeExclude="@(DoNotInternalizeAssemblies)"
             InputAssemblies="@(InputAssemblies)"
             LibraryPath="@(LibraryPath)"
             TargetKind="Dll"
             KeyFile="RamlToOpenApiConverter.snk"
-            OutputFile="$(OutputPath)\$(AssemblyName).dll"
+            OutputFile="$(OutputPath)$(AssemblyName).dll"
         />
     </Target>
 </Project>
