@@ -158,7 +158,7 @@ public partial class RamlConverter
         return requestBody;
     }
 
-    private IDictionary<string, OpenApiMediaType>? MapContents(IDictionary<object, object>? values, OpenApiSpecVersion specVersion)
+    private Dictionary<string, OpenApiMediaType>? MapContents(IDictionary<object, object>? values, OpenApiSpecVersion specVersion)
     {
         if (values == null)
         {

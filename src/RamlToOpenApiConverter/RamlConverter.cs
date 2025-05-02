@@ -22,16 +22,16 @@ public partial class RamlConverter
     /// Converts the input RAML file to an Open API Specification output string using the provided options.
     /// </summary>
     /// <param name="inputPath">The path to the RAML file.</param>
-    /// <param name="specVersion">The Open API specification version.</param>
+    /// <param name="specificationVersion">The Open API specification version.</param>
     /// <param name="format">Open API document format.</param>
-    public string Convert(string inputPath, OpenApiSpecVersion specVersion = OpenApiSpecVersion.OpenApi3_0, OpenApiFormat format = OpenApiFormat.Json)
+    public string Convert(string inputPath, OpenApiSpecificationVersion specificationVersion = OpenApiSpecificationVersion.OpenApi3_0, string format = OpenApiConstants.Json)
     {
-        var document = ConvertToOpenApiDocument(inputPath, specVersion);
+        var document = ConvertToOpenApiDocument(inputPath, specificationVersion);
 
         using var stringWriter = new StringWriter();
-        IOpenApiWriter openApiWriter = format == OpenApiFormat.Json ? new OpenApiJsonWriter(stringWriter) : new OpenApiYamlWriter(stringWriter);
+        IOpenApiWriter openApiWriter = format == OpenApiConstants.Json ? new OpenApiJsonWriter(stringWriter) : new OpenApiYamlWriter(stringWriter);
 
-        document.SerializeAs(specVersion, openApiWriter);
+        document.SerializeAs((OpenApiSpecVersion)specificationVersion, openApiWriter);
 
         return stringWriter.ToString();
     }
@@ -41,11 +41,11 @@ public partial class RamlConverter
     /// </summary>
     /// <param name="inputPath">The path to the RAML file.</param>
     /// <param name="outputPath">The path to the generated Open API Specification file.</param>
-    /// <param name="specVersion">The Open API specification version.</param>
+    /// <param name="specificationVersion">The Open API specification version.</param>
     /// <param name="format">Open API document format.</param>
-    public void ConvertToFile(string inputPath, string outputPath, OpenApiSpecVersion specVersion = OpenApiSpecVersion.OpenApi3_0, OpenApiFormat format = OpenApiFormat.Json)
+    public void ConvertToFile(string inputPath, string outputPath, OpenApiSpecificationVersion specificationVersion = OpenApiSpecificationVersion.OpenApi3_0, string format = OpenApiConstants.Json)
     {
-        var contents = Convert(inputPath, specVersion, format);
+        var contents = Convert(inputPath, specificationVersion, format);
 
         File.WriteAllText(outputPath, contents);
     }
@@ -54,9 +54,11 @@ public partial class RamlConverter
     /// Converts the input RAML stream to an Open API Specification document.
     /// </summary>
     /// <param name="inputPath">The path to the RAML file.</param>
-    /// <param name="specVersion">The Open API specification version.</param>
-    public OpenApiDocument ConvertToOpenApiDocument(string inputPath, OpenApiSpecVersion specVersion = OpenApiSpecVersion.OpenApi3_0)
+    /// <param name="specificationVersion">The Open API specification version.</param>
+    public OpenApiDocument ConvertToOpenApiDocument(string inputPath, OpenApiSpecificationVersion specificationVersion = OpenApiSpecificationVersion.OpenApi3_0)
     {
+        var specVersion = (OpenApiSpecVersion)specificationVersion;
+
         _deserializer = IncludeNodeDeserializerBuilder.Build(Path.GetDirectoryName(inputPath)!);
 
         var result = _deserializer.Deserialize<IDictionary<object, object>>(File.ReadAllText(inputPath));

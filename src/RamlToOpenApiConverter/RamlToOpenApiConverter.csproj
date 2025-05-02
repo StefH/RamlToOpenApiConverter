@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
+        <VersionPrefix>0.8.0-preview-01</VersionPrefix>
         <Authors>Stef Heyenrath</Authors>
         <Description>Convert RAML file to Open API Specification</Description>
         <PackageTags>raml;openapi;OAS;converter</PackageTags>
@@ -14,8 +15,8 @@
         <PublishRepositoryUrl>true</PublishRepositoryUrl>
         <Nullable>enable</Nullable>
         <LangVersion>latest</LangVersion>
-        <SignAssembly>True</SignAssembly>
-        <AssemblyOriginatorKeyFile>RamlToOpenApiConverter.snk</AssemblyOriginatorKeyFile>
+        <!--<SignAssembly>True</SignAssembly>-->
+        <!--<AssemblyOriginatorKeyFile>RamlToOpenApiConverter.snk</AssemblyOriginatorKeyFile>-->
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)' == 'Release'">
@@ -23,12 +24,10 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.OpenApi.YamlReader" Version="2.0.0-preview.16" />
+        <PackageReference Include="ILRepack.Lib.MSBuild.Task" Version="2.0.40" PrivateAssets="All" />
+        <PackageReference Include="Microsoft.OpenApi" Version="2.0.0-preview.17"/>
+        <PackageReference Include="Microsoft.OpenApi.YamlReader" Version="2.0.0-preview.17" />
         <PackageReference Include="YamlDotNet" Version="8.1.0" />
-    </ItemGroup>
-
-    <ItemGroup Condition=" '$(TargetFramework)' == 'net46' ">
-        <PackageReference Include="System.ValueTuple" Version="4.3.0" />
     </ItemGroup>
 
 </Project>

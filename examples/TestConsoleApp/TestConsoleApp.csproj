@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <OutputType>Exe</OutputType>
@@ -6,7 +6,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\src\RamlToOpenApiConverter\RamlToOpenApiConverter.csproj" />
+        <PackageReference Include="YamlDotNet" Version="8.1.0" />
+
+        <Reference Include="RamlToOpenApiConverter">
+            <HintPath>..\..\src\RamlToOpenApiConverter\bin\$(Configuration)\net8.0\RamlToOpenApiConverter.dll</HintPath>
+        </Reference>
     </ItemGroup>
 
     <ItemGroup>
