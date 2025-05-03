@@ -1,0 +1,22 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "ParameterNil"
+  },
+  "paths": {
+    "/helloworld": {
+      "get": {
+        "parameters": [
+          {
+            "in": "query",
+            "name": "canBeNullOrNumber",
+            "type": "integer",
+            "format": "int",
+            "x-nullable": true
+          }
+        ],
+        "responses": { }
+      }
+    }
+  }
+}

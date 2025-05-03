@@ -1,0 +1,28 @@
+#%RAML 1.0
+title: Hello Arrays
+types:
+  Email:
+    type: object
+    properties:
+      subject: string
+  Emails1:
+    type: array
+    items: Email
+  Emails2:
+    type: Email[]
+
+/testendpoint1:
+  get:
+    responses:
+      200:
+        body:
+          application/json:
+            type: Emails1
+
+/testendpoint2:
+  get:
+    responses:
+      200:
+        body:
+          application/json:
+            type: Emails2

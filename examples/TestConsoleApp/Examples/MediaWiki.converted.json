@@ -1,5 +1,5 @@
 {
-  "openapi": "3.0.1",
+  "openapi": "3.0.4",
   "info": {
     "title": "MediaWiki",
     "description": "The MediaWiki action API is a web service that provides convenient access to wiki features, data, and meta-data over HTTP, via a URL usually at api.php",
@@ -176,10 +176,30 @@
             "type": "object",
             "properties": {
               "normalized": {
-                "type": "NormalizedItem[]"
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/NormalizedItem"
+                }
               },
               "pages": {
-                "type": "object"
+                "$ref": "#/components/schemas/Pages"
+              }
+            }
+          }
+        },
+        "example": {
+          "query": {
+            "normalized": [
+              {
+                "from": "Project:articleA",
+                "to": "Wikipedia:ArticleA"
+              }
+            ],
+            "pages": {
+              "1": {
+                "ns": "4",
+                "title": "Wikipedia:ArticleA",
+                "missing": ""
               }
             }
           }
@@ -192,7 +212,18 @@
             "type": "object",
             "properties": {
               "pages": {
-                "type": "object"
+                "$ref": "#/components/schemas/Pages"
+              }
+            }
+          }
+        },
+        "example": {
+          "query": {
+            "pages": {
+              "1": {
+                "ns": "4",
+                "title": "Wikipedia:ArticleA",
+                "missing": ""
               }
             }
           }
@@ -216,10 +247,25 @@
             "type": "object",
             "properties": {
               "redirects": {
-                "type": "object"
+                "$ref": "#/components/schemas/Destination"
               },
               "pages": {
-                "type": "object"
+                "$ref": "#/components/schemas/Pages"
+              }
+            }
+          }
+        },
+        "example": {
+          "query": {
+            "redirects": {
+              "from": "Main page",
+              "to": "Main Page"
+            },
+            "pages": {
+              "1": {
+                "ns": "4",
+                "title": "Wikipedia:ArticleA",
+                "missing": ""
               }
             }
           }
@@ -238,6 +284,11 @@
           "pageid?": {
             "type": "string"
           }
+        },
+        "example": {
+          "ns": "10",
+          "title": "Template:API Intro",
+          "pageid": "16385"
         }
       },
       "ExportQuery": {
@@ -247,12 +298,25 @@
             "type": "object",
             "properties": {
               "pages": {
-                "type": "Page[]"
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Page"
+                }
               },
               "export": {
                 "type": "object"
               }
             }
+          }
+        },
+        "example": {
+          "query": {
+            "pages": {
+              "ns": "10",
+              "title": "Template:API Intro",
+              "pageid": "16385"
+            },
+            "export": null
           }
         }
       },
@@ -263,7 +327,10 @@
             "type": "object",
             "properties": {
               "pageids": {
-                "type": "string[]"
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/string"
+                }
               },
               "pages": {
                 "type": "object"

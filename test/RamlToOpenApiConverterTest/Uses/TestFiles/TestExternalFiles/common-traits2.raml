@@ -1,0 +1,31 @@
+#%RAML 1.0 Library
+traits:
+  ex2:
+    test-id-required:
+      headers:
+        test_id:
+          type: string
+          required: true
+        test_secret:
+          type: string
+          required: true
+    
+    pagination:
+      queryParameters:
+        offset:
+          description: Starting entry number, first entry is 1
+          type: integer
+          required: false
+          example: 1
+        limit:
+          description: Maximum number of entries per page
+          type: integer
+          required: false
+          example: 50
+    
+    commonHeaders:
+      headers:
+        X-Correlation-Id: 
+          displayName: Correlation ID
+          type: string
+          required: true

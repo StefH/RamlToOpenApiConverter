@@ -1,0 +1,9 @@
+#%RAML 1.0 Library
+traits:
+  /:
+    post: 
+      displayName: "Test3"
+      is: uses_traits.test-id-required
+      responses:
+        201:
+          description: "Response Success Test 3"

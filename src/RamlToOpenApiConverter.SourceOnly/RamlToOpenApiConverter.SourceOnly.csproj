@@ -1,0 +1,37 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <Description>Source Code only project to convert RAML file to Open API Specification</Description>
+        <AssemblyOriginatorKeyFile>../RamlToOpenApiConverter/RamlToOpenApiConverter.snk</AssemblyOriginatorKeyFile>
+
+        <IncludeBuildOutput>false</IncludeBuildOutput>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Content Include="..\RamlToOpenApiConverter\**\*.cs" Exclude="bin\**\*.cs">
+            <Pack>true</Pack>
+            <PackagePath>contentFiles\cs\any\RamlToOpenApiConverter</PackagePath>
+            <BuildAction>Compile</BuildAction>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Compile Remove="obj\**" />
+        <Content Remove="..\RamlToOpenApiConverter\obj\**" />
+        <EmbeddedResource Remove="obj\**" />
+        <None Remove="obj\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.OpenApi" Version="2.0.0-preview.17" PrivateAssets="All" />
+        <PackageReference Include="Microsoft.OpenApi.YamlReader" Version="2.0.0-preview.17" PrivateAssets="All" />
+        <PackageReference Include="YamlDotNet" Version="8.1.0" PrivateAssets="All" />
+    </ItemGroup>
+
+</Project>

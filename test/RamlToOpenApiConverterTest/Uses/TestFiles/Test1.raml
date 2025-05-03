@@ -1,0 +1,21 @@
+#%RAML 1.0
+title: test1
+description: Test1.
+mediaType:
+  - application/json
+version: "v1"
+protocols:
+  - HTTPS
+
+baseUri: /test/raml/1
+
+uses: 
+  uses_traits: TestExternalFiles/common-traits1.raml
+
+/:
+  get: 
+    displayName: "Test1"
+    is: uses_traits.commonHeaders
+    responses:
+      200:
+        description: "Response Success Test 1"

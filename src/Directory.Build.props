@@ -1,0 +1,21 @@
+<Project>
+    <PropertyGroup>
+        <Version>0.8.0-preview-04</Version>
+        <Authors>Stef Heyenrath</Authors>
+        <PackageTags>raml;openapi;OAS;converter</PackageTags>
+        <PackageReleaseNotes>See ReleaseNotes.md</PackageReleaseNotes>
+        <PackageProjectUrl>https://github.com/StefH/RamlToOpenApiConverter</PackageProjectUrl>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <RepositoryType>git</RepositoryType>
+        <RepositoryUrl>https://github.com/StefH/RamlToOpenApiConverter</RepositoryUrl>
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <Nullable>enable</Nullable>
+        <LangVersion>latest</LangVersion>
+        <SignAssembly>True</SignAssembly>
+
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    </PropertyGroup>
+</Project>

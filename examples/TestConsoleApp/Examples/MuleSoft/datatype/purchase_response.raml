@@ -1,0 +1,12 @@
+#%RAML 1.0 DataType
+type: object
+properties:
+  itemid: 
+    type: integer
+    required: true
+  price: 
+    type: integer
+    required: false
+  tipos:
+    type: array
+    items: !include tipos_response.raml

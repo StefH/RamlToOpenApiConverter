@@ -1,16 +1,10 @@
-﻿using System.Collections.Generic;
-using YamlDotNet.Serialization;
+// using System.Collections.Generic;
 
-namespace RamlToOpenApiConverter.Yaml
+namespace RamlToOpenApiConverter.Yaml;
+
+public class YamlIncludeNodeDeserializerOptions
 {
-    public class YamlIncludeNodeDeserializerOptions
-    {
-        public IDeserializer Deserializer { get; set; }
+    public string DirectoryName { get; set; } = default!;
 
-        public string DirectoryName { get; set; }
-
-        //public IncludeRefCallback IncludeRefCallback { get; set; }
-
-        public IList<IncludeRef> includeRefs { get; set; }
-    }
+    // public IList<IncludeRef> IncludeRefs { get; set; } = default!;
 }

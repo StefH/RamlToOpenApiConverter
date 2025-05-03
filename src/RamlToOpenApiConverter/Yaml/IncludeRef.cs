@@ -1,9 +1,8 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
-namespace RamlToOpenApiConverter.Yaml
+namespace RamlToOpenApiConverter.Yaml;
+
+internal class IncludeRef : Dictionary<object, object>
 {
-    public class IncludeRef : Dictionary<object, object>
-    {
-        public string FileName { get; set; }
-    }
+    public string? FileName { get; set; }
 }

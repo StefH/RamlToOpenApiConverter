@@ -1,0 +1,85 @@
+{
+  "openapi": "3.0.4",
+  "info": {
+    "title": "include example files",
+    "description": "this is a description of include example using include",
+    "version": "1.0"
+  },
+  "paths": {
+    "/testemails": {
+      "get": {
+        "description": "this is an example response",
+        "responses": {
+          "200": {
+            "description": null,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Emails"
+                },
+                "example": [
+                  {
+                    "subject": "Email subject1",
+                    "body": "Email body1"
+                  },
+                  {
+                    "subject": "Email subject2",
+                    "body": "Email body2"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/testemails2": {
+      "get": {
+        "description": "this is an example response",
+        "responses": {
+          "200": {
+            "description": null,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Emails"
+                },
+                "example": [
+                  {
+                    "subject": "Email subject1",
+                    "body": "Email body1"
+                  },
+                  {
+                    "subject": "Email subject2",
+                    "body": "Email body2"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Email": {
+        "type": "object",
+        "properties": {
+          "subject": {
+            "type": "string"
+          },
+          "body": {
+            "type": "string"
+          }
+        }
+      },
+      "Emails": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/Email"
+        }
+      }
+    }
+  }
+}

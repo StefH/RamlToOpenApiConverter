@@ -1,0 +1,17 @@
+#%RAML 1.0 Library
+traits:
+  /path1:
+    is: methods
+  /path2:
+    put: 
+      displayName: "Test4"
+      is: uses_traits.pagination
+      responses:
+        200:
+          description: "Response Success Test 4 Put"
+    get: 
+      displayName: "Test4"
+      is: uses_traits.commonHeaders
+      responses:
+        200:
+          description: "Response Success Test 4 Get"

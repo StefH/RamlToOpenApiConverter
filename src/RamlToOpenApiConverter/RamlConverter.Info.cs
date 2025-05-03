@@ -1,19 +1,18 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Microsoft.OpenApi.Models;
 using RamlToOpenApiConverter.Extensions;
 
-namespace RamlToOpenApiConverter
+namespace RamlToOpenApiConverter;
+
+public partial class RamlConverter
 {
-    public partial class RamlConverter
+    private static OpenApiInfo MapInfo(IDictionary<object, object> o)
     {
-        private OpenApiInfo MapInfo(IDictionary<object, object> o)
+        return new OpenApiInfo
         {
-            return new OpenApiInfo
-            {
-                Title = o.Get("title"),
-                Description = o.Get("description"),
-                Version = o.Get("version")
-            };
-        }
+            Title = o.Get("title"),
+            Description = o.Get("description"),
+            Version = o.Get("version")
+        };
     }
 }
