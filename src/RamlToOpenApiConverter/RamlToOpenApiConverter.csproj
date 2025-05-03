@@ -1,26 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <VersionPrefix>0.8.0-preview-03</VersionPrefix>
-        <Authors>Stef Heyenrath</Authors>
-        <Description>Convert RAML file to Open API Specification</Description>
-        <PackageTags>raml;openapi;OAS;converter</PackageTags>
         <TargetFrameworks>netstandard2.0;net8.0</TargetFrameworks>
-        <PackageReleaseNotes>See ReleaseNotes.md</PackageReleaseNotes>
-        <PackageProjectUrl>https://github.com/StefH/RamlToOpenApiConverter</PackageProjectUrl>
-        <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <RepositoryType>git</RepositoryType>
-        <RepositoryUrl>https://github.com/StefH/RamlToOpenApiConverter</RepositoryUrl>
-        <ProjectGuid>{D3804228-91F4-1111-9595-39584E5A01AD}</ProjectGuid>
-        <PublishRepositoryUrl>true</PublishRepositoryUrl>
-        <Nullable>enable</Nullable>
-        <LangVersion>latest</LangVersion>
-        <SignAssembly>True</SignAssembly>
+        <Description>Convert RAML file to Open API Specification</Description>
         <AssemblyOriginatorKeyFile>RamlToOpenApiConverter.snk</AssemblyOriginatorKeyFile>
-    </PropertyGroup>
-
-    <PropertyGroup Condition="'$(Configuration)' == 'Release'">
-        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     </PropertyGroup>
 
     <ItemGroup>
