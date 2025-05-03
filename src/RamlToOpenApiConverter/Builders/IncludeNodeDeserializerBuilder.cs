@@ -17,7 +17,6 @@ internal static class IncludeNodeDeserializerBuilder
         var includeNodeDeserializer = new YamlIncludeNodeDeserializer(includeNodeDeserializerOptions);
 
         return builder
-            .WithTagMapping(string.Empty, typeof(IncludeRef))
             .WithTagMapping(Constants.IncludeTag, typeof(IncludeRef))
             .WithNodeDeserializer(includeNodeDeserializer, s => s.OnTop())
             .Build();
