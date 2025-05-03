@@ -15,8 +15,8 @@
         <PublishRepositoryUrl>true</PublishRepositoryUrl>
         <Nullable>enable</Nullable>
         <LangVersion>latest</LangVersion>
-        <!--<SignAssembly>True</SignAssembly>-->
-        <!--<AssemblyOriginatorKeyFile>RamlToOpenApiConverter.snk</AssemblyOriginatorKeyFile>-->
+        <SignAssembly>True</SignAssembly>
+        <AssemblyOriginatorKeyFile>RamlToOpenApiConverter.snk</AssemblyOriginatorKeyFile>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)' == 'Release'">
@@ -24,9 +24,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="ILRepack.Lib.MSBuild.Task" Version="2.0.40" PrivateAssets="All" />
+        <!--<PackageReference Include="ILRepack.Lib.MSBuild.Task" Version="2.0.40" PrivateAssets="All" />
         <PackageReference Include="Microsoft.OpenApi" Version="2.0.0-preview.17" PrivateAssets="All" />
         <PackageReference Include="Microsoft.OpenApi.YamlReader" Version="2.0.0-preview.17" PrivateAssets="All" />
+        -->
+
+        <PackageReference Include="Microsoft.OpenApi.YamlReader" Version="2.0.0-preview.17" />
         <PackageReference Include="YamlDotNet" Version="8.1.0" />
     </ItemGroup>
 

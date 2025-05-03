@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <VersionPrefix>0.0.0-preview-01</VersionPrefix>
+        <VersionPrefix>0.0.1-preview-01</VersionPrefix>
         <Authors>Stef Heyenrath</Authors>
         <Description>Source Code only project to convert RAML file to Open API Specification</Description>
         <PackageTags>raml;openapi;OAS;converter</PackageTags>
@@ -15,9 +15,10 @@
         <PublishRepositoryUrl>true</PublishRepositoryUrl>
         <Nullable>enable</Nullable>
         <LangVersion>latest</LangVersion>
+        <SignAssembly>True</SignAssembly>
+        <AssemblyOriginatorKeyFile>../RamlToOpenApiConverter/RamlToOpenApiConverter.snk</AssemblyOriginatorKeyFile>
 
         <IncludeBuildOutput>false</IncludeBuildOutput>
-        <!--<ContentTargetFolders>contentFiles</ContentTargetFolders>-->
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)' == 'Release'">

@@ -2,11 +2,11 @@
 
 <!-- See also https://github.com/ravibpatel/ILRepack.Lib.MSBuild.Task/issues/26 -->
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-    <Target Name="ILRepacker" AfterTargets="Build" Condition="'$(Configuration)' == 'Release'">
+    <!--<Target Name="ILRepacker" AfterTargets="Build" Condition="'$(Configuration)' == 'Release'">
         <ItemGroup>
             <InputAssemblies Include="$(OutputPath)RamlToOpenApiConverter.dll" />
-            <!--<InputAssemblies Include="@(ReferencePathWithRefAssemblies)" Condition="'%(filename)' == 'Microsoft.OpenApi.YamlReader'" />
-            <InputAssemblies Include="@(ReferencePathWithRefAssemblies)" Condition="'%(filename)' == 'Microsoft.OpenApi'" />-->
+            <InputAssemblies Include="@(ReferencePathWithRefAssemblies)" Condition="'%(filename)' == 'Microsoft.OpenApi.YamlReader'" />
+            <InputAssemblies Include="@(ReferencePathWithRefAssemblies)" Condition="'%(filename)' == 'Microsoft.OpenApi'" />
             <LibraryPath Include="%(ReferencePathWithRefAssemblies.RelativeDir)" />
         </ItemGroup>
     
@@ -25,5 +25,5 @@
             KeyFile="RamlToOpenApiConverter.snk"
             OutputFile="$(OutputPath)$(AssemblyName).dll"
         />
-    </Target>
+    </Target>-->
 </Project>
