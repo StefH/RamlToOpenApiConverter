@@ -1,0 +1,64 @@
+{
+  "openapi": "3.0.4",
+  "info": {
+    "title": "Hello Arrays"
+  },
+  "paths": {
+    "/testendpoint1": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": null,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Emails1"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/testendpoint2": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": null,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Emails2"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Email": {
+        "type": "object",
+        "properties": {
+          "subject": {
+            "type": "string"
+          }
+        }
+      },
+      "Emails1": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/Email"
+        }
+      },
+      "Emails2": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/Email"
+        }
+      }
+    }
+  }
+}

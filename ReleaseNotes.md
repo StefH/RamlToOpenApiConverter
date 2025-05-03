@@ -1,3 +1,6 @@
+# 0.8.0 (03 May 2025)
+- [#23](https://github.com/StefH/RamlToOpenApiConverter/pull/23) - Add RamlToOpenApiConverter.SourceOnly package [enhancement] contributed by [StefH](https://github.com/StefH)
+
 # 0.7.0 (15 April 2025)
 - [#22](https://github.com/StefH/RamlToOpenApiConverter/pull/22) - Update Microsoft.OpenApi.YamlReader to 2.0.0-preview.16 to support spec version 3.1 [enhancement] contributed by [StefH](https://github.com/StefH)
 

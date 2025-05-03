@@ -8,10 +8,13 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="RamlToOpenApiConverter.SourceOnly" Version="0.8.0-preview-03" />
         <PackageReference Include="YamlDotNet" Version="8.1.0" />
         <PackageReference Include="Microsoft.OpenApi" Version="2.0.0-preview.17" PrivateAssets="All" />
         <PackageReference Include="Microsoft.OpenApi.YamlReader" Version="2.0.0-preview.17" PrivateAssets="All" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\src\RamlToOpenApiConverter\RamlToOpenApiConverter.csproj" />
     </ItemGroup>
 
     <ItemGroup>

@@ -1,0 +1,99 @@
+{
+  "openapi": "3.0.4",
+  "info": {
+    "title": "Using XML and JSON Schema"
+  },
+  "paths": {
+    "/person": {
+      "get": {
+        "parameters": [
+          {
+            "name": "start",
+            "in": "query",
+            "description": "The timstamp in milliseconds indicating the beginning of the collection of timeseries data",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": null,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PersonInclude"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": null,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PersonInline"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "requestBody": {
+          "content": {
+            "application/json": { }
+          }
+        },
+        "responses": { }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "PersonInline": {
+        "required": [
+          "firstName",
+          "lastName"
+        ],
+        "type": "object",
+        "properties": {
+          "firstName": {
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          },
+          "age": {
+            "minimum": 0,
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "PersonInclude": {
+        "required": [
+          "firstName",
+          "lastName"
+        ],
+        "type": "object",
+        "properties": {
+          "firstName": {
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          },
+          "age": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "test": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

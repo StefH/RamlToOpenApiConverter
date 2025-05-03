@@ -1,0 +1,64 @@
+{
+  "openapi": "3.0.4",
+  "info": {
+    "title": "Hello world"
+  },
+  "paths": {
+    "/helloworld": {
+      "get": {
+        "parameters": [
+          {
+            "name": "titles",
+            "in": "query",
+            "description": "The Titles !",
+            "required": true,
+            "schema": {
+              "enum": [
+                "A",
+                "B",
+                "C"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "canBeNullOrNumber",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "nullable": true,
+              "format": "int"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": null,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "required": [
+                    "message"
+                  ],
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "id": {
+                      "type": "integer",
+                      "format": "int"
+                    }
+                  }
+                },
+                "example": {
+                  "message": "Hello world"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

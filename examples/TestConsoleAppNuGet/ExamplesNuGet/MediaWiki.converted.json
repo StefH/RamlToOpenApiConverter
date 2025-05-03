@@ -1,0 +1,344 @@
+{
+  "openapi": "3.0.4",
+  "info": {
+    "title": "MediaWiki",
+    "description": "The MediaWiki action API is a web service that provides convenient access to wiki features, data, and meta-data over HTTP, via a URL usually at api.php",
+    "version": "v1"
+  },
+  "servers": [
+    {
+      "url": "https://en.wikipedia.org/w/api.php"
+    }
+  ],
+  "paths": {
+    "/helloworld": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": null,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "id": {
+                      "type": "integer",
+                      "format": "int"
+                    }
+                  }
+                },
+                "example": {
+                  "message": "Hello world"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Returned if there is no re-indexing task found"
+          }
+        }
+      }
+    },
+    "/": {
+      "get": {
+        "description": "Title normalization | Missing and invalid titles | Resolving redirects | Exporting pages | Getting a list of page IDs",
+        "parameters": [
+          {
+            "name": "action",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "enum": [
+                "query"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "titles",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "enum": [
+                "A",
+                "B",
+                "C"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "format",
+            "in": "query",
+            "schema": {
+              "enum": [
+                "jsonfm"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "redirects",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "generator",
+            "in": "query",
+            "schema": {
+              "enum": [
+                "templates"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "export",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "indexpageids",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": null,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/Normalization"
+                    },
+                    {
+                      "$ref": "#/components/schemas/QueryResult"
+                    },
+                    {
+                      "$ref": "#/components/schemas/RedirectsQuery"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ExportQuery"
+                    },
+                    {
+                      "$ref": "#/components/schemas/PagesLists"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "201": {
+            "description": null,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Normalization"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "NormalizedItem": {
+        "type": "object",
+        "properties": {
+          "from": {
+            "type": "string"
+          },
+          "to": {
+            "type": "string"
+          }
+        }
+      },
+      "Pages": {
+        "type": "object"
+      },
+      "Normalization": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "object",
+            "properties": {
+              "normalized": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/NormalizedItem"
+                }
+              },
+              "pages": {
+                "$ref": "#/components/schemas/Pages"
+              }
+            }
+          }
+        },
+        "example": {
+          "query": {
+            "normalized": [
+              {
+                "from": "Project:articleA",
+                "to": "Wikipedia:ArticleA"
+              }
+            ],
+            "pages": {
+              "1": {
+                "ns": "4",
+                "title": "Wikipedia:ArticleA",
+                "missing": ""
+              }
+            }
+          }
+        }
+      },
+      "QueryResult": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "object",
+            "properties": {
+              "pages": {
+                "$ref": "#/components/schemas/Pages"
+              }
+            }
+          }
+        },
+        "example": {
+          "query": {
+            "pages": {
+              "1": {
+                "ns": "4",
+                "title": "Wikipedia:ArticleA",
+                "missing": ""
+              }
+            }
+          }
+        }
+      },
+      "Destination": {
+        "type": "object",
+        "properties": {
+          "from": {
+            "type": "string"
+          },
+          "to": {
+            "type": "string"
+          }
+        }
+      },
+      "RedirectsQuery": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "object",
+            "properties": {
+              "redirects": {
+                "$ref": "#/components/schemas/Destination"
+              },
+              "pages": {
+                "$ref": "#/components/schemas/Pages"
+              }
+            }
+          }
+        },
+        "example": {
+          "query": {
+            "redirects": {
+              "from": "Main page",
+              "to": "Main Page"
+            },
+            "pages": {
+              "1": {
+                "ns": "4",
+                "title": "Wikipedia:ArticleA",
+                "missing": ""
+              }
+            }
+          }
+        }
+      },
+      "Page": {
+        "type": "object",
+        "properties": {
+          "ns?": {
+            "type": "integer",
+            "format": "int"
+          },
+          "title?": {
+            "type": "string"
+          },
+          "pageid?": {
+            "type": "string"
+          }
+        },
+        "example": {
+          "ns": "10",
+          "title": "Template:API Intro",
+          "pageid": "16385"
+        }
+      },
+      "ExportQuery": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "object",
+            "properties": {
+              "pages": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Page"
+                }
+              },
+              "export": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "example": {
+          "query": {
+            "pages": {
+              "ns": "10",
+              "title": "Template:API Intro",
+              "pageid": "16385"
+            },
+            "export": null
+          }
+        }
+      },
+      "PagesLists": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "object",
+            "properties": {
+              "pageids": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/string"
+                }
+              },
+              "pages": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
