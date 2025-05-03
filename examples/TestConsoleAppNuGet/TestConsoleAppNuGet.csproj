@@ -21,40 +21,10 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="ExamplesNuGet\exampleinclude\" />
-      <Folder Include="ExamplesNuGet\IncludePerson\" />
-      <Folder Include="ExamplesNuGet\InheritedDatatype\" />
-      <Folder Include="ExamplesNuGet\MuleSoft\" />
+        <Folder Include="ExamplesNuGet\exampleinclude\" />
+        <Folder Include="ExamplesNuGet\IncludePerson\" />
+        <Folder Include="ExamplesNuGet\InheritedDatatype\" />
+        <Folder Include="ExamplesNuGet\MuleSoft\" />
     </ItemGroup>
-
-    <!--<ItemGroup>
-        <None Update="Examples\*.*">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </None>
-        <None Update="Examples\IncludePerson\*.*">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </None>
-        <None Update="Examples\MuleSoft\common\*.*">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </None>
-        <None Update="Examples\MuleSoft\datatype\*.*">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </None>
-        <None Update="Examples\MuleSoft\examples\*.*">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </None>
-        <None Update="Examples\MuleSoft\*.*">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </None>
-        <None Update="Examples\exampleinclude\*.*">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </None>
-        <None Update="Examples\exampleinclude\examples\*.*">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </None>
-        <None Update="Examples\InheritedDatatype\*.*">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </None>
-    </ItemGroup>-->
 
 </Project>
