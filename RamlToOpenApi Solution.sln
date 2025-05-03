@@ -27,6 +27,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RamlToOpenApiConverterTest"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestWebApp", "examples\TestWebApp\TestWebApp.csproj", "{17A41057-FB1B-1912-E250-BF806A8E5E65}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RamlToOpenApiConverter.SourceOnly", "src\RamlToOpenApiConverter.SourceOnly\RamlToOpenApiConverter.SourceOnly.csproj", "{6F530CA1-6FEC-4AE0-A688-0A18FEF9C1B4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -49,6 +51,10 @@ Global
 		{17A41057-FB1B-1912-E250-BF806A8E5E65}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{17A41057-FB1B-1912-E250-BF806A8E5E65}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{17A41057-FB1B-1912-E250-BF806A8E5E65}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6F530CA1-6FEC-4AE0-A688-0A18FEF9C1B4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6F530CA1-6FEC-4AE0-A688-0A18FEF9C1B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6F530CA1-6FEC-4AE0-A688-0A18FEF9C1B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6F530CA1-6FEC-4AE0-A688-0A18FEF9C1B4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -58,6 +64,7 @@ Global
 		{7E44ABE0-9290-4089-822C-F6641502D57B} = {51587962-74F5-415F-AA57-FEC39EF78DBC}
 		{619F6271-9459-4FF4-A0EE-F3A6DC3DDF16} = {B6E64DE9-6ABC-49B5-BF60-84111A43FD0C}
 		{17A41057-FB1B-1912-E250-BF806A8E5E65} = {51587962-74F5-415F-AA57-FEC39EF78DBC}
+		{6F530CA1-6FEC-4AE0-A688-0A18FEF9C1B4} = {B929A431-00E4-4054-8796-A6F1DF7AC3EA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D9B883AA-56BD-4B76-A679-C82E766F4C2D}

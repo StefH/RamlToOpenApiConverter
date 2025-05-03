@@ -5,8 +5,8 @@
     <Target Name="ILRepacker" AfterTargets="Build" Condition="'$(Configuration)' == 'Release'">
         <ItemGroup>
             <InputAssemblies Include="$(OutputPath)RamlToOpenApiConverter.dll" />
-            <InputAssemblies Include="@(ReferencePathWithRefAssemblies)" Condition="'%(filename)' == 'Microsoft.OpenApi.YamlReader'" />
-            <InputAssemblies Include="@(ReferencePathWithRefAssemblies)" Condition="'%(filename)' == 'Microsoft.OpenApi'" />
+            <!--<InputAssemblies Include="@(ReferencePathWithRefAssemblies)" Condition="'%(filename)' == 'Microsoft.OpenApi.YamlReader'" />
+            <InputAssemblies Include="@(ReferencePathWithRefAssemblies)" Condition="'%(filename)' == 'Microsoft.OpenApi'" />-->
             <LibraryPath Include="%(ReferencePathWithRefAssemblies.RelativeDir)" />
         </ItemGroup>
     
