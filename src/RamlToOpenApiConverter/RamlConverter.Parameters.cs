@@ -13,7 +13,7 @@ namespace RamlToOpenApiConverter;
 
 public partial class RamlConverter
 {
-    private IList<IOpenApiParameter> MapParameters(IDictionary<object, object> values, OpenApiSpecVersion specVersion)
+    private List<IOpenApiParameter> MapParameters(IDictionary<object, object> values, OpenApiSpecVersion specVersion)
     {
         var parameters = new List<IOpenApiParameter>();
 
@@ -71,8 +71,8 @@ public partial class RamlConverter
         var schema = new OpenApiSchema
         {
             Extensions = new Dictionary<string, IOpenApiExtension>(),
-            Minimum = details.Get<decimal?>(OpenApiConstants.Minimum),
-            Maximum = details.Get<decimal?>(OpenApiConstants.Maximum),
+            Minimum = details.Get<string?>(OpenApiConstants.Minimum),
+            Maximum = details.Get<string?>(OpenApiConstants.Maximum),
             MaxLength = details.Get<int?>(OpenApiConstants.MaxLength),
             MinLength = details.Get<int?>(OpenApiConstants.MinLength)
         };

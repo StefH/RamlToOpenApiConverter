@@ -85,7 +85,7 @@ public partial class RamlConverter
         return components.Schemas.Count > 0 ? components : null;
     }
 
-    private IDictionary<string, IOpenApiSchema> MapProperties(IDictionary<object, object>? properties, ICollection<object>? required, OpenApiSpecVersion specVersion)
+    private Dictionary<string, IOpenApiSchema> MapProperties(IDictionary<object, object>? properties, ICollection<object>? required, OpenApiSpecVersion specVersion)
     {
         var openApiProperties = new Dictionary<string, IOpenApiSchema>();
 

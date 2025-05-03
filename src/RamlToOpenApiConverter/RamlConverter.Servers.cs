@@ -6,7 +6,7 @@ namespace RamlToOpenApiConverter;
 
 public partial class RamlConverter
 {
-    private static IList<OpenApiServer>? MapServers(IDictionary<object, object> items)
+    private static List<OpenApiServer>? MapServers(IDictionary<object, object> items)
     {
         var baseUri = items.Get("baseUri");
         if (string.IsNullOrEmpty(baseUri))
@@ -14,12 +14,12 @@ public partial class RamlConverter
             return null;
         }
 
-        return new List<OpenApiServer>
-        {
+        return
+        [
             new OpenApiServer
             {
                 Url = baseUri
             }
-        };
+        ];
     }
 }
