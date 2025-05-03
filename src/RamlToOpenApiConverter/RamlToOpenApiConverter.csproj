@@ -8,7 +8,7 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.OpenApi.YamlReader" Version="2.0.0-preview.17" />
-        <PackageReference Include="YamlDotNet" Version="8.1.0" />
+        <PackageReference Include="YamlDotNet" Version="9.1.4" />
     </ItemGroup>
 
 </Project>
