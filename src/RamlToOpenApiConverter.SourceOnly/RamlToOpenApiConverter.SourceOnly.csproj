@@ -31,7 +31,7 @@
     <ItemGroup>
         <PackageReference Include="Microsoft.OpenApi" Version="2.0.0-preview.17" PrivateAssets="All" />
         <PackageReference Include="Microsoft.OpenApi.YamlReader" Version="2.0.0-preview.17" PrivateAssets="All" />
-        <PackageReference Include="YamlDotNet" Version="13.7.1" PrivateAssets="All" />
+        <PackageReference Include="YamlDotNet" Version="15.3.0" PrivateAssets="All" />
     </ItemGroup>
 
 </Project>
