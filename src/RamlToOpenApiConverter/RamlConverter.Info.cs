@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using RamlToOpenApiConverter.Extensions;
 
 namespace RamlToOpenApiConverter;

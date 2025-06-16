@@ -2,8 +2,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Microsoft.OpenApi;
-using Microsoft.OpenApi.Models;
-using Microsoft.OpenApi.Writers;
 using RamlToOpenApiConverter.Builders;
 using RamlToOpenApiConverter.Extensions;
 using YamlDotNet.Serialization;

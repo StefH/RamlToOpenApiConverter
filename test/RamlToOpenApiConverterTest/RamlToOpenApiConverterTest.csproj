@@ -6,10 +6,10 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="FluentAssertions" Version="5.10.3" />
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
+        <PackageReference Include="AwesomeAssertions" Version="9.0.0" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
         <PackageReference Include="xunit" Version="2.9.3" />
-        <PackageReference Include="xunit.runner.visualstudio" Version="3.0.2">
+        <PackageReference Include="xunit.runner.visualstudio" Version="3.1.1">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
@@ -45,101 +45,22 @@
     </ItemGroup>
 
     <ItemGroup>
-        <None Update="QueryParameters\QueryParameterNil31.json">
+        <None Update="QueryParameters\*.*">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
-        <None Update="QueryParameters\QueryParameterNil3.json">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </None>
-        <None Update="QueryParameters\QueryParameterRequired.json">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </None>
-        <None Update="QueryParameters\QueryParameterRequired.raml">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </None>
-        <None Update="QueryParameters\QueryParameterNil2.json">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </None>
-        <None Update="QueryParameters\QueryParameterNil.raml">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </None>
-        <None Update="QueryParameters\QueryParameterEnumInline.json">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </None>
-        <None Update="QueryParameters\QueryParameterEnumInline.raml">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </None>
-        <None Update="TypesAndSchemas\person.json">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </None>
-        <None Update="TypesAndSchemas\TypesObjectInclude.json">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </None>
-        <None Update="TypesAndSchemas\TypesObjectInclude.raml">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </None>
-        <None Update="TypesAndSchemas\TypesObjectInline.json">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </None>
-        <None Update="TypesAndSchemas\TypesObjectInline.raml">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </None>
-        <None Update="TypesAndSchemas\TypesEnum.json">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </None>
-        <None Update="TypesAndSchemas\TypesEnum.raml">
+        <None Update="TypesAndSchemas\*.*">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
     </ItemGroup>
 
     <ItemGroup>
-        <Folder Include="Uses\" />
-        <Folder Include="Uses\TestFiles\" />
-        <Folder Include="Uses\TestFiles\TestExternalFiles\" />
-        <Folder Include="Uses\TestFilesResultExpected\" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <Content Include="Uses\TestFiles\Test1.raml">
+        <Content Include="Uses\TestFiles\*.raml">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
-        <Content Include="Uses\TestFilesResultExpected\Test1Result.json">
+        <Content Include="Uses\TestFilesResultExpected\*.json">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
-        <Content Include="Uses\TestFiles\TestExternalFiles\common-traits1.raml">
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </Content>
-        <Content Include="Uses\TestFiles\Test2.raml">
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </Content>
-        <Content Include="Uses\TestFilesResultExpected\Test2Result.json">
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </Content>
-        <Content Include="Uses\TestFiles\TestExternalFiles\common-traits3.raml">
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </Content>
-        <Content Include="Uses\TestFiles\Test3.raml">
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </Content>
-        <Content Include="Uses\TestFilesResultExpected\Test3Result.json">
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </Content>
-        <Content Include="Uses\TestFiles\TestExternalFiles\common-traits2.raml">
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </Content>
-        <Content Include="Uses\TestFiles\Test2.raml">
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </Content>
-        <Content Include="Uses\TestFilesResultExpected\Test4Result.json">
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </Content>
-        <Content Include="Uses\TestFiles\Test4.raml">
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </Content>
-        <Content Include="Uses\TestFiles\TestExternalFiles\common-traits4-1.raml">
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </Content>
-        <Content Include="Uses\TestFiles\TestExternalFiles\common-traits4.raml">
+        <Content Include="Uses\TestFiles\TestExternalFiles\*.raml">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
     </ItemGroup>

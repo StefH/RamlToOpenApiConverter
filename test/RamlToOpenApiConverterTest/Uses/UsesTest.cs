@@ -1,5 +1,5 @@
 using System.IO;
-using FluentAssertions;
+using AwesomeAssertions;
 using RamlToOpenApiConverter;
 using RamlToOpenApiConverterTest.Extensions;
 using Xunit;
@@ -20,7 +20,7 @@ public class UsesTest
     [InlineData("Test2")]
     [InlineData("Test3")]
     [InlineData("Test4")]
-    private void ValidateUsesReplace(string path)
+    public void ValidateUsesReplace(string path)
     {
         // Arrange
         string expected = File.ReadAllText(Path.Combine("Uses/TestFilesResultExpected", $"{path}Result.json"));
@@ -31,5 +31,4 @@ public class UsesTest
         // Assert
         result.NormalizeNewLines().Should().BeEquivalentTo(expected.NormalizeNewLines());
     }
-
 }

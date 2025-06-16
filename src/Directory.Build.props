@@ -1,6 +1,6 @@
 <Project>
     <PropertyGroup>
-        <Version>0.8.0</Version>
+        <Version>0.9.0</Version>
         <Authors>Stef Heyenrath</Authors>
         <PackageTags>raml;openapi;OAS;converter</PackageTags>
         <PackageReleaseNotes>See ReleaseNotes.md</PackageReleaseNotes>
@@ -12,10 +12,16 @@
         <Nullable>enable</Nullable>
         <LangVersion>latest</LangVersion>
         <SignAssembly>True</SignAssembly>
-
+        <PackageIcon>combined_128x128.png</PackageIcon>
+        <PackageReadmeFile>PackageReadme.md</PackageReadmeFile>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)' == 'Release'">
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     </PropertyGroup>
+
+    <ItemGroup>
+        <None Include="../../resources/combined_128x128.png" Pack="true" PackagePath="" />
+        <None Include="../../PackageReadme.md" Pack="true" PackagePath="" />
+    </ItemGroup>
 </Project>
