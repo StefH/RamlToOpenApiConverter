@@ -1,5 +1,5 @@
 using System.IO;
-using FluentAssertions;
+using AwesomeAssertions;
 using RamlToOpenApiConverter;
 using RamlToOpenApiConverterTest.Extensions;
 using Xunit;

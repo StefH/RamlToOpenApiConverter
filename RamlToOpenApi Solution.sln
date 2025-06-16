@@ -13,9 +13,11 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E238CBB6-3B84-472C-9F0C-3946E4815398}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
+		.github\workflows\BuildAndTest.yml = .github\workflows\BuildAndTest.yml
 		.github\workflows\CreateRelease.yml = .github\workflows\CreateRelease.yml
 		Directory.Build.props = Directory.Build.props
 		Generate-ReleaseNotes.bat = Generate-ReleaseNotes.bat
+		PackageReadme.md = PackageReadme.md
 		README.md = README.md
 		ReleaseNotes.md = ReleaseNotes.md
 	EndProjectSection
