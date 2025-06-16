@@ -2,8 +2,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using Microsoft.OpenApi;
-using Microsoft.OpenApi.Models;
-using Microsoft.OpenApi.Models.Interfaces;
 using RamlToOpenApiConverter.Extensions;
 
 namespace RamlToOpenApiConverter;
