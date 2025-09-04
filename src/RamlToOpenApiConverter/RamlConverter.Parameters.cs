@@ -55,7 +55,7 @@ public partial class RamlConverter
         var schemaFormatFromRaml = details.Get("format");
 
         var schemaTypes = (schemaTypeFromRaml ?? "string")
-            .Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries)
+            .Split(['|'], StringSplitOptions.RemoveEmptyEntries)
             .Select(s => s.Trim())
             .ToArray();
 
