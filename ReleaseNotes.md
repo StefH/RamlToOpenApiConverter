@@ -1,3 +1,6 @@
+# 0.10.0 (04 September 2025)
+- [#25](https://github.com/StefH/RamlToOpenApiConverter/pull/25) - Upgrade Microsoft.OpenApi.YamlReader to 2.3.0 [enhancement] contributed by [StefH](https://github.com/StefH)
+
 # 0.9.0 (16 June 2025)
 - [#24](https://github.com/StefH/RamlToOpenApiConverter/pull/24) - Update YamlDotNet to 16.3.0 and Microsoft.OpenApi.YamlReader to 2.0.0-preview.27 [enhancement] contributed by [StefH](https://github.com/StefH)
 
