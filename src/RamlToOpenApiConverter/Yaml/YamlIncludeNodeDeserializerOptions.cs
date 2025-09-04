@@ -4,7 +4,5 @@ namespace RamlToOpenApiConverter.Yaml;
 
 public class YamlIncludeNodeDeserializerOptions
 {
-    public string DirectoryName { get; set; } = default!;
-
-    // public IList<IncludeRef> IncludeRefs { get; set; } = default!;
+    public string DirectoryName { get; set; } = null!;
 }

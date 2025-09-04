@@ -77,7 +77,7 @@ internal static class DictionaryExtensions
 
         if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
         {
-            // Get the T in ?T
+            // Get the T in T?
             var typeArgument = type.GetGenericArguments()[0];
             obj = Convert.ChangeType(obj, typeArgument);
 

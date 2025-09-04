@@ -13,8 +13,8 @@ public partial class RamlConverter
     private readonly IDictionary<object, object> _types = new Dictionary<object, object>();
     private readonly IDictionary<object, object> _uses = new Dictionary<object, object>();
 
-    private IDeserializer _deserializer = default!;
-    private OpenApiDocument _doc = default!;
+    private IDeserializer _deserializer = null!;
+    private OpenApiDocument _doc = null!;
 
     /// <summary>
     /// Converts the input RAML file to an Open API Specification output string using the provided options.

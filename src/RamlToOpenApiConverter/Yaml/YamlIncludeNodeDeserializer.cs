@@ -33,26 +33,6 @@ public class YamlIncludeNodeDeserializer(YamlIncludeNodeDeserializerOptions opti
         return false;
     }
 
-    //bool Deserialize2(IParser parser, Type expectedType, Func<IParser, Type, object?> nestedObjectDeserializer, out object? value)
-    //{
-    //    if (parser.Accept<Scalar>(out var scalar))
-    //    {
-    //        var fileName = scalar.Value.Replace('/', Path.DirectorySeparatorChar);
-    //        var extension = Path.GetExtension(fileName);
-
-    //        if (scalar.Tag == Constants.IncludeTag || (scalar.Tag != Constants.IncludeTag && (RamlExtensionRegex.IsMatch(extension) || JsonExtensionRegex.IsMatch(extension))))
-    //        {
-    //            var includePath = Path.Combine(_options.DirectoryName, fileName);
-    //            value = ReadIncludedFile(includePath, expectedType);
-    //            parser.MoveNext();
-    //            return true;
-    //        }
-    //    }
-
-    //    value = null;
-    //    return false;
-    //}
-
     private static object? ReadIncludedFile(string includePath, Type expectedType)
     {
         var extension = Path.GetExtension(includePath);
