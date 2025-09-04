@@ -64,4 +64,8 @@
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
     </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="References\" />
+    </ItemGroup>
 </Project>

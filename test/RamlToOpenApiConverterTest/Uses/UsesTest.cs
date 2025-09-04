@@ -8,12 +8,7 @@ namespace RamlToOpenApiConverterTest.Uses;
 
 public class UsesTest
 {
-    private readonly RamlConverter _testResult;
-
-    public UsesTest()
-    {
-        _testResult = new RamlConverter();
-    }
+    private readonly RamlConverter _sut = new();
 
     [Theory]
     [InlineData("Test1")]
@@ -23,10 +18,23 @@ public class UsesTest
     public void ValidateUsesReplace(string path)
     {
         // Arrange
-        string expected = File.ReadAllText(Path.Combine("Uses/TestFilesResultExpected", $"{path}Result.json"));
+        var expected = File.ReadAllText(Path.Combine("Uses/TestFilesResultExpected", $"{path}Result.json"));
 
         // Act
-        string result = _testResult.Convert(Path.Combine("Uses/TestFiles", $"{path}.raml"));
+        var result = _sut.Convert(Path.Combine("Uses/TestFiles", $"{path}.raml"));
+
+        // Assert
+        result.NormalizeNewLines().Should().BeEquivalentTo(expected.NormalizeNewLines());
+    }
+
+    [Fact]
+    public void Issue21()
+    {
+        // Arrange
+        var expected = File.ReadAllText(Path.Combine("Uses/TestFilesResultExpected", "app.json"));
+
+        // Act
+        var result = _sut.Convert(Path.Combine("Uses/TestFiles", "app.raml"));
 
         // Assert
         result.NormalizeNewLines().Should().BeEquivalentTo(expected.NormalizeNewLines());

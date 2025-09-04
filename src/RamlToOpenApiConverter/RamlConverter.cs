@@ -10,6 +10,7 @@ namespace RamlToOpenApiConverter;
 
 public partial class RamlConverter
 {
+    private readonly IDictionary<object, object> _typesAsRef = new Dictionary<object, object>();
     private readonly IDictionary<object, object> _types = new Dictionary<object, object>();
     private readonly IDictionary<object, object> _uses = new Dictionary<object, object>();
 
@@ -73,13 +74,21 @@ public partial class RamlConverter
             result = ReplaceUses(result, _uses);
         }
 
-        // Step 2 - Get all types and schemas
-        var types = result.GetAsDictionary("types");
+        // Step 2 - Get all types, ref-types and schemas
+        var types = result.GetAsDictionary(Constants.Types);
         if (types != null)
         {
             foreach (var type in types.Where(x => !_types.ContainsKey(x.Key)))
             {
                 _types.Add(type.Key, type.Value);
+            }
+        }
+        var typesAsRef = result.GetAsDictionary(Constants.TypesAsRef);
+        if (typesAsRef != null)
+        {
+            foreach (var type in typesAsRef.Where(x => !_typesAsRef.ContainsKey(x.Key)))
+            {
+                _typesAsRef.Add(type.Key, type.Value);
             }
         }
         var schemas = result.GetAsDictionary("schemas");
@@ -96,7 +105,7 @@ public partial class RamlConverter
             // Step 3 - Get Info, Servers and Components
             Info = MapInfo(result),
             Servers = MapServers(result),
-            Components = MapComponents(_types, specVersion),
+            Components = MapComponents(specVersion),
 
             // Step 4 - Get Paths
             Paths = MapPaths(result, _uses, specVersion)

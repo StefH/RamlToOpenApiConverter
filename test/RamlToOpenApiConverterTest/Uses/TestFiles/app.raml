@@ -1,0 +1,11 @@
+#%RAML 1.0
+baseUri: https://www.redacted.com/
+title: test
+version: v1
+mediaType: application/json
+securedBy: [openIdConnect, null]
+uses:
+  libtype: library.raml
+
+types:
+  MyLibraryTypeX: libtype.MyLibraryType
