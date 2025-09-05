@@ -11,15 +11,17 @@ public partial class RamlConverter
 {
     private class TypeInfo
     {
-        public KeyValuePair<object, object> Type { get; set; }
+        public required string Key { get; init; }
 
-        public bool IsRef { get; set; }
+        public required object Value { get; init; }
+
+        public bool IsRef { get; init; }
     }
 
     private OpenApiComponents? MapComponents(OpenApiSpecVersion specVersion)
     {
-        var types = _typesAsRef.Select(rt => new TypeInfo { Type = rt, IsRef = true })
-            .Union(_types.Select(t => new TypeInfo { Type = t, IsRef = false }))
+        var types = _typesAsRef.Where(t => t.Key is string).Select(t => new TypeInfo { Key = (string)t.Key, Value = t.Value, IsRef = true })
+            .Union(_types.Where(t => t.Key is string).Select(t => new TypeInfo { Key = (string)t.Key, Value = t.Value, IsRef = false }))
             .ToArray();
 
         var components = new OpenApiComponents
@@ -27,14 +29,14 @@ public partial class RamlConverter
             Schemas = new Dictionary<string, IOpenApiSchema>()
         };
 
-        foreach (var typeInfo in types.Where(ti => ti.Type.Key is string))
+        foreach (var typeInfo in types)
         {
-            var key = (string)typeInfo.Type.Key;
-            switch (typeInfo.Type.Value)
+            var key = typeInfo.Key;
+            switch (typeInfo.Value)
             {
                 case IDictionary<object, object> values:
                     var type = values.Get("type");
-                    if (type == "object" || (type != null && types.Select(t => t.Type.Key).Contains(type)))
+                    if (type == "object" || (type != null && types.Select(t => t.Key).Contains(type)))
                     {
                         components.Schemas.Add(key, MapValuesToSchema(values, specVersion));
                     }

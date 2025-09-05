@@ -8,6 +8,10 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.OpenApi.YamlReader" Version="2.3.0" />
+        <PackageReference Include="Polyfill" Version="8.8.1">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
         <PackageReference Include="YamlDotNet" Version="16.3.0" />
     </ItemGroup>
 
