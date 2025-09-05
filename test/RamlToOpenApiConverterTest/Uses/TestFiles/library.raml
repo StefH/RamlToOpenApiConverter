@@ -1,0 +1,15 @@
+#%RAML 1.0 Library
+usage: usage desc
+types:
+# Base types MUST BE defined first
+  MyLibraryType:
+    type: object
+    properties:
+      channelId:
+        type: string
+        required: true
+        pattern: "^[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12}$"
+      name:
+        type: string
+        required: true
+        maxLength: 100

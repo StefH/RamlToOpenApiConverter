@@ -1,0 +1,32 @@
+{
+  "openapi": "3.0.4",
+  "info": {
+    "title": "test",
+    "version": "v1"
+  },
+  "servers": [
+    {
+      "url": "https://www.redacted.com/"
+    }
+  ],
+  "paths": { },
+  "components": {
+    "schemas": {
+      "MyLibraryTypeX": {
+        "$ref": "#/components/schemas/libtype.MyLibraryType"
+      },
+      "libtype.MyLibraryType": {
+        "type": "object",
+        "properties": {
+          "channelId": {
+            "type": "string"
+          },
+          "name": {
+            "maxLength": 100,
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

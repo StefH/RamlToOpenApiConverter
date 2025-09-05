@@ -117,7 +117,7 @@ public partial class RamlConverter
                 // Check if the SchemaType is defined as enum, simple or complex type in the _types list
                 if (_types.ContainsKey(schemaType))
                 {
-                    return CreateDummyOpenApiReferenceSchema(schemaType, isNil);
+                    return CreateOpenApiReferenceSchema(schemaType, isNil);
                 }
 
                 var isEnum = details.Keys.OfType<string>().FirstOrDefault(k => k == "enum");

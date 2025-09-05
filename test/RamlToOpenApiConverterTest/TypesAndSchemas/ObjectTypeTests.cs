@@ -8,12 +8,7 @@ namespace RamlToOpenApiConverterTest.TypesAndSchemas;
 
 public class ObjectTypeTests
 {
-    private readonly RamlConverter _sut;
-
-    public ObjectTypeTests()
-    {
-        _sut = new RamlConverter();
-    }
+    private readonly RamlConverter _sut = new();
 
     [Theory]
     [InlineData("TypesObjectInline")]
@@ -21,10 +16,10 @@ public class ObjectTypeTests
     public void CanConvertTypes_InlineAndInclude(string path)
     {
         // Arrange
-        string expected = File.ReadAllText(Path.Combine("TypesAndSchemas", $"{path}.json"));
+        var expected = File.ReadAllText(Path.Combine("TypesAndSchemas", $"{path}.json"));
 
         // Act
-        string result = _sut.Convert(Path.Combine("TypesAndSchemas", $"{path}.raml"));
+        var result = _sut.Convert(Path.Combine("TypesAndSchemas", $"{path}.raml"));
 
         // Assert
         result.NormalizeNewLines().Should().BeEquivalentTo(expected.NormalizeNewLines());

@@ -9,25 +9,34 @@ namespace RamlToOpenApiConverter;
 
 public partial class RamlConverter
 {
-    private OpenApiComponents? MapComponents(IDictionary<object, object>? types, OpenApiSpecVersion specVersion)
+    private class TypeInfo
     {
-        if (types == null)
-        {
-            return null;
-        }
+        public required string Key { get; init; }
+
+        public required object Value { get; init; }
+
+        public bool IsRef { get; init; }
+    }
+
+    private OpenApiComponents? MapComponents(OpenApiSpecVersion specVersion)
+    {
+        var types = _typesAsRef.Where(t => t.Key is string).Select(t => new TypeInfo { Key = (string)t.Key, Value = t.Value, IsRef = true })
+            .Union(_types.Where(t => t.Key is string).Select(t => new TypeInfo { Key = (string)t.Key, Value = t.Value, IsRef = false }))
+            .ToArray();
 
         var components = new OpenApiComponents
         {
             Schemas = new Dictionary<string, IOpenApiSchema>()
         };
 
-        foreach (var key in types.Keys.OfType<string>())
+        foreach (var typeInfo in types)
         {
-            switch (types[key])
+            var key = typeInfo.Key;
+            switch (typeInfo.Value)
             {
                 case IDictionary<object, object> values:
                     var type = values.Get("type");
-                    if (type == "object" || (type != null && types.ContainsKey(type)))
+                    if (type == "object" || (type != null && types.Select(t => t.Key).Contains(type)))
                     {
                         components.Schemas.Add(key, MapValuesToSchema(values, specVersion));
                     }
@@ -67,15 +76,22 @@ public partial class RamlConverter
                             components.Schemas.Add(key, new OpenApiSchema
                             {
                                 Type = JsonSchemaType.Array,
-                                Items = CreateDummyOpenApiReferenceSchema(arrayType, false)
+                                Items = CreateOpenApiReferenceSchema(arrayType, false)
                             });
                         }
                     }
                     break;
 
-                case string jsonOrYaml:
-                    var items = _deserializer.Deserialize<IDictionary<object, object>>(jsonOrYaml);
-                    components.Schemas.Add(key, MapValuesToSchema(items, specVersion));
+                case string typeAsStringOrDictionary:
+                    if (typeInfo.IsRef)
+                    {
+                        components.Schemas.Add(key, CreateOpenApiReferenceSchema(typeAsStringOrDictionary, false));
+                    }
+                    else
+                    {
+                        var items = _deserializer.Deserialize<IDictionary<object, object>>(typeAsStringOrDictionary);
+                        components.Schemas.Add(key, MapValuesToSchema(items, specVersion));
+                    }
                     break;
             }
         }
@@ -83,7 +99,7 @@ public partial class RamlConverter
         return components.Schemas.Count > 0 ? components : null;
     }
 
-    private Dictionary<string, IOpenApiSchema> MapProperties(IDictionary<object, object>? properties, ICollection<object>? required, OpenApiSpecVersion specVersion)
+    private Dictionary<string, IOpenApiSchema> MapProperties(IDictionary<object, object>? properties, OpenApiSpecVersion specVersion)
     {
         var openApiProperties = new Dictionary<string, IOpenApiSchema>();
 
@@ -125,7 +141,7 @@ public partial class RamlConverter
                 var simpleType = _types.GetAsDictionary(propertyType);
                 var props = simpleType?.GetAsDictionary("properties");
                 var schema = props != null ?
-                    CreateDummyOpenApiReferenceSchema(propertyType, false) : // Custom type
+                    CreateOpenApiReferenceSchema(propertyType, false) : // Custom type
                     MapParameterOrPropertyDetailsToSchema(simpleType!, specVersion); // Simple Type
 
                 openApiProperties.Add(key, schema);
@@ -147,7 +163,7 @@ public partial class RamlConverter
                 openApiProperties.Add(key, new OpenApiSchema
                 {
                     Type = JsonSchemaType.Array,
-                    Items = CreateDummyOpenApiReferenceSchema(arrayType, false)
+                    Items = CreateOpenApiReferenceSchema(arrayType, false)
                 });
                 continue;
             }
@@ -166,6 +182,9 @@ public partial class RamlConverter
         var useReplace = ReplaceIs(source, uses);
         source.Replace(useReplace, Constants.IsTag);
 
+        useReplace = ReplaceTypes(source, uses);
+        source.Replace(useReplace, Constants.Types);
+
         if (uses.Count <= 0)
         {
             return source;
@@ -175,6 +194,9 @@ public partial class RamlConverter
         {
             useReplace = ReplaceIs(pathValue, uses);
             pathValue.Replace(useReplace, Constants.IsTag);
+
+            useReplace = ReplaceTypes(pathValue, uses);
+            pathValue.Replace(useReplace, Constants.Types);
         }
 
         return source;
@@ -211,6 +233,57 @@ public partial class RamlConverter
                         useReplace = replaced;
                     }
                 }
+            }
+        }
+
+        return useReplace;
+    }
+
+    private static IDictionary<object, object> ReplaceTypes(IDictionary<object, object> source, IDictionary<object, object> uses)
+    {
+        if (uses.Count <= 0)
+        {
+            return new Dictionary<object, object>();
+        }
+
+        var types = source.GetAsDictionary(Constants.Types);
+        if (types == null)
+        {
+            return new Dictionary<object, object>();
+        }
+
+        var newTypesFromLibrary = new Dictionary<object, object>();
+        var originalTypesAsRef = new Dictionary<object, object>();
+
+        var useReplace = new Dictionary<object, object>
+        {
+            { Constants.Types, newTypesFromLibrary },
+            { Constants.TypesAsRef, originalTypesAsRef }
+        };
+
+        foreach (var type in types)
+        {
+            if (type.Value is string typeAsString)
+            {
+                var pathSeparators = typeAsString.Split('.');
+                var typeAlias = pathSeparators.First();
+                foreach (var use in uses.Where(u => u.Key as string == typeAlias))
+                {
+                    var typesFromLibrary = (use.Value as IDictionary<object, object>)?.GetAsDictionary(Constants.Types);
+                    if (typesFromLibrary != null)
+                    {
+                        foreach (var pathSeparator in pathSeparators.Skip(1))
+                        {
+                            var replaced = typesFromLibrary.GetAsDictionary(pathSeparator);
+                            if (replaced != null)
+                            {
+                                newTypesFromLibrary[typeAsString] = replaced;
+                            }
+                        }
+                    }
+                }
+
+                originalTypesAsRef[type.Key] = type.Value;
             }
         }
 

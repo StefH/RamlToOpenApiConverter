@@ -212,7 +212,7 @@ public partial class RamlConverter
 
         var referenceSchemas = value
             .Split(['|'], StringSplitOptions.RemoveEmptyEntries)
-            .Select(o => CreateDummyOpenApiReferenceSchema(o.Trim(), false, "object"))
+            .Select(o => CreateOpenApiReferenceSchema(o.Trim(), false))
             .ToList();
 
         if (referenceSchemas.Count == 1)
@@ -226,7 +226,7 @@ public partial class RamlConverter
         };
     }
 
-    private static IOpenApiSchema CreateDummyOpenApiReferenceSchema(string referenceId, bool nullable, string? type = null)
+    private static IOpenApiSchema CreateOpenApiReferenceSchema(string referenceId, bool nullable)
     {
         var reference = new OpenApiSchemaReference(referenceId);
 
