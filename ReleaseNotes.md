@@ -1,3 +1,7 @@
+# 0.11.0 (05 September 2025)
+- [#26](https://github.com/StefH/RamlToOpenApiConverter/pull/26) - Fix referenced types via uses library [bug] contributed by [StefH](https://github.com/StefH)
+- [#21](https://github.com/StefH/RamlToOpenApiConverter/issues/21) - Type library breaks parsing [bug]
+
 # 0.10.0 (04 September 2025)
 - [#25](https://github.com/StefH/RamlToOpenApiConverter/pull/25) - Upgrade Microsoft.OpenApi.YamlReader to 2.3.0 [enhancement] contributed by [StefH](https://github.com/StefH)
 
