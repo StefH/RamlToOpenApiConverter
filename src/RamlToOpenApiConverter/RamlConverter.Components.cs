@@ -80,17 +80,16 @@ public partial class RamlConverter
                     }
                     break;
 
-                case string jsonOrYaml:
+                case string typeAsStringOrDictionary:
                     if (typeInfo.IsRef)
                     {
-                        components.Schemas.Add(key, CreateOpenApiReferenceSchema(jsonOrYaml, true));
+                        components.Schemas.Add(key, CreateOpenApiReferenceSchema(typeAsStringOrDictionary, false));
                     }
                     else
                     {
-                        var items = _deserializer.Deserialize<IDictionary<object, object>>(jsonOrYaml);
+                        var items = _deserializer.Deserialize<IDictionary<object, object>>(typeAsStringOrDictionary);
                         components.Schemas.Add(key, MapValuesToSchema(items, specVersion));
                     }
-
                     break;
             }
         }
@@ -98,7 +97,7 @@ public partial class RamlConverter
         return components.Schemas.Count > 0 ? components : null;
     }
 
-    private Dictionary<string, IOpenApiSchema> MapProperties(IDictionary<object, object>? properties, ICollection<object>? required, OpenApiSpecVersion specVersion)
+    private Dictionary<string, IOpenApiSchema> MapProperties(IDictionary<object, object>? properties, OpenApiSpecVersion specVersion)
     {
         var openApiProperties = new Dictionary<string, IOpenApiSchema>();
 

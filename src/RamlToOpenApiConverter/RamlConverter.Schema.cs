@@ -18,7 +18,7 @@ public partial class RamlConverter
         {
             Type = JsonSchemaType.Object,
             Required = required != null ? new HashSet<string>(required.OfType<string>()) : null,
-            Properties = MapProperties(properties, required, specVersion),
+            Properties = MapProperties(properties, specVersion),
             Example = example != null ? JsonSerializer.SerializeToNode(example) : null
         };
     }
