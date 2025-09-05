@@ -22,7 +22,7 @@ public partial class RamlConverter
     {
         var types = _typesAsRef.Where(t => t.Key is string).Select(t => new TypeInfo { Key = (string)t.Key, Value = t.Value, IsRef = true })
             .Union(_types.Where(t => t.Key is string).Select(t => new TypeInfo { Key = (string)t.Key, Value = t.Value, IsRef = false }))
-            .ToList();
+            .ToArray();
 
         var components = new OpenApiComponents
         {
