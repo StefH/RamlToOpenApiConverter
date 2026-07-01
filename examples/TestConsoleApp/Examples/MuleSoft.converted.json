@@ -78,50 +78,5 @@
         }
       }
     }
-  },
-  "components": {
-    "schemas": {
-      "RequestEmail": {
-        "type": "object",
-        "properties": {
-          "subject": {
-            "type": "string"
-          },
-          "body": {
-            "type": "string"
-          }
-        }
-      },
-      "ResponseEmail": {
-        "type": "object",
-        "properties": {
-          "response": {
-            "type": "string"
-          }
-        }
-      },
-      "PersonResponse": {
-        "type": "object",
-        "properties": {
-          "client": {
-            "type": "array"
-          },
-          "employee": {
-            "type": "array"
-          }
-        }
-      },
-      "PersonResponse2": {
-        "type": "object",
-        "properties": {
-          "client": {
-            "type": "array"
-          },
-          "employee": {
-            "type": "array"
-          }
-        }
-      }
-    }
   }
 }

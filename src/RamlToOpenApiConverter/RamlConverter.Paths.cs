@@ -155,14 +155,14 @@ public partial class RamlConverter
         return requestBody;
     }
 
-    private Dictionary<string, OpenApiMediaType>? MapContents(IDictionary<object, object>? values, OpenApiSpecVersion specVersion)
+    private Dictionary<string, IOpenApiMediaType>? MapContents(IDictionary<object, object>? values, OpenApiSpecVersion specVersion)
     {
         if (values == null)
         {
             return null;
         }
 
-        var content = new Dictionary<string, OpenApiMediaType>();
+        var content = new Dictionary<string, IOpenApiMediaType>();
 
         foreach (var key in new[] { "application/json", "application/xml" })
         {
