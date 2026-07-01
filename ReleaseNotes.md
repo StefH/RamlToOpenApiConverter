@@ -1,3 +1,6 @@
+# 0.20.0 (01 July 2026)
+- [#27](https://github.com/StefH/RamlToOpenApiConverter/pull/27) - Upgrade Microsoft.OpenApi to 3.7.0 and YamlDotNet to 18.1.0 [security] contributed by [StefH](https://github.com/StefH)
+
 # 0.11.0 (05 September 2025)
 - [#26](https://github.com/StefH/RamlToOpenApiConverter/pull/26) - Fix referenced types via uses library [bug] contributed by [StefH](https://github.com/StefH)
 - [#21](https://github.com/StefH/RamlToOpenApiConverter/issues/21) - Type library breaks parsing [bug]
