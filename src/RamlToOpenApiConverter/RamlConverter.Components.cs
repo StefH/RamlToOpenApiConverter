@@ -9,13 +9,13 @@ namespace RamlToOpenApiConverter;
 
 public partial class RamlConverter
 {
-    private class TypeInfo
+    private struct TypeInfo
     {
-        public required string Key { get; init; }
+        public string Key;
 
-        public required object Value { get; init; }
+        public object Value;
 
-        public bool IsRef { get; init; }
+        public bool IsRef;
     }
 
     private OpenApiComponents? MapComponents(OpenApiSpecVersion specVersion)
