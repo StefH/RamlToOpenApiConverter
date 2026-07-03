@@ -1,3 +1,6 @@
+# 0.21.0 (03 July 2026)
+- [#28](https://github.com/StefH/RamlToOpenApiConverter/pull/28) - Remove Polyfill [enhancement] contributed by [StefH](https://github.com/StefH)
+
 # 0.20.0 (01 July 2026)
 - [#27](https://github.com/StefH/RamlToOpenApiConverter/pull/27) - Upgrade Microsoft.OpenApi to 3.7.0 and YamlDotNet to 18.1.0 [security] contributed by [StefH](https://github.com/StefH)
 
