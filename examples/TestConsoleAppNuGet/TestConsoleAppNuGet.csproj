@@ -14,7 +14,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="RamlToOpenApiConverter.SourceOnly" Version="0.11.0" />
+        <PackageReference Include="RamlToOpenApiConverter.SourceOnly" Version="0.20.0" />
         <PackageReference Include="Microsoft.OpenApi" Version="3.7.0" PrivateAssets="All" />
         <PackageReference Include="Microsoft.OpenApi.YamlReader" Version="3.7.0" PrivateAssets="All" />
         <PackageReference Include="YamlDotNet" Version="18.1.0" />
