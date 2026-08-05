@@ -41,6 +41,10 @@
           },
           "to": {
             "type": "string"
+          },
+          "abc?": {
+            "type": "integer",
+            "nullable": true
           }
         }
       }
