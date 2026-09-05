@@ -32,7 +32,7 @@
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Microsoft.OpenApi.YamlReader" Version="3.7.0" PrivateAssets="All" />
+        <PackageReference Include="Microsoft.OpenApi.YamlReader" Version="3.10.2" PrivateAssets="All" />
         <PackageReference Include="YamlDotNet" Version="18.1.0" PrivateAssets="All" />
     </ItemGroup>
 

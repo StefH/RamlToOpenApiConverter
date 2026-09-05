@@ -10,9 +10,9 @@ namespace RamlToOpenApiConverter;
 
 public partial class RamlConverter
 {
-    private readonly Dictionary<object, object> _typesAsRef = new Dictionary<object, object>();
-    private readonly Dictionary<object, object> _types = new Dictionary<object, object>();
-    private readonly Dictionary<object, object> _uses = new Dictionary<object, object>();
+    private readonly Dictionary<object, object> _typesAsRef = new();
+    private readonly Dictionary<object, object> _types = new();
+    private readonly Dictionary<object, object> _uses = new();
 
     private IDeserializer _deserializer = null!;
     private OpenApiDocument _doc = null!;
