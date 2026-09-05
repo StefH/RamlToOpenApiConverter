@@ -20,7 +20,7 @@ internal static class DictionaryExtensions
         if (!source.TryGetValue(key, out var value))
         {
             return default!;
-        }
+        }      
 
         return ChangeTypeEx<T>(value);
     }
