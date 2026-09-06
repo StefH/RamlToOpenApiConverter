@@ -59,7 +59,7 @@ public partial class RamlConverter
     {
         var specVersion = (OpenApiSpecVersion)specificationVersion;
 
-        _deserializer = IncludeNodeDeserializerBuilder.Build(Path.GetDirectoryName(inputPath)!);
+        _deserializer = IncludeNodeDeserializerBuilder.Build();
 
         var result = _deserializer.Deserialize<IDictionary<object, object>>(File.ReadAllText(inputPath))!;
         result = (IDictionary<object, object>)YamlIncludeNodeDeserializer.ResolveIncludes(result, Path.GetDirectoryName(inputPath)!);

@@ -5,8 +5,8 @@ namespace RamlToOpenApiConverter.Yaml;
 
 internal static class YamlIncludeNodeDeserializer
 {
-    private static readonly Regex JsonExtensionRegex = new(@"^\.json$", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline);
-    private static readonly Regex RamlExtensionRegex = new(@"^\.raml$", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline);
+    private static readonly Regex JsonExtensionRegex = new(@"^\.json$", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline, TimeSpan.FromMilliseconds(100));
+    private static readonly Regex RamlExtensionRegex = new(@"^\.raml$", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline, TimeSpan.FromMilliseconds(100));
 
     public static object ResolveIncludes(object value, string directoryName)
     {
@@ -54,7 +54,7 @@ internal static class YamlIncludeNodeDeserializer
 
         if (RamlExtensionRegex.IsMatch(extension))
         {
-            var deserializer = IncludeNodeDeserializerBuilder.Build(Path.GetDirectoryName(includePath)!);
+            var deserializer = IncludeNodeDeserializerBuilder.Build();
             var value = deserializer.Deserialize<IDictionary<object, object>>(File.ReadAllText(includePath))!;
             return ResolveIncludes(value, Path.GetDirectoryName(includePath)!);
         }
