@@ -1,5 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Net.Http;
+using Microsoft.OpenApi;
 using Microsoft.OpenApi.YamlReader;
 using RamlToOpenApiConverter;
 
@@ -22,7 +25,33 @@ class Program
         new RamlConverter().ConvertToFile("Examples\\MediaWiki.raml", Path.Combine(DestFolder, "MediaWiki.converted.json"));
 
         Console.WriteLine("DONE");
+        var doc = new OpenApiDocument
+        {
+            Paths = new OpenApiPaths
+            {
+                ["/example"] = new OpenApiPathItem
+                {
+                    Operations = new Dictionary<HttpMethod, OpenApiOperation>
+                    {
+                        [HttpMethod.Get] = new OpenApiOperation
+                        {
+                            Responses = new OpenApiResponses
+                            {
+                                ["200"] = new OpenApiResponse
+                                {
+                                    // No description
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        };
 
-        var r = new OpenApiYamlReader();
+        using var stringWriter = new StringWriter();
+        doc.SerializeAs(OpenApiSpecVersion.OpenApi3_0, new OpenApiJsonWriter(stringWriter));
+        var result = stringWriter.ToString();
+
+        int x = 0;
     }
 }

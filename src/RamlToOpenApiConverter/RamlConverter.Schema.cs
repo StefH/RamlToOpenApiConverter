@@ -7,7 +7,7 @@ namespace RamlToOpenApiConverter;
 
 public partial class RamlConverter
 {
-    private OpenApiSchema MapValuesToSchema(IDictionary<object, object> values, OpenApiSpecVersion specVersion)
+    private OpenApiSchema MapValuesToSchema(IDictionary<object, object> values, OpenApiSpecVersion version)
     {
         var required = values.GetAsCollection("required");
         var properties = values.GetAsDictionary("properties");
@@ -18,7 +18,7 @@ public partial class RamlConverter
         {
             Type = JsonSchemaType.Object,
             Required = required != null ? new HashSet<string>(required.OfType<string>()) : null,
-            Properties = MapProperties(properties, specVersion)
+            Properties = MapProperties(properties, version)
         };
 
         if (example != null)
