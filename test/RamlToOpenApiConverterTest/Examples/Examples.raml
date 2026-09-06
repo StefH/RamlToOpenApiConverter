@@ -18,6 +18,38 @@ types:
   Emails:
     type: array
     items: Email
+  Page:
+    type: object
+    properties:
+      ns?: number
+      title?: string
+      pageid?: string
+    examples:
+      example1:
+        value:
+          ns: null
+          title: null
+          pageid: null
+      example2:
+        value:
+          ns: 10
+          title: "Template:API Intro"
+          pageid: "16385"
+  ExportQuery:
+    type: object
+    properties:
+      query:
+        type: object
+        properties:
+          pages: Page[]
+          export: object
+    example:
+      query:
+        pages:
+          ns: "10"
+          title: "Template:API Intro"
+          pageid: "16385"
+        export: null
 
 /testemails5:
   get:
