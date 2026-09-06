@@ -28,10 +28,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Polyfill" Version="10.11.2">
-            <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
         <PackageReference Include="Microsoft.OpenApi.YamlReader" Version="3.10.2" PrivateAssets="All" />
     </ItemGroup>
 
