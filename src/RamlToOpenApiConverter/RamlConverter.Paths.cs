@@ -128,9 +128,9 @@ public partial class RamlConverter
                     openApiResponse = new OpenApiResponse();
                 }
 
-                openApiResponse.Description = response.Get("description");
+                openApiResponse.Description = response.Get("description") ?? $"Response for HTTP status code {key}.";
 
-                openApiResponses.Add(System.Convert.ToString(key, CultureInfo.InvariantCulture)!, openApiResponse);
+                openApiResponses.Add((string) key, openApiResponse);
             }
         }
 

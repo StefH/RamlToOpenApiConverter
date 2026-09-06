@@ -11,7 +11,7 @@
         "description": "examples with inline single as object",
         "responses": {
           "200": {
-            "description": null,
+            "description": "Response for HTTP status code 200.",
             "content": {
               "application/json": {
                 "schema": {
@@ -42,7 +42,7 @@
         "description": "examples with inline list as object",
         "responses": {
           "200": {
-            "description": null,
+            "description": "Response for HTTP status code 200.",
             "content": {
               "application/json": {
                 "schema": {
@@ -85,7 +85,7 @@
         "description": "example with include single",
         "responses": {
           "200": {
-            "description": null,
+            "description": "Response for HTTP status code 200.",
             "content": {
               "application/json": {
                 "schema": {
@@ -106,7 +106,7 @@
         "description": "example with include list",
         "responses": {
           "200": {
-            "description": null,
+            "description": "Response for HTTP status code 200.",
             "content": {
               "application/json": {
                 "schema": {
@@ -133,7 +133,7 @@
         "description": "example with inline single",
         "responses": {
           "200": {
-            "description": null,
+            "description": "Response for HTTP status code 200.",
             "content": {
               "application/json": {
                 "schema": {
@@ -154,7 +154,7 @@
         "description": "example with inline list as string",
         "responses": {
           "200": {
-            "description": null,
+            "description": "Response for HTTP status code 200.",
             "content": {
               "application/json": {
                 "schema": {
@@ -181,7 +181,7 @@
         "description": "examples with inline single as string",
         "responses": {
           "200": {
-            "description": null,
+            "description": "Response for HTTP status code 200.",
             "content": {
               "application/json": {
                 "schema": {

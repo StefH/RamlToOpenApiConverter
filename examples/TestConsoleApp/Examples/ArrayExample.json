@@ -8,7 +8,7 @@
       "get": {
         "responses": {
           "200": {
-            "description": null,
+            "description": "Response for HTTP status code 200.",
             "content": {
               "application/json": {
                 "schema": {
@@ -24,7 +24,7 @@
       "get": {
         "responses": {
           "200": {
-            "description": null,
+            "description": "Response for HTTP status code 200.",
             "content": {
               "application/json": {
                 "schema": {

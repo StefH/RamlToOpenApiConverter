@@ -18,7 +18,7 @@
         ],
         "responses": {
           "201": {
-            "description": null,
+            "description": "Response for HTTP status code 201.",
             "content": {
               "application/json": {
                 "schema": {
