@@ -22,7 +22,7 @@ internal class OpenApiAny(JsonNode jsonNode) : IOpenApiElement, IOpenApiExtensio
     //   writer:
     //
     //   specVersion:
-    public void Write(IOpenApiWriter writer, OpenApiSpecVersion specVersion)
+    public void Write(IOpenApiWriter writer, OpenApiSpecVersion _)
     {
         writer.WriteAny(Node);
     }
