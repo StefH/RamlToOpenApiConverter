@@ -1,3 +1,6 @@
+# 0.30.0 (06 September 2026)
+- [#29](https://github.com/StefH/RamlToOpenApiConverter/pull/29) - Microsoft.OpenApi 3.10.2 [dependencies] contributed by [StefH](https://github.com/StefH)
+
 # 0.21.0 (03 July 2026)
 - [#28](https://github.com/StefH/RamlToOpenApiConverter/pull/28) - Remove Polyfill [enhancement] contributed by [StefH](https://github.com/StefH)
 
