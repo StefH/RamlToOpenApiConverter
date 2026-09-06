@@ -86,7 +86,7 @@ public partial class RamlConverter
                     }
                     else
                     {
-                        var items = _deserializer.Deserialize<IDictionary<object, object>>(typeAsStringOrDictionary);
+                        var items = _deserializer.Deserialize<IDictionary<object, object>>(typeAsStringOrDictionary)!;
                         components.Schemas.Add(key, MapValuesToSchema(items, specVersion));
                     }
                     break;

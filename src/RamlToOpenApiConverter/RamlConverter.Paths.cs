@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using Microsoft.OpenApi;
@@ -107,8 +108,7 @@ public partial class RamlConverter
 
         var openApiResponses = new OpenApiResponses();
 
-        // SharpYaml uses int but YamlDotNet uses string
-        foreach (var key in values.Keys.OfType<string>())
+        foreach (var key in values.Keys)
         {
             var response = values.GetAsDictionary(key);
             if (response != null)
@@ -130,7 +130,7 @@ public partial class RamlConverter
 
                 openApiResponse.Description = response.Get("description");
 
-                openApiResponses.Add(key, openApiResponse);
+                openApiResponses.Add(global::System.Convert.ToString(key, CultureInfo.InvariantCulture)!, openApiResponse);
             }
         }
 
@@ -206,7 +206,8 @@ public partial class RamlConverter
 
     private static JsonNode? MapExample(string exampleAsJson)
     {
-        return JsonNode.Parse(exampleAsJson);
+        var normalizedJson = exampleAsJson.Replace("\0", string.Empty);
+        return JsonNode.Parse(normalizedJson);
     }
 
     private static Dictionary<string, IOpenApiExample>? MapExamples(IDictionary<object, object> examplesAsJson)
@@ -222,8 +223,9 @@ public partial class RamlConverter
             var openApiExample = new OpenApiExample();
             if (example.Value is string valueAsString)
             {
-                openApiExample.SerializedValue = valueAsString;
-                openApiExample.Value = MapExample(valueAsString);
+                var normalizedJson = valueAsString.Replace("\0", string.Empty);
+                openApiExample.SerializedValue = normalizedJson;
+                openApiExample.Value = MapExample(normalizedJson);
             }
 
             if (example.Value is IList<object> valueAsListItems)
@@ -256,7 +258,7 @@ public partial class RamlConverter
     {
         if (value.StartsWith("{"))
         {
-            var objectType = _deserializer.Deserialize<IDictionary<object, object>>(value);
+            var objectType = _deserializer.Deserialize<IDictionary<object, object>>(value)!;
             return MapValuesToSchema(objectType, specVersion);
         }
 

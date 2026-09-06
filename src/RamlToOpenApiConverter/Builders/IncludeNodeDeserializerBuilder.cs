@@ -1,24 +1,16 @@
 using RamlToOpenApiConverter.Yaml;
-using YamlDotNet.Serialization;
+using SharpYaml.Schemas;
+using SharpYaml.Serialization;
 
 namespace RamlToOpenApiConverter.Builders;
 
 internal static class IncludeNodeDeserializerBuilder
 {
-    public static IDeserializer Build(string directoryName)
+    public static Serializer Build(string directoryName)
     {
-        var builder = new DeserializerBuilder();
+        var settings = new SerializerSettings(new FailsafeSchema());
+        settings.RegisterTagMapping(Constants.IncludeTag, typeof(string), false);
 
-        var includeNodeDeserializerOptions = new YamlIncludeNodeDeserializerOptions
-        {
-            DirectoryName = directoryName
-        };
-
-        var includeNodeDeserializer = new YamlIncludeNodeDeserializer(includeNodeDeserializerOptions);
-
-        return builder
-            .WithTagMapping(Constants.IncludeTag, typeof(IncludeRef))
-            .WithNodeDeserializer(includeNodeDeserializer, s => s.OnTop())
-            .Build();
+        return new Serializer(settings);
     }
 }

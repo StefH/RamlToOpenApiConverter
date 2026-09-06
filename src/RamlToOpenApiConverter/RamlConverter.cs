@@ -1,7 +1,8 @@
 using Microsoft.OpenApi;
 using RamlToOpenApiConverter.Builders;
 using RamlToOpenApiConverter.Extensions;
-using YamlDotNet.Serialization;
+using RamlToOpenApiConverter.Yaml;
+using SharpYaml.Serialization;
 
 namespace RamlToOpenApiConverter;
 
@@ -14,7 +15,7 @@ public partial class RamlConverter
     private readonly Dictionary<object, object> _types = new();
     private readonly Dictionary<object, object> _uses = new();
 
-    private IDeserializer _deserializer = null!;
+    private Serializer _deserializer = null!;
     private OpenApiDocument _doc = null!;
 
     /// <summary>
@@ -60,7 +61,8 @@ public partial class RamlConverter
 
         _deserializer = IncludeNodeDeserializerBuilder.Build(Path.GetDirectoryName(inputPath)!);
 
-        var result = _deserializer.Deserialize<IDictionary<object, object>>(File.ReadAllText(inputPath));
+        var result = _deserializer.Deserialize<IDictionary<object, object>>(File.ReadAllText(inputPath))!;
+        result = (IDictionary<object, object>)YamlIncludeNodeDeserializer.ResolveIncludes(result, Path.GetDirectoryName(inputPath)!);
 
         // Step 1 - Get all uses
         var uses = result.GetAsDictionary("uses");

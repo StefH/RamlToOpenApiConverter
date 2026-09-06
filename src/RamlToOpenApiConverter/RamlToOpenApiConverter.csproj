@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <TargetFrameworks>netstandard2.0;net8.0</TargetFrameworks>
@@ -8,7 +8,6 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.OpenApi.YamlReader" Version="3.10.2" />
-        <PackageReference Include="YamlDotNet" Version="18.1.0" />
     </ItemGroup>
 
 </Project>

@@ -1,3 +1,5 @@
+using System.Globalization;
+
 namespace RamlToOpenApiConverter.Extensions;
 
 internal static class DictionaryExtensions
@@ -9,7 +11,22 @@ internal static class DictionaryExtensions
             return null;
         }
 
-        return value as string;
+        if (value is null)
+        {
+            return null;
+        }
+
+        if (value is string text)
+        {
+            return text;
+        }
+
+        if (value is IDictionary<object, object> || value is ICollection<object>)
+        {
+            return null;
+        }
+
+        return Convert.ToString(value, CultureInfo.InvariantCulture);
     }
 
     public static T Get<T>(this IDictionary<object, object> source, object key)
