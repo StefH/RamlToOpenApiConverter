@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
-        <Description>Source Code only project to convert RAML file to Open API Specification</Description>
+        <Description>Source Code only project to convert RAML file to Open API Specification. Note that thisversion is compatible with Microsoft.OpenApi:3.10.2 and YamlDotNet:18.1.0</Description>
         <AssemblyOriginatorKeyFile>../RamlToOpenApiConverter/RamlToOpenApiConverter.snk</AssemblyOriginatorKeyFile>
         <IncludeBuildOutput>false</IncludeBuildOutput>
     </PropertyGroup>
@@ -32,7 +32,7 @@
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Microsoft.OpenApi.YamlReader" Version="3.7.0" PrivateAssets="All" />
+        <PackageReference Include="Microsoft.OpenApi.YamlReader" Version="3.10.2" PrivateAssets="All" />
         <PackageReference Include="YamlDotNet" Version="18.1.0" PrivateAssets="All" />
     </ItemGroup>
 

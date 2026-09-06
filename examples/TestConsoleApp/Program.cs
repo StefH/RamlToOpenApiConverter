@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using Microsoft.OpenApi.YamlReader;
 using RamlToOpenApiConverter;
 
 namespace TestConsoleApp;
@@ -7,7 +8,7 @@ namespace TestConsoleApp;
 // https://mulesoft.github.io/oas-raml-converter/
 class Program
 {
-    private const string DestFolder = "..\\..\\..\\Examples\\";
+    private static readonly string DestFolder = Path.GetFullPath("..\\..\\..\\Examples");
 
     static void Main(string[] args)
     {
@@ -21,5 +22,7 @@ class Program
         new RamlConverter().ConvertToFile("Examples\\MediaWiki.raml", Path.Combine(DestFolder, "MediaWiki.converted.json"));
 
         Console.WriteLine("DONE");
+
+        var r = new OpenApiYamlReader();
     }
 }

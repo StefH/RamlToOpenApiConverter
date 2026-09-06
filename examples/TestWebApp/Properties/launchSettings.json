@@ -1,12 +1,13 @@
 {
-  "profiles": {
-    "TestWebApp": {
-      "commandName": "Project",
-      "launchBrowser": true,
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      },
-      "applicationUrl": "https://localhost:60084;http://localhost:60085"
+    "profiles": {
+        "TestWebApp": {
+            "commandName": "Project",
+            "launchBrowser": true,
+            "launchUrl": "test",
+            "environmentVariables": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            },
+            "applicationUrl": "https://localhost:60084;http://localhost:60085"
+        }
     }
-  }
 }

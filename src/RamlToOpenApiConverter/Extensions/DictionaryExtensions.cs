@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-
 namespace RamlToOpenApiConverter.Extensions;
 
 internal static class DictionaryExtensions
@@ -20,7 +17,7 @@ internal static class DictionaryExtensions
         if (!source.TryGetValue(key, out var value))
         {
             return default!;
-        }
+        }      
 
         return ChangeTypeEx<T>(value);
     }

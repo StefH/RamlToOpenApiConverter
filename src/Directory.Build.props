@@ -14,6 +14,7 @@
         <SignAssembly>True</SignAssembly>
         <PackageIcon>combined_128x128.png</PackageIcon>
         <PackageReadmeFile>PackageReadme.md</PackageReadmeFile>
+        <ImplicitUsings>enable</ImplicitUsings>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)' == 'Release'">

@@ -1,5 +1,3 @@
-using System;
-using System.IO;
 using System.Text.RegularExpressions;
 using RamlToOpenApiConverter.Builders;
 using YamlDotNet.Core;
@@ -8,7 +6,7 @@ using YamlDotNet.Serialization;
 
 namespace RamlToOpenApiConverter.Yaml;
 
-public class YamlIncludeNodeDeserializer(YamlIncludeNodeDeserializerOptions options) : INodeDeserializer
+internal class YamlIncludeNodeDeserializer(YamlIncludeNodeDeserializerOptions options) : INodeDeserializer
 {
     private static readonly Regex JsonExtensionRegex = new(@"^\.json$", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline);
     private static readonly Regex RamlExtensionRegex = new(@"^\.raml$", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline);

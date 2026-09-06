@@ -1,8 +1,6 @@
-// using System.Collections.Generic;
-
 namespace RamlToOpenApiConverter.Yaml;
 
-public class YamlIncludeNodeDeserializerOptions
+internal class YamlIncludeNodeDeserializerOptions
 {
     public string DirectoryName { get; set; } = null!;
 }
