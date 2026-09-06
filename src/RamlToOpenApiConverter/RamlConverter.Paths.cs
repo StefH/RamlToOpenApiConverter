@@ -238,14 +238,18 @@ public partial class RamlConverter
                 JsonNode? jsonNode;
                 if (valueAsListItems.Count == 1)
                 {
-                    jsonNode = JsonSerializer.SerializeToNode(valueAsListItems.First());
+                    jsonNode = JsonSerializer.SerializeToNode(NormalizeYamlValueForJson(valueAsListItems.First()));
                 }
                 else
                 {
-                    jsonNode = JsonSerializer.SerializeToNode(valueAsListItems);
+                    jsonNode = JsonSerializer.SerializeToNode(NormalizeYamlValueForJson(valueAsListItems));
                 }
 
                 openApiExample.Value = jsonNode;
+            }
+            else if (example.Value is IDictionary<object, object> valueAsDictionary)
+            {
+                openApiExample.Value = JsonSerializer.SerializeToNode(NormalizeYamlValueForJson(valueAsDictionary));
             }
 
             result.Add(key, openApiExample);
