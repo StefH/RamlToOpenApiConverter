@@ -7,7 +7,7 @@ namespace TestConsoleAppNuGet;
 // https://mulesoft.github.io/oas-raml-converter/
 class Program
 {
-    private const string DestFolder = @"..\..\..\ExamplesNuGet\";
+    private static readonly string DestFolder = Path.GetFullPath("..\\..\\..\\Examples");
 
     static void Main(string[] args)
     {

@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-
 namespace RamlToOpenApiConverter.Extensions;
 
 internal static class DictionaryExtensions

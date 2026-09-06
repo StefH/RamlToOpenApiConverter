@@ -1,6 +1,3 @@
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using Microsoft.OpenApi;
 using RamlToOpenApiConverter.Builders;
 using RamlToOpenApiConverter.Extensions;
@@ -8,6 +5,9 @@ using YamlDotNet.Serialization;
 
 namespace RamlToOpenApiConverter;
 
+/// <summary>
+/// A converter that transforms RAML files into Open API Specification documents.
+/// </summary>
 public partial class RamlConverter
 {
     private readonly Dictionary<object, object> _typesAsRef = new();
