@@ -8,10 +8,4 @@
         <PackageReference Include="Swashbuckle.AspNetCore" Version="10.2.3" />
         <PackageReference Include="WireMock.Net" Version="2.15.0" />
     </ItemGroup>
-
-    <!--<ItemGroup>
-        <Reference Include="RamlToOpenApiConverter">
-            <HintPath>..\..\src\RamlToOpenApiConverter\bin\$(Configuration)\net8.0\RamlToOpenApiConverter.dll</HintPath>
-        </Reference>
-    </ItemGroup>-->
 </Project>

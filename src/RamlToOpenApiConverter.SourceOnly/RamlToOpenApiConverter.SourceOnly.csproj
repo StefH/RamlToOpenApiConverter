@@ -27,8 +27,4 @@
         <None Remove="obj\**" />
     </ItemGroup>
 
-    <ItemGroup>
-        <PackageReference Include="Microsoft.OpenApi.YamlReader" Version="3.10.2" PrivateAssets="All" />
-    </ItemGroup>
-
 </Project>
