@@ -130,7 +130,7 @@ public partial class RamlConverter
 
                 openApiResponse.Description = response.Get("description");
 
-                openApiResponses.Add(global::System.Convert.ToString(key, CultureInfo.InvariantCulture)!, openApiResponse);
+                openApiResponses.Add(System.Convert.ToString(key, CultureInfo.InvariantCulture)!, openApiResponse);
             }
         }
 
