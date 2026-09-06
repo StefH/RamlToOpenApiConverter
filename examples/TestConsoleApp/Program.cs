@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using Microsoft.OpenApi.YamlReader;
 using RamlToOpenApiConverter;
 
 namespace TestConsoleApp;
@@ -21,5 +22,7 @@ class Program
         new RamlConverter().ConvertToFile("Examples\\MediaWiki.raml", Path.Combine(DestFolder, "MediaWiki.converted.json"));
 
         Console.WriteLine("DONE");
+
+        var r = new OpenApiYamlReader();
     }
 }
