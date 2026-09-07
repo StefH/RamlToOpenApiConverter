@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using Microsoft.OpenApi;
@@ -7,13 +8,13 @@ namespace RamlToOpenApiConverter;
 
 public partial class RamlConverter
 {
-    private OpenApiPaths MapPaths(IDictionary<object, object> o, IDictionary<object, object> uses, OpenApiSpecVersion specVersion)
+    private OpenApiPaths MapPaths(IDictionary<object, object> o, IDictionary<object, object> uses, OpenApiSpecVersion version)
     {
         var paths = new OpenApiPaths();
 
         foreach (var key in o.Keys.OfType<string>().Where(k => k.StartsWith("/")))
         {
-            var pathItems = MapPathItems(key, [], o.GetAsDictionary(key)!, uses, specVersion);
+            var pathItems = MapPathItems(key, [], o.GetAsDictionary(key)!, uses, version);
             foreach (var pathItem in pathItems)
             {
                 paths.Add(pathItem.AdjustedPath, pathItem.Item);
@@ -28,14 +29,14 @@ public partial class RamlConverter
         IList<IOpenApiParameter> parentParameters,
         IDictionary<object, object> values,
         IDictionary<object, object> uses,
-        OpenApiSpecVersion specVersion)
+        OpenApiSpecVersion version)
     {
         values = ReplaceUses(values, uses);
 
         var items = new List<(IOpenApiPathItem Item, string AdjustedPath)>();
 
         // Fetch all parameters from this path
-        var parameters = MapParameters(values, specVersion);
+        var parameters = MapParameters(values, version);
 
         // And add parameters from parent
         foreach (var parameter in parentParameters)
@@ -52,7 +53,7 @@ public partial class RamlConverter
             if (TryMapOperationType(key, out var operationType))
             {
                 var operationValues = values.GetAsDictionary(key)!;
-                var operation = MapOperation(operationValues, specVersion);
+                var operation = MapOperation(operationValues, version);
 
                 // Add parameters from the path to this operation
                 foreach (var parameter in parameters)
@@ -80,25 +81,25 @@ public partial class RamlConverter
         {
             var d = values.GetAsDictionary(key) ?? new Dictionary<object, object>();
             var newPath = $"{parent}{key}";
-            var mapItems = MapPathItems(newPath, parameters, d, uses, specVersion);
+            var mapItems = MapPathItems(newPath, parameters, d, uses, version);
             items.AddRange(mapItems);
         }
 
         return items;
     }
 
-    private OpenApiOperation MapOperation(IDictionary<object, object> values, OpenApiSpecVersion specVersion)
+    private OpenApiOperation MapOperation(IDictionary<object, object> values, OpenApiSpecVersion version)
     {
         return new OpenApiOperation
         {
             Description = values.Get("description"),
-            Parameters = MapParameters(values, specVersion),
-            Responses = MapResponses(values.GetAsDictionary("responses"), specVersion),
-            RequestBody = MapRequest(values.GetAsDictionary("body"), specVersion)
+            Parameters = MapParameters(values, version),
+            Responses = MapResponses(values.GetAsDictionary("responses"), version),
+            RequestBody = MapRequest(values.GetAsDictionary("body"), version)
         };
     }
 
-    private OpenApiResponses? MapResponses(IDictionary<object, object>? values, OpenApiSpecVersion specVersion)
+    private OpenApiResponses? MapResponses(IDictionary<object, object>? values, OpenApiSpecVersion version)
     {
         if (values == null)
         {
@@ -107,8 +108,7 @@ public partial class RamlConverter
 
         var openApiResponses = new OpenApiResponses();
 
-        // SharpYaml uses int but YamlDotNet uses string
-        foreach (var key in values.Keys.OfType<string>())
+        foreach (var key in values.Keys)
         {
             var response = values.GetAsDictionary(key);
             if (response != null)
@@ -120,7 +120,7 @@ public partial class RamlConverter
                 {
                     openApiResponse = new OpenApiResponse
                     {
-                        Content = MapContents(body, specVersion)
+                        Content = MapContents(body, version)
                     };
                 }
                 else
@@ -128,16 +128,16 @@ public partial class RamlConverter
                     openApiResponse = new OpenApiResponse();
                 }
 
-                openApiResponse.Description = response.Get("description");
+                openApiResponse.Description = response.Get("description") ?? $"Response for HTTP status code {key}.";
 
-                openApiResponses.Add(key, openApiResponse);
+                openApiResponses.Add((string) key, openApiResponse);
             }
         }
 
         return openApiResponses.Count > 0 ? openApiResponses : null;
     }
 
-    private OpenApiRequestBody? MapRequest(IDictionary<object, object>? values, OpenApiSpecVersion specVersion)
+    private OpenApiRequestBody? MapRequest(IDictionary<object, object>? values, OpenApiSpecVersion version)
     {
         if (values == null)
         {
@@ -146,13 +146,13 @@ public partial class RamlConverter
 
         var requestBody = new OpenApiRequestBody
         {
-            Content = MapContents(values, specVersion)
+            Content = MapContents(values, version)
         };
 
         return requestBody;
     }
 
-    private Dictionary<string, IOpenApiMediaType>? MapContents(IDictionary<object, object>? values, OpenApiSpecVersion specVersion)
+    private Dictionary<string, IOpenApiMediaType>? MapContents(IDictionary<object, object>? values, OpenApiSpecVersion version)
     {
         if (values == null)
         {
@@ -175,11 +175,11 @@ public partial class RamlConverter
                 IOpenApiSchema? schema = null;
                 if (!string.IsNullOrEmpty(type))
                 {
-                    schema = MapMediaTypeSchema(type!, specVersion);
+                    schema = MapMediaTypeSchema(type!, version);
                 }
                 else if (!string.IsNullOrEmpty(schemaValue))
                 {
-                    schema = MapMediaTypeSchema(schemaValue!, specVersion);
+                    schema = MapMediaTypeSchema(schemaValue!, version);
                 }
 
                 var openApiMediaType = new OpenApiMediaType
@@ -206,7 +206,8 @@ public partial class RamlConverter
 
     private static JsonNode? MapExample(string exampleAsJson)
     {
-        return JsonNode.Parse(exampleAsJson);
+        var normalizedJson = exampleAsJson.Replace("\0", string.Empty);
+        return JsonNode.Parse(normalizedJson);
     }
 
     private static Dictionary<string, IOpenApiExample>? MapExamples(IDictionary<object, object> examplesAsJson)
@@ -222,8 +223,9 @@ public partial class RamlConverter
             var openApiExample = new OpenApiExample();
             if (example.Value is string valueAsString)
             {
-                openApiExample.SerializedValue = valueAsString;
-                openApiExample.Value = MapExample(valueAsString);
+                var normalizedJson = valueAsString.Replace("\0", string.Empty);
+                openApiExample.SerializedValue = normalizedJson;
+                openApiExample.Value = MapExample(normalizedJson);
             }
 
             if (example.Value is IList<object> valueAsListItems)
@@ -236,14 +238,18 @@ public partial class RamlConverter
                 JsonNode? jsonNode;
                 if (valueAsListItems.Count == 1)
                 {
-                    jsonNode = JsonSerializer.SerializeToNode(valueAsListItems.First());
+                    jsonNode = JsonSerializer.SerializeToNode(NormalizeYamlValueForJson(valueAsListItems.First()));
                 }
                 else
                 {
-                    jsonNode = JsonSerializer.SerializeToNode(valueAsListItems);
+                    jsonNode = JsonSerializer.SerializeToNode(NormalizeYamlValueForJson(valueAsListItems));
                 }
 
                 openApiExample.Value = jsonNode;
+            }
+            else if (example.Value is IDictionary<object, object> valueAsDictionary)
+            {
+                openApiExample.Value = JsonSerializer.SerializeToNode(NormalizeYamlValueForJson(valueAsDictionary));
             }
 
             result.Add(key, openApiExample);
@@ -252,12 +258,12 @@ public partial class RamlConverter
         return result;
     }
 
-    private IOpenApiSchema MapMediaTypeSchema(string value, OpenApiSpecVersion specVersion)
+    private IOpenApiSchema MapMediaTypeSchema(string value, OpenApiSpecVersion version)
     {
         if (value.StartsWith("{"))
         {
-            var objectType = _deserializer.Deserialize<IDictionary<object, object>>(value);
-            return MapValuesToSchema(objectType, specVersion);
+            var objectType = _deserializer.Deserialize<IDictionary<object, object>>(value)!;
+            return MapValuesToSchema(objectType, version);
         }
 
         var referenceSchemas = value

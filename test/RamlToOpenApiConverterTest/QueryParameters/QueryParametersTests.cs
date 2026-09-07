@@ -1,5 +1,6 @@
 using System.IO;
 using AwesomeAssertions;
+using Microsoft.OpenApi;
 using RamlToOpenApiConverter;
 using RamlToOpenApiConverterTest.Extensions;
 using Xunit;
@@ -33,7 +34,7 @@ public class QueryParametersTests
         var expected = File.ReadAllText(Path.Combine("QueryParameters", $"{path}2.json"));
 
         // Act
-        var result = _sut.Convert(Path.Combine("QueryParameters", $"{path}.raml"), OpenApiSpecificationVersion.OpenApi2_0);
+        var result = _sut.Convert(Path.Combine("QueryParameters", $"{path}.raml"), OpenApiSpecVersion.OpenApi2_0);
 
         // Assert
         result.NormalizeNewLines().Should().BeEquivalentTo(expected.NormalizeNewLines());
@@ -47,7 +48,7 @@ public class QueryParametersTests
         var expected = File.ReadAllText(Path.Combine("QueryParameters", $"{path}3.json"));
 
         // Act
-        var result = _sut.Convert(Path.Combine("QueryParameters", $"{path}.raml"), OpenApiSpecificationVersion.OpenApi3_0);
+        var result = _sut.Convert(Path.Combine("QueryParameters", $"{path}.raml"), OpenApiSpecVersion.OpenApi3_0);
 
         // Assert
         result.NormalizeNewLines().Should().BeEquivalentTo(expected.NormalizeNewLines());
@@ -61,7 +62,21 @@ public class QueryParametersTests
         var expected = File.ReadAllText(Path.Combine("QueryParameters", $"{path}31.json"));
 
         // Act
-        var result = _sut.Convert(Path.Combine("QueryParameters", $"{path}.raml"), OpenApiSpecificationVersion.OpenApi3_1);
+        var result = _sut.Convert(Path.Combine("QueryParameters", $"{path}.raml"), OpenApiSpecVersion.OpenApi3_1);
+
+        // Assert
+        result.NormalizeNewLines().Should().BeEquivalentTo(expected.NormalizeNewLines());
+    }
+
+    [Fact]
+    public void CanConvertParameterNil_OpenApi3_2()
+    {
+        // Arrange
+        var path = "QueryParameterNil";
+        var expected = File.ReadAllText(Path.Combine("QueryParameters", $"{path}32.json"));
+
+        // Act
+        var result = _sut.Convert(Path.Combine("QueryParameters", $"{path}.raml"), OpenApiSpecVersion.OpenApi3_2);
 
         // Assert
         result.NormalizeNewLines().Should().BeEquivalentTo(expected.NormalizeNewLines());

@@ -15,7 +15,7 @@ public partial class RamlConverter
         public bool IsRef;
     }
 
-    private OpenApiComponents? MapComponents(OpenApiSpecVersion specVersion)
+    private OpenApiComponents? MapComponents(OpenApiSpecVersion version)
     {
         var types = _typesAsRef.Where(t => t.Key is string).Select(t => new TypeInfo { Key = (string)t.Key, Value = t.Value, IsRef = true })
             .Union(_types.Where(t => t.Key is string).Select(t => new TypeInfo { Key = (string)t.Key, Value = t.Value, IsRef = false }))
@@ -35,7 +35,7 @@ public partial class RamlConverter
                     var type = values.Get("type");
                     if (type == "object" || (type != null && types.Select(t => t.Key).Contains(type)))
                     {
-                        components.Schemas.Add(key, MapValuesToSchema(values, specVersion));
+                        components.Schemas.Add(key, MapValuesToSchema(values, version));
                     }
 
                     if (values.ContainsKey("enum"))
@@ -86,8 +86,8 @@ public partial class RamlConverter
                     }
                     else
                     {
-                        var items = _deserializer.Deserialize<IDictionary<object, object>>(typeAsStringOrDictionary);
-                        components.Schemas.Add(key, MapValuesToSchema(items, specVersion));
+                        var items = _deserializer.Deserialize<IDictionary<object, object>>(typeAsStringOrDictionary)!;
+                        components.Schemas.Add(key, MapValuesToSchema(items, version));
                     }
                     break;
             }
@@ -96,7 +96,7 @@ public partial class RamlConverter
         return components.Schemas.Count > 0 ? components : null;
     }
 
-    private Dictionary<string, IOpenApiSchema> MapProperties(IDictionary<object, object>? properties, OpenApiSpecVersion specVersion)
+    private Dictionary<string, IOpenApiSchema> MapProperties(IDictionary<object, object>? properties, OpenApiSpecVersion version)
     {
         var openApiProperties = new Dictionary<string, IOpenApiSchema>();
 
@@ -129,7 +129,7 @@ public partial class RamlConverter
             var propertyType = values.Get("type");
             if (propertyType == "object")
             {
-                openApiProperties.Add(key, MapValuesToSchema(values, specVersion));
+                openApiProperties.Add(key, MapValuesToSchema(values, version));
                 continue;
             }
 
@@ -139,7 +139,7 @@ public partial class RamlConverter
                 var props = simpleType?.GetAsDictionary("properties");
                 var schema = props != null ?
                     CreateOpenApiReferenceSchema(propertyType, false) : // Custom type
-                    MapParameterOrPropertyDetailsToSchema(simpleType!, specVersion); // Simple Type
+                    MapParameterOrPropertyDetailsToSchema(simpleType!, version); // Simple Type
 
                 openApiProperties.Add(key, schema);
                 continue;
@@ -165,7 +165,7 @@ public partial class RamlConverter
                 continue;
             }
 
-            openApiProperties.Add(key, MapParameterOrPropertyDetailsToSchema(values, specVersion));
+            openApiProperties.Add(key, MapParameterOrPropertyDetailsToSchema(values, version));
         }
 
         return openApiProperties;

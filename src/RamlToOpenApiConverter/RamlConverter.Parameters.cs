@@ -6,18 +6,18 @@ namespace RamlToOpenApiConverter;
 
 public partial class RamlConverter
 {
-    private List<IOpenApiParameter> MapParameters(IDictionary<object, object> values, OpenApiSpecVersion specVersion)
+    private List<IOpenApiParameter> MapParameters(IDictionary<object, object> values, OpenApiSpecVersion version)
     {
         var parameters = new List<IOpenApiParameter>();
 
-        parameters.AddRange(MapParameters(values.GetAsDictionary("queryParameters"), ParameterLocation.Query, specVersion));
-        parameters.AddRange(MapParameters(values.GetAsDictionary("uriParameters"), ParameterLocation.Path, specVersion));
-        parameters.AddRange(MapParameters(values.GetAsDictionary("headers"), ParameterLocation.Header, specVersion));
+        parameters.AddRange(MapParameters(values.GetAsDictionary("queryParameters"), ParameterLocation.Query, version));
+        parameters.AddRange(MapParameters(values.GetAsDictionary("uriParameters"), ParameterLocation.Path, version));
+        parameters.AddRange(MapParameters(values.GetAsDictionary("headers"), ParameterLocation.Header, version));
 
         return parameters;
     }
 
-    private IList<OpenApiParameter> MapParameters(IDictionary<object, object>? parameters, ParameterLocation parameterLocation, OpenApiSpecVersion specVersion)
+    private IList<OpenApiParameter> MapParameters(IDictionary<object, object>? parameters, ParameterLocation parameterLocation, OpenApiSpecVersion version)
     {
         var openApiParameters = new List<OpenApiParameter>();
 
@@ -29,7 +29,7 @@ public partial class RamlConverter
         foreach (var key in parameters.Keys.OfType<string>())
         {
             var parameterDetails = parameters.GetAsDictionary(key) ?? new Dictionary<object, object>();
-            var schema = MapParameterOrPropertyDetailsToSchema(parameterDetails, specVersion);
+            var schema = MapParameterOrPropertyDetailsToSchema(parameterDetails, version);
 
             bool required = parameterDetails.Get<bool?>("required") ?? false;
 
@@ -46,7 +46,7 @@ public partial class RamlConverter
         return openApiParameters;
     }
 
-    private IOpenApiSchema MapParameterOrPropertyDetailsToSchema(IDictionary<object, object> details, OpenApiSpecVersion specVersion)
+    private IOpenApiSchema MapParameterOrPropertyDetailsToSchema(IDictionary<object, object> details, OpenApiSpecVersion version)
     {
         var schemaTypeFromRaml = details.Get("type");
         var schemaFormatFromRaml = details.Get("format");
@@ -70,7 +70,7 @@ public partial class RamlConverter
             MinLength = details.Get<int?>(OpenApiConstants.MinLength)
         };
 
-        if (isNil && specVersion == OpenApiSpecVersion.OpenApi2_0)
+        if (isNil && version == OpenApiSpecVersion.OpenApi2_0)
         {
             // This specification extension is supported only in OpenAPI 2.0.
             schema.Extensions.Add(OpenApiConstants.NullableExtension, new OpenApiAny(JsonValue.Create(true)));

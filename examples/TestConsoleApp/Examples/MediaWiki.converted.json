@@ -15,7 +15,7 @@
       "get": {
         "responses": {
           "200": {
-            "description": null,
+            "description": "Response for HTTP status code 200.",
             "content": {
               "application/json": {
                 "schema": {
@@ -114,7 +114,7 @@
         ],
         "responses": {
           "200": {
-            "description": null,
+            "description": "Response for HTTP status code 200.",
             "content": {
               "application/json": {
                 "schema": {
@@ -140,7 +140,7 @@
             }
           },
           "201": {
-            "description": null,
+            "description": "Response for HTTP status code 201.",
             "content": {
               "application/json": {
                 "schema": {

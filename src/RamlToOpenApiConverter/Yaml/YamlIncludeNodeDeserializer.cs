@@ -1,44 +1,62 @@
 using System.Text.RegularExpressions;
 using RamlToOpenApiConverter.Builders;
-using YamlDotNet.Core;
-using YamlDotNet.Core.Events;
-using YamlDotNet.Serialization;
 
 namespace RamlToOpenApiConverter.Yaml;
 
-internal class YamlIncludeNodeDeserializer(YamlIncludeNodeDeserializerOptions options) : INodeDeserializer
+internal static class YamlIncludeNodeDeserializer
 {
-    private static readonly Regex JsonExtensionRegex = new(@"^\.json$", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline);
-    private static readonly Regex RamlExtensionRegex = new(@"^\.raml$", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline);
+    private static readonly Regex JsonExtensionRegex = new(@"^\.json$", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline, TimeSpan.FromMilliseconds(100));
+    private static readonly Regex RamlExtensionRegex = new(@"^\.raml$", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline, TimeSpan.FromMilliseconds(100));
 
-    bool INodeDeserializer.Deserialize(IParser reader, Type expectedType, Func<IParser, Type, object?> nestedObjectDeserializer, out object? value, ObjectDeserializer rootDeserializer)
+    public static object ResolveIncludes(object value, string directoryName)
     {
-        if (reader.Accept<Scalar>(out var scalar))
+        if (value is IDictionary<object, object> dictionary)
         {
-            var fileName = scalar.Value.Replace('/', Path.DirectorySeparatorChar);
-            var extension = Path.GetExtension(fileName);
-
-            if (scalar.Tag == Constants.IncludeTag || (scalar.Tag != Constants.IncludeTag && (RamlExtensionRegex.IsMatch(extension) || JsonExtensionRegex.IsMatch(extension))))
+            var keys = dictionary.Keys.ToArray();
+            foreach (var key in keys)
             {
-                var includePath = Path.Combine(options.DirectoryName, fileName);
-                value = ReadIncludedFile(includePath, expectedType);
-                reader.MoveNext();
-                return true;
+                dictionary[key] = ResolveIncludes(dictionary[key], directoryName);
+            }
+
+            return dictionary;
+        }
+
+        if (value is ICollection<object> collection)
+        {
+            var resolvedItems = collection.Select(item => ResolveIncludes(item, directoryName)).ToArray();
+            collection.Clear();
+
+            foreach (var item in resolvedItems)
+            {
+                collection.Add(item);
+            }
+
+            return collection;
+        }
+
+        if (value is string fileName)
+        {
+            var normalizedFileName = fileName.Replace('/', Path.DirectorySeparatorChar);
+            var extension = Path.GetExtension(normalizedFileName);
+            if (RamlExtensionRegex.IsMatch(extension) || JsonExtensionRegex.IsMatch(extension))
+            {
+                var includePath = Path.Combine(directoryName, normalizedFileName);
+                return ReadIncludedFile(includePath);
             }
         }
 
-        value = null;
-        return false;
+        return value;
     }
 
-    private static object? ReadIncludedFile(string includePath, Type expectedType)
+    private static object ReadIncludedFile(string includePath)
     {
         var extension = Path.GetExtension(includePath);
 
         if (RamlExtensionRegex.IsMatch(extension))
         {
-            var deserializer = IncludeNodeDeserializerBuilder.Build(Path.GetDirectoryName(includePath)!);
-            return deserializer.Deserialize(new Parser(File.OpenText(includePath)), expectedType);
+            var deserializer = IncludeNodeDeserializerBuilder.Build();
+            var value = deserializer.Deserialize<IDictionary<object, object>>(File.ReadAllText(includePath))!;
+            return ResolveIncludes(value, Path.GetDirectoryName(includePath)!);
         }
 
         if (JsonExtensionRegex.IsMatch(extension))

@@ -29,7 +29,7 @@
         },
         "responses": {
           "200": {
-            "description": null,
+            "description": "Response for HTTP status code 200.",
             "content": {
               "application/json": {
                 "schema": {
@@ -49,7 +49,7 @@
         "description": "This is an example endpoint",
         "responses": {
           "200": {
-            "description": null,
+            "description": "Response for HTTP status code 200.",
             "content": {
               "application/json": {
                 "schema": {
@@ -66,7 +66,7 @@
         "description": "This is an example endpoint",
         "responses": {
           "200": {
-            "description": null,
+            "description": "Response for HTTP status code 200.",
             "content": {
               "application/json": {
                 "schema": {
