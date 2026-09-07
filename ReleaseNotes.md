@@ -1,3 +1,6 @@
+# 0.40.0 (07 September 2026)
+- [#30](https://github.com/StefH/RamlToOpenApiConverter/pull/30) - Replace dependency on YamlDotNet by SharpYaml [enhancement] contributed by [StefH](https://github.com/StefH)
+
 # 0.30.0 (06 September 2026)
 - [#29](https://github.com/StefH/RamlToOpenApiConverter/pull/29) - Microsoft.OpenApi 3.10.2 [dependencies] contributed by [StefH](https://github.com/StefH)
 
