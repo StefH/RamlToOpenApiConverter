@@ -8,6 +8,11 @@ mediaType:
   - application/json
 
 types:
+  EmailIssue12:
+    type: object
+    properties:
+      subject: string
+      body: EmailBody
   Email:
     type: object
     properties:
@@ -15,6 +20,12 @@ types:
         type: string
       body:
         type: string
+  EmailBody:
+    type: object
+    properties:
+      maintext: string 
+      footer: string
+      id: integer
   Emails:
     type: array
     items: Email
@@ -50,6 +61,14 @@ types:
           title: "Template:API Intro"
           pageid: "16385"
         export: null
+
+/getemail:
+  get:
+    responses:
+      200:
+        body:
+          application/json:
+            type: EmailIssue12
 
 /testemails5:
   get:

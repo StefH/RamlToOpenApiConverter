@@ -6,6 +6,22 @@
     "version": "1.0"
   },
   "paths": {
+    "/getemail": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Response for HTTP status code 200.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmailIssue12"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/testemails5": {
       "get": {
         "description": "examples with inline single as object",
@@ -212,6 +228,17 @@
   },
   "components": {
     "schemas": {
+      "EmailIssue12": {
+        "type": "object",
+        "properties": {
+          "subject": {
+            "type": "string"
+          },
+          "body": {
+            "$ref": "#/components/schemas/EmailBody"
+          }
+        }
+      },
       "Email": {
         "type": "object",
         "properties": {
@@ -220,6 +247,20 @@
           },
           "body": {
             "type": "string"
+          }
+        }
+      },
+      "EmailBody": {
+        "type": "object",
+        "properties": {
+          "maintext": {
+            "type": "string"
+          },
+          "footer": {
+            "type": "string"
+          },
+          "id": {
+            "type": "integer"
           }
         }
       },
