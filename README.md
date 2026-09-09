@@ -18,7 +18,6 @@ new RamlConverter()
 
 ## Details
 This project uses the following tools:
-- YamlDotNet --> to read the RAML (as YAML or JSON)
 - Microsoft.OpenApi.YamlReader --> to process the Open API Model and convert the model to the output file
 
  
