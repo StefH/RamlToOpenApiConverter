@@ -25,8 +25,4 @@
         <None Include="../../resources/combined_128x128.png" Pack="true" PackagePath="" />
         <None Include="../../PackageReadme.md" Pack="true" PackagePath="" />
     </ItemGroup>
-
-    <ItemGroup>
-        <PackageReference Include="Microsoft.OpenApi.YamlReader" Version="3.10.2" />
-    </ItemGroup>
 </Project>
