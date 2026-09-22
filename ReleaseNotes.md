@@ -1,3 +1,7 @@
+# 0.50.0 (22 September 2026)
+- [#31](https://github.com/StefH/RamlToOpenApiConverter/pull/31) - Fix RamlToOpenApiConverter.SourceOnly (make Microsoft.OpenApi.YamlReader private) [bug] contributed by [StefH](https://github.com/StefH)
+- [#12](https://github.com/StefH/RamlToOpenApiConverter/issues/12) - Problem with inherit objects in raml (calling one object inside the datatype) [bug]
+
 # 0.40.0 (07 September 2026)
 - [#30](https://github.com/StefH/RamlToOpenApiConverter/pull/30) - Replace dependency on YamlDotNet by SharpYaml [enhancement] contributed by [StefH](https://github.com/StefH)
 
